@@ -15,9 +15,11 @@ public class Simulator {
 
     public static double lambda = 12.25;
 
+    public static String seed = "215487963"; // 215487963
+
 
     public double START   = 0.0;            /* initial (open the door)        */
-    public double STOP    = 500000;        /* terminal (close the door) time */
+    public double STOP    = 20000;        /* terminal (close the door) time */
     public static int    SERVERS = 20;              /* number of servers              */
 
     public double sarrival = START;
@@ -78,8 +80,16 @@ public class Simulator {
     public void RunSimulation(ArrayList<EventNode> system_events, SystemClock clock, Rngs r) {
         int cloudlet_number1 = 0, cloudlet_number2 = 0;  // numero di job processati dal cloudlet per tipo
         int cloud_number1 = 0, cloud_number2 = 0;       // numero di job processati dal cloud per tipo
+
+        int cloudlet_number=0;
+        int cloud_number=0;
+
         int working_server = 0;                          // numero di job presenti nei server del cloudlet
 
+        double risposta_cloudlet = 0.0;
+        double risposta_cloud = 0.0;
+        double area_cloudlet   = 0.0;
+        double area_cloud   = 0.0;
 
         // primo arrivo
         system_events.get(0).setTemp(this.getArrival(lambda, r));
@@ -89,17 +99,13 @@ public class Simulator {
         while ((system_events.get(0).getType() != 0)) {
             int e = this.nextEvent(system_events);
 
-            //System.err.println( clock.getCurrent() );
-
-            //double current = clock.getCurrent();
 
             clock.setNext(system_events.get(e).getTemp());               /* next event index */
 
-            clock.setCurrent(clock.getNext());                              /* advance the clock*/
-            //double next = clock.getCurrent();
+            area_cloudlet += (clock.getNext() - clock.getCurrent()) * ( cloudlet_number );
+            area_cloud += (clock.getNext() - clock.getCurrent()) * ( cloud_number );
 
-            //System.err.println(current + "\t" + "\t" + next + "\t" + (current <= next));
-            //System.err.println( clock.getNext() + "\n----------------------" );
+            clock.setCurrent(clock.getNext());                              /* advance the clock*/
 
             if (e == 0) { // processo un arrivo
 
@@ -118,17 +124,21 @@ public class Simulator {
                 // se ho server disponibili assegno il task
                 if (working_server < SERVERS) { // ho dei server liberi -> ( arrivo cludlet )
                     working_server++;
+                    cloudlet_number++;
 
                     // genero il tempo di servizio
                     double service = 0;
                     if (system_events.get(e).getType() == 1) {
                         cloudlet_number1++;
                         service = this.getService(mu1_cloudlet, r);
+
+
                     } else if (system_events.get(0).getType() == 2) {
                         cloudlet_number2++;
                         service = this.getService(mu2_cloudlet, r);
                     }
 
+                    risposta_cloudlet +=service;
                     //trovo il server libero da più tempo inattivo
                     int cloudlet_server_selected = this.findOneCloudlet(system_events);
 
@@ -139,6 +149,8 @@ public class Simulator {
 
                 } else { // non ho server liberi -> mando al cloud  ( arrivo cloud)
                     //System.err.println("Sono nel cloud :D");
+
+                    cloud_number++;
 
                     //trovo il server libero ( se non esiste lo creo )
                     int cloud_server_selected = findOneCloud(system_events);
@@ -156,6 +168,8 @@ public class Simulator {
                         service = this.getServiceCloud(mu2_cloud, r);
                     }
 
+                    risposta_cloud+=service;
+
                     system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloud_server_selected).setType(typeCloud);
 
@@ -164,8 +178,10 @@ public class Simulator {
 
                 if (e <= 20) { // processo una partenza cloudlet
                     working_server--;
+                    cloudlet_number--;
                     system_events.get(e).setType(0);
                 } else { //processo una partenza del cloud
+                    cloud_number--;
                     system_events.get(e).setType(0);
 
                 }
@@ -176,6 +192,23 @@ public class Simulator {
         }
         for ( EventNode i: system_events)
             System.err.println(i.toString());
+        System.err.println(cloudlet_number1 + "\t" + cloudlet_number2 +"\t" + cloud_number1 +"\t" + cloud_number2 );
+
+        double totalTask = cloudlet_number1+cloudlet_number2+cloud_number1+cloud_number2 ;
+
+        double lambdaToT = 1.0 / ( clock.getCurrent() / (cloudlet_number1+cloudlet_number2+cloud_number1+cloud_number2));
+        double lambdaA = 1.0 / (clock.getCurrent() / (cloudlet_number1+cloud_number1));
+        double lambdaB = 1.0 / (clock.getCurrent() / (cloudlet_number2+cloud_number2));
+
+        double pq = (cloud_number1+cloud_number2) / totalTask ;
+
+        System.err.println( " lambda stimato = " + lambdaToT);
+        System.err.println( " lambda task A stimato = " + lambdaA );
+        System.err.println( " lambda task B stimato = " + lambdaB);
+        System.err.println( " tempo di risposta cloudlet " + area_cloudlet / clock.getCurrent());
+        System.err.println( " tempo di risposta cloud " + area_cloud/  clock.getCurrent() );
+        //System.err.println( " pq " + pq);
+        //System.err.println(" tempo di risposta cloud " + (cloud_number1+cloud_number2)/ (lambdaToT* pq));
 
     }
 
@@ -260,7 +293,7 @@ public class Simulator {
         }
         SystemClock clock = new SystemClock(s.START,s.START);
         Rngs r = new Rngs();
-        r.plantSeeds(Integer.parseInt(args[0]));
+        r.plantSeeds(Integer.parseInt(seed));
         s.RunSimulation(system_events,clock,r);
 
 
