@@ -30,4 +30,9 @@ public class EventNode {
     public void setType(int type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "temp: '" + this.temp + "', type: '" + this.type ;
+    }
 }

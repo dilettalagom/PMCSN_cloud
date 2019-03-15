@@ -17,7 +17,7 @@ public class Simulator {
 
 
     public double START   = 0.0;            /* initial (open the door)        */
-    public double STOP    = 1000;        /* terminal (close the door) time */
+    public double STOP    = 500000;        /* terminal (close the door) time */
     public static int    SERVERS = 20;              /* number of servers              */
 
     public double sarrival = START;
@@ -75,124 +75,152 @@ public class Simulator {
         return (exponential(mu, r));
     }
 
-    public void RunSimulation(ArrayList<EventNode> cloudlet_events, SystemClock clock, Rngs r){
-        int cloudlet_number1= 0, cloudlet_number2 = 0;  // numero di job processati dal cloudlet per tipo
+    public void RunSimulation(ArrayList<EventNode> system_events, SystemClock clock, Rngs r) {
+        int cloudlet_number1 = 0, cloudlet_number2 = 0;  // numero di job processati dal cloudlet per tipo
         int cloud_number1 = 0, cloud_number2 = 0;       // numero di job processati dal cloud per tipo
-        int working_server = 0 ;                          // numero di job presenti nei server del cloudlet
+        int working_server = 0;                          // numero di job presenti nei server del cloudlet
 
 
         // primo arrivo
-        cloudlet_events.get(0).setTemp( this.getArrival(lambda, r));
+        system_events.get(0).setTemp(this.getArrival(lambda, r));
         // devo decidere se il primo arrivo è di tipo A o B
-        cloudlet_events.get(0).setType( this.getType(r));
+        system_events.get(0).setType(this.getType(r));
         // type = 0 -> simulazione terminata
-        while ((cloudlet_events.get(0).getType() != 0)) {
-            int e = this.nextEvent(cloudlet_events);
+        while ((system_events.get(0).getType() != 0)) {
+            int e = this.nextEvent(system_events);
 
             //System.err.println( clock.getCurrent() );
 
-            double current = clock.getCurrent();
-            System.err.println(cloudlet_events.get(e).getTemp() );
+            //double current = clock.getCurrent();
 
-            clock.setNext( cloudlet_events.get(e).getTemp() );               /* next event index */
+            clock.setNext(system_events.get(e).getTemp());               /* next event index */
 
             clock.setCurrent(clock.getNext());                              /* advance the clock*/
-            double next = clock.getCurrent();
+            //double next = clock.getCurrent();
 
-            System.err.println( current +"\t" + "\t" + next  +"\t" + (current <= next));
+            //System.err.println(current + "\t" + "\t" + next + "\t" + (current <= next));
             //System.err.println( clock.getNext() + "\n----------------------" );
 
-            if ( e == 0 ) { // processo un arrivo
+            if (e == 0) { // processo un arrivo
 
 
-                int type = cloudlet_events.get(0).getType();
+                int type = system_events.get(e).getType();
 
                 // genero un nuovo task :(
-                cloudlet_events.get(0).setTemp( this.getArrival(lambda, r));
-                cloudlet_events.get(0).setType( this.getType(r));
+                system_events.get(0).setTemp(this.getArrival(lambda, r));
+                system_events.get(0).setType(this.getType(r));
                 // fine generazione nuovo task :)
 
                 // termino esecuzione al prossimo while
-                if (cloudlet_events.get(0).getTemp() > STOP)
-                    cloudlet_events.get(0).setType(0);
+                if (system_events.get(0).getTemp() > STOP)
+                    system_events.get(0).setType(0);
 
                 // se ho server disponibili assegno il task
-                if (working_server < SERVERS) { // ho dei server liberi
-                    if ( cloudlet_events.get(e).getType() == 1) {
-                        cloudlet_number1++;
-                    }else {
-                        cloudlet_number2++;
-                    }
+                if (working_server < SERVERS) { // ho dei server liberi -> ( arrivo cludlet )
                     working_server++;
-
-                    //System.err.println("Sono nel cloudlet D:");
 
                     // genero il tempo di servizio
                     double service = 0;
-                    if ( cloudlet_events.get(0).getType() == 1 ) {
+                    if (system_events.get(e).getType() == 1) {
+                        cloudlet_number1++;
                         service = this.getService(mu1_cloudlet, r);
-                    } else if (cloudlet_events.get(0).getType() == 2 ){
+                    } else if (system_events.get(0).getType() == 2) {
+                        cloudlet_number2++;
                         service = this.getService(mu2_cloudlet, r);
                     }
 
                     //trovo il server libero da più tempo inattivo
-                    int s = this.findOne(cloudlet_events);
+                    int cloudlet_server_selected = this.findOneCloudlet(system_events);
 
 
                     // aggiorno il server i-esimo ( indice s ) con i nuovi valori di tempo e type
-                    cloudlet_events.get(s).setTemp(clock.getCurrent() + service);
-                    cloudlet_events.get(s).setType(type);
+                    system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
+                    system_events.get(cloudlet_server_selected).setType(type);
 
-                }else { // non ho server liberi -> mando al cloud
+                } else { // non ho server liberi -> mando al cloud  ( arrivo cloud)
                     //System.err.println("Sono nel cloud :D");
 
-                    double service=0;
-                    if ( cloudlet_events.get(e).getType() == 1) {
+                    //trovo il server libero ( se non esiste lo creo )
+                    int cloud_server_selected = findOneCloud(system_events);
+
+                    int typeCloud = system_events.get(0).getType();
+
+                    double service = 0;
+                    if (system_events.get(e).getType() == 1) {
                         cloud_number1++;
-
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task A
-                        service = this.getServiceCloud(mu1_cloud,r);
-
-                        // aggiorno il clock
-                        //clock.setCurrent( clock.getCurrent() + service);
-                    }else {
+                        service = this.getServiceCloud(mu1_cloud, r);
+                    } else {
                         cloud_number2++;
-
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task B
-                        service = this.getServiceCloud(mu2_cloud,r);
-
-                        // aggiorno il clock
-                        //clock.setCurrent( clock.getCurrent() + service);
+                        service = this.getServiceCloud(mu2_cloud, r);
                     }
+
+                    system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
+                    system_events.get(cloud_server_selected).setType(typeCloud);
 
                 }
             } else { // processo una partenza
-                working_server--;
-                cloudlet_events.get(e).setType(0);
+
+                if (e <= 20) { // processo una partenza cloudlet
+                    working_server--;
+                    system_events.get(e).setType(0);
+                } else { //processo una partenza del cloud
+                    system_events.get(e).setType(0);
+
+                }
+
             }
 
+
         }
+        for ( EventNode i: system_events)
+            System.err.println(i.toString());
+
+    }
+
+    private int findOneCloud(ArrayList<EventNode> system_events) {
+
+
+        // se non ci sono serventi attivi nel cloud, ne creo 1
+        //
+        int i = 21;
+        if ( system_events.size() == 20 ){
+            system_events.add(new EventNode());
+            return i;
+
+        } else {
+            for ( ; i < system_events.size() ; i++){
+                if ( system_events.get(i).getType() == 0 ) {
+                    return i;
+                }
+            }
+            system_events.add(new EventNode());
+            return i;
+        }
+
+
 
 
     }
 
-    private int nextEvent(ArrayList<EventNode> cloudlet_events) {
+    private int nextEvent(ArrayList<EventNode> list_events) {
         int event;
         int i = 0;
 
-        while (cloudlet_events.get(i).getType() == 0)       /* find the index of the first 'active' */
+        while (list_events.get(i).getType() == 0)       /* find the index of the first 'active' */
             i++;                                            /* element in the event list            */
         event = i;
-        while (i < SERVERS) {         /* now, check the others to find which  */
+        while (i < list_events.size()-1) {         /* now, check the others to find which  */
             i++;                        /* event type is most imminent          */
-            if ((cloudlet_events.get(i).getType() > 0) &&
-                    (cloudlet_events.get(i).getTemp() < cloudlet_events.get(event).getTemp() ))
+            if ((list_events.get(i).getType() > 0) &&
+                    (list_events.get(i).getTemp() < list_events.get(event).getTemp() ))
                 event = i;
         }
         return (event);
     }
 
-    int findOne(ArrayList<EventNode> listNode ) {
+    int findOneCloudlet(ArrayList<EventNode> listNode ) {
         /* -----------------------------------------------------
          * return the index of the available server idle longest
          * -----------------------------------------------------
