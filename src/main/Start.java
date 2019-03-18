@@ -1,10 +1,10 @@
 package main;
 
 import pmcsn.Rngs;
-
+import static main.Configuration.*;
 import java.util.ArrayList;
 
-public class Main {
+public class Start {
 
     public static void main(String[] args) {
 
@@ -13,19 +13,25 @@ public class Main {
         // ToDo: invece che far fare tutte le simulazioni ad un processo , si potrebbe far fare una simulazione per thread.
 
         int j = 0;
-        while ( j < Configuration.seeds.length ){
+        while ( j < seeds.length ){
             Simulator s = new Simulator();
 
             // inizializzo struttura per contenere lo stato dei singoli server + l'arrivo
             ArrayList<EventNode> system_events = new ArrayList<>();
-
-            for (int i = 0; i< Configuration.SERVERS +1 ; i++){
-                system_events.add(new EventNode(Configuration.START,0));
+            for (int i = 0; i< SERVERS +1 ; i++){
+                system_events.add(new EventNode(START,0));
             }
-            SystemClock clock = new SystemClock(Configuration.START, Configuration.START);
+
+            SystemClock clock = new SystemClock(START, START);
+
+            GlobalNode global_node = new GlobalNode(START, START, 0 ,0);
+
             Rngs r = new Rngs();
-            r.plantSeeds(Integer.parseInt(Configuration.seeds[j]));
-            s.RunSimulation(system_events,clock,r);
+            r.plantSeeds(Integer.parseInt(seeds[j]));
+            j++;
+
+            //lancio la simulazione
+            s.RunSimulation(system_events, global_node, clock,r);
         }
 
     }
