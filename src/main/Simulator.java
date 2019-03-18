@@ -59,6 +59,7 @@ public class Simulator {
     }
 
     public void RunSimulation(ArrayList<EventNode> system_events, GlobalNode global_node, SystemClock clock, Rngs r) {
+        //TODO: aggiungi al GlobalNode
         int cloudlet_number1 = 0, cloudlet_number2 = 0;  // numero di job processati dal cloudlet per tipo
         int cloud_number1 = 0, cloud_number2 = 0;        // numero di job processati dal cloud per tipo
 
