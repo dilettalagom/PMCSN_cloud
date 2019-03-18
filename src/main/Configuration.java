@@ -1,6 +1,6 @@
 package main;
 
-public class configuration {
+public class Configuration {
 
     public static double mu1_cloudlet = 0.45;
     public static double mu2_cloudlet = 0.27;

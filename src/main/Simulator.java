@@ -7,25 +7,6 @@ import java.util.ArrayList;
 
 public class Simulator {
 
-    public static double mu1_cloudlet = 0.45;
-    public static double mu2_cloudlet = 0.27;
-
-    public static double mu1_cloud = 0.25;
-    public static double mu2_cloud = 0.22;
-
-    public static double lambda = 12.25;
-
-    public static String seed = "215487963"; // 215487963
-
-
-    public double START   = 0.0;            /* initial (open the door)        */
-    public double STOP    = 20000;        /* terminal (close the door) time */
-    public static int    SERVERS = 20;              /* number of servers              */
-
-    public double sarrival = START;
-
-
-
     public double exponential(double m, Rngs r) {
         /* ---------------------------------------------------
          * generate an Exponential random variate, use m > 0.0
@@ -55,25 +36,23 @@ public class Simulator {
          * generate the next arrival time, with rate 1/2
          * --------------------------------------------------------------
          */
-        r.selectStream(0);
-        sarrival += exponential(1.0/lambda, r);
-        return (sarrival);
+        r.selectStream(25);
+        return exponential(1.0/lambda, r);
     }
 
-    public double getService(double mu, Rngs r) {
-        /* ------------------------------
-         * generate the next service time, with rate 1/6
-         * ------------------------------
-         */
-        r.selectStream(1);
+    /*public double getServiceHyperexponential(double mu, Rngs r) {
+
+        //r.selectStream(1);
         return (hyperExponential(mu , r));
-    }
-    public double getServiceCloud(double mu, Rngs r) {
+    }*/
+
+
+    public double getServiceExponential(double mu, Rngs r) {
         /* ------------------------------
          * generate the next service time, with rate 1/6
          * ------------------------------
          */
-        r.selectStream(2);
+        //r.selectStream(2);
         return (exponential(mu, r));
     }
 
@@ -81,18 +60,14 @@ public class Simulator {
         int cloudlet_number1 = 0, cloudlet_number2 = 0;  // numero di job processati dal cloudlet per tipo
         int cloud_number1 = 0, cloud_number2 = 0;       // numero di job processati dal cloud per tipo
 
-        int cloudlet_number=0;
-        int cloud_number=0;
+        int cloudlet_number=0;   // numero di job nel cloudlet all'istante t
+        int cloud_number=0;       // numero di job nel cloud all'istante t
 
-        int working_server = 0;                          // numero di job presenti nei server del cloudlet
-
-        double risposta_cloudlet = 0.0;
-        double risposta_cloud = 0.0;
         double area_cloudlet   = 0.0;
         double area_cloud   = 0.0;
 
         // primo arrivo
-        system_events.get(0).setTemp(this.getArrival(lambda, r));
+        system_events.get(0).setTemp( system_events.get(0).getTemp() + this.getArrival(Configuration.lambda, r));
         // devo decidere se il primo arrivo è di tipo A o B
         system_events.get(0).setType(this.getType(r));
         // type = 0 -> simulazione terminata
@@ -113,32 +88,30 @@ public class Simulator {
                 int type = system_events.get(e).getType();
 
                 // genero un nuovo task :(
-                system_events.get(0).setTemp(this.getArrival(lambda, r));
+                system_events.get(0).setTemp(system_events.get(0).getTemp() + this.getArrival(Configuration.lambda, r));
                 system_events.get(0).setType(this.getType(r));
                 // fine generazione nuovo task :)
 
                 // termino esecuzione al prossimo while
-                if (system_events.get(0).getTemp() > STOP)
+                if (system_events.get(0).getTemp() > Configuration.STOP)
                     system_events.get(0).setType(0);
 
                 // se ho server disponibili assegno il task
-                if (working_server < SERVERS) { // ho dei server liberi -> ( arrivo cludlet )
-                    working_server++;
+                if (cloudlet_number <= Configuration.SERVERS) { // ho dei server liberi -> ( arrivo cludlet )
                     cloudlet_number++;
 
                     // genero il tempo di servizio
                     double service = 0;
                     if (system_events.get(e).getType() == 1) {
                         cloudlet_number1++;
-                        service = this.getService(mu1_cloudlet, r);
+                        service = this.hyperExponential(Configuration.mu1_cloudlet, r);
 
 
                     } else if (system_events.get(0).getType() == 2) {
                         cloudlet_number2++;
-                        service = this.getService(mu2_cloudlet, r);
+                        service = this.hyperExponential(Configuration.mu2_cloudlet, r);
                     }
 
-                    risposta_cloudlet +=service;
                     //trovo il server libero da più tempo inattivo
                     int cloudlet_server_selected = this.findOneCloudlet(system_events);
 
@@ -161,23 +134,21 @@ public class Simulator {
                     if (system_events.get(e).getType() == 1) {
                         cloud_number1++;
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task A
-                        service = this.getServiceCloud(mu1_cloud, r);
+                        service = this.getServiceExponential(Configuration.mu1_cloud, r);
                     } else {
                         cloud_number2++;
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task B
-                        service = this.getServiceCloud(mu2_cloud, r);
+                        service = this.getServiceExponential(Configuration.mu2_cloud, r);
                     }
 
-                    risposta_cloud+=service;
-
+                    // aggiorno il tempo nell'i-esimo server con il tempo di servizio generato
                     system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloud_server_selected).setType(typeCloud);
 
                 }
             } else { // processo una partenza
 
-                if (e <= 20) { // processo una partenza cloudlet
-                    working_server--;
+                if (e <= Configuration.SERVERS) { // processo una partenza cloudlet
                     cloudlet_number--;
                     system_events.get(e).setType(0);
                 } else { //processo una partenza del cloud
@@ -202,11 +173,16 @@ public class Simulator {
 
         double pq = (cloud_number1+cloud_number2) / totalTask ;
 
-        System.err.println( " lambda stimato = " + lambdaToT);
-        System.err.println( " lambda task A stimato = " + lambdaA );
-        System.err.println( " lambda task B stimato = " + lambdaB);
-        System.err.println( " tempo di risposta cloudlet " + area_cloudlet / clock.getCurrent());
-        System.err.println( " tempo di risposta cloud " + area_cloud/  clock.getCurrent() );
+        System.err.println( "lambda stimato = " + lambdaToT);
+        System.err.println( "lambda task A stimato = " + lambdaA );
+        System.err.println( "lambda task B stimato = " + lambdaB);
+
+        System.err.println( "tempo di risposta medio cloudlet " + area_cloudlet / (cloudlet_number1+cloudlet_number2));
+
+        System.err.println( "tempo di risposta medio cloud " + area_cloud/   (cloud_number1+cloud_number2) );
+
+        System.err.println( "numero medio di job nel cloudlet " + area_cloudlet / clock.getCurrent());
+        System.err.println( "numero medio di job nel cloud " + area_cloud/  clock.getCurrent() );
         //System.err.println( " pq " + pq);
         //System.err.println(" tempo di risposta cloud " + (cloud_number1+cloud_number2)/ (lambdaToT* pq));
 
@@ -217,8 +193,8 @@ public class Simulator {
 
         // se non ci sono serventi attivi nel cloud, ne creo 1
         //
-        int i = 21;
-        if ( system_events.size() == 20 ){
+        int i = Configuration.SERVERS +1;
+        if ( system_events.size() == Configuration.SERVERS ){
             system_events.add(new EventNode());
             return i;
 
@@ -264,7 +240,7 @@ public class Simulator {
         while (listNode.get(i).getType() == 1)       /* find the index of the first available */
             i++;                                       /* (idle) server                         */
         server = i;
-        while (i < SERVERS) {         /* now, check the others to find which   */
+        while (i < Configuration.SERVERS) {         /* now, check the others to find which   */
             i++;                        /* has been idle longest                 */
             if ((listNode.get(i).getType() == 0) &&
                     (listNode.get(i).getTemp() < listNode.get(server).getTemp()))
@@ -288,12 +264,12 @@ public class Simulator {
         Simulator s = new Simulator();
         // inizializzo struttura per contenere lo stato dei singoli server + l'arrivo
         ArrayList<EventNode> system_events = new ArrayList<>();
-        for ( int i = 0 ; i< SERVERS +1 ; i++){
-            system_events.add(new EventNode(s.START,0));
+        for (int i = 0; i< Configuration.SERVERS +1 ; i++){
+            system_events.add(new EventNode(Configuration.START,0));
         }
-        SystemClock clock = new SystemClock(s.START,s.START);
+        SystemClock clock = new SystemClock(Configuration.START, Configuration.START);
         Rngs r = new Rngs();
-        r.plantSeeds(Integer.parseInt(seed));
+        r.plantSeeds(Integer.parseInt(Configuration.seed));
         s.RunSimulation(system_events,clock,r);
 
 
