@@ -28,10 +28,11 @@ public class Start {
 
             Rngs r = new Rngs();
             r.plantSeeds(Integer.parseInt(seeds[j]));
-            j++;
 
             //lancio la simulazione
-            s.RunSimulation(system_events, global_node, clock,r);
+            s.RunSimulation(seeds[j], system_events, global_node, clock,r);
+
+            j++;
         }
 
     }

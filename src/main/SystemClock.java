@@ -9,7 +9,6 @@ public class SystemClock {
     public SystemClock(double c,double n){
         this.current = c;
         this.next = n;
-
     }
 
     public double getCurrent() {

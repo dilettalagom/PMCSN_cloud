@@ -59,7 +59,10 @@ public class Simulator {
         return (exponential(mu, r));
     }
 
-    public void RunSimulation(ArrayList<EventNode> system_events, GlobalNode global_node, SystemClock clock, Rngs r) {
+    public void RunSimulation(String seed, ArrayList<EventNode> system_events, GlobalNode global_node, SystemClock clock, Rngs r) {
+
+        //create file first time
+        PrintWriter globalNode_writer = createNewResultFile("globalNode_results" ,seed);
 
         // primo arrivo
         system_events.get(0).setTemp(this.getArrival(lambda, r) + clock.getCurrent());
@@ -72,11 +75,10 @@ public class Simulator {
 
             clock.setNext(system_events.get(e).getTemp());
 
-            //TODO: stampare in csv istante {T = clock.getCurrent(); .setComplete_time_cloudlet}
             global_node.setComplete_time_cloudlet(global_node.getComplete_time_cloudlet() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_cloudlet());
             global_node.setComplete_time_cloud(global_node.getComplete_time_cloud() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_cloud());
 
-            print_on_file(new String[]{String.valueOf(clock.getCurrent()), //istante
+            print_on_file(globalNode_writer, new String[]{String.valueOf(clock.getCurrent()), //istante
                     String.valueOf(global_node.getComplete_time_cloudlet()),                                //area_cloudlet
                     String.valueOf(global_node.getComplete_time_cloud())});                                 //area_cloud
 
@@ -108,7 +110,6 @@ public class Simulator {
                         global_node.setCloudlet_number2(global_node.getCloudlet_number2() + 1);
                         service = this.getServiceCloudlet(mu2_cloudlet, r);
                     }
-
 
                     //trovo il server libero da più tempo inattivo
                     int cloudlet_server_selected = this.findOneCloudlet(system_events);
@@ -145,7 +146,6 @@ public class Simulator {
 
                 }
 
-
             } else { // processo una partenza
 
                 if (e <= SERVERS) { // processo una partenza cloudlet
@@ -165,10 +165,13 @@ public class Simulator {
             System.err.println(i.toString());*/
 
 
-        System.err.println(global_node.getCloudlet_number1() + "\t"
-                + global_node.getCloudlet_number2() + "\t"
-                + global_node.getCloud_number1() + "\t"
-                +  global_node.getCloud_number2());
+        System.err.println("Risultati prodotti dal seed: "+seed);
+
+        System.err.println("n1_cloudlet: "+ global_node.getCloudlet_number1()
+                + "\t\tn2_cloudlet: " + global_node.getCloudlet_number2() + "\n"
+                + "n1_cloud: " + global_node.getCloud_number1()
+                + "\t\tn2_cloud "+ global_node.getCloud_number2());
+
 
         double totalTask = global_node.getCloudlet_number1() + global_node.getCloudlet_number2() + global_node.getCloud_number1() + global_node.getCloud_number2();
 
@@ -178,17 +181,21 @@ public class Simulator {
 
         double pq = (global_node.getCloud_number1() + global_node.getCloud_number2()) / totalTask;
 
-
         System.err.println(" lambda stimato = " + lambdaToT);
         System.err.println(" lambda task A stimato = " + lambdaA);
         System.err.println(" lambda task B stimato = " + lambdaB);
         System.err.println(" numero medio di task del cloudlet " + global_node.getComplete_time_cloudlet() / clock.getCurrent());
         System.err.println(" numero medio di task del cloud " + global_node.getComplete_time_cloud() / clock.getCurrent());
 
-        System.err.println(" tempo medio di risposta del cloudlet " + global_node.getComplete_time_cloudlet() / (global_node.getCloudlet_number1()+global_node.getCloudlet_number2()));
-        System.err.println(" tempo medio di risposta del cloud " + global_node.getComplete_time_cloud() /  (global_node.getCloud_number1()+global_node.getCloud_number2()));
+        System.err.println(" tempo medio di risposta del cloudlet " + global_node.getComplete_time_cloudlet() / (global_node.getCloudlet_number1() + global_node.getCloudlet_number2()));
+        System.err.println(" tempo medio di risposta del cloud " + global_node.getComplete_time_cloud() / (global_node.getCloud_number1() + global_node.getCloud_number2()));
 
-        System.err.println( " pq " + pq);
+        System.err.println(" pq " + pq);
+
+        System.err.println("------------------------------------------------------------");
+
+        assert globalNode_writer != null;
+        globalNode_writer.close();
 
     }
 
@@ -260,29 +267,28 @@ public class Simulator {
         } else return 2;
     }
 
-    private void print_on_file(String[] row){
+    private PrintWriter createNewResultFile (String filename, String seed){
+        PrintWriter printWriter = null;
 
         try {
-
-            PrintWriter pw = new PrintWriter(new FileOutputStream(new File("cloudlet_area_results.csv"), true));
-            StringBuilder sb = new StringBuilder();
-            // sb.append("istante;cloudlet;cloud;");
-            // sb.append(System.getProperty("line.separator"));
-
-            for (String s : row) {
-                byte[] data = s.getBytes("ASCII");
-                String asciis = new String(data);
-                sb.append(asciis);
-                sb.append(';');
-            }
-            sb.append(System.getProperty("line.separator"));
-
-            pw.write(sb.toString());
-            pw.close();
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            printWriter = new PrintWriter(new FileWriter("./temp/"+ filename + seed + ".csv"));
+            print_on_file(printWriter, new String[]{"istante","cloudlet","cloud"});
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return printWriter;
+    }
+
+    private void print_on_file(PrintWriter writer, String[] row) {
+
+        for (String s : row) {
+            writer.write(s);
+            writer.write(';');
+        }
+        writer.write(System.getProperty("line.separator"));
     }
 }
+
 
 
