@@ -13,6 +13,6 @@ public class Configuration {
     public static String[] seeds = {"215487963","123456789","987654321"};
 
     public static double START   = 0.0;            /* initial (open the door)        */
-    public static double STOP    = 100000;          /* terminal (close the door) time */
+    public static double STOP    = 10000;          /* terminal (close the door) time */
     public static int    SERVERS = 20;             /* number of servers              */
 }

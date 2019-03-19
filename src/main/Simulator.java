@@ -79,8 +79,8 @@ public class Simulator {
             global_node.setComplete_time_cloud(global_node.getComplete_time_cloud() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_cloud());
 
             print_on_file(globalNode_writer, new String[]{String.valueOf(clock.getCurrent()), //istante
-                    String.valueOf(global_node.getComplete_time_cloudlet()),                                //area_cloudlet
-                    String.valueOf(global_node.getComplete_time_cloud())});                                 //area_cloud
+                    String.valueOf(global_node.getComplete_time_cloudlet()/(global_node.getCloudlet_number1()+global_node.getCloudlet_number2())),                                //area_cloudlet
+                    String.valueOf(global_node.getComplete_time_cloud()/(global_node.getCloud_number1()+global_node.getCloud_number2()))});                                 //area_cloud
 
             clock.setCurrent(clock.getNext());                              /* advance the clock*/
 
