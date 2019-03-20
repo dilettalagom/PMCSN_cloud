@@ -24,7 +24,7 @@ public class Start {
 
             SystemClock clock = new SystemClock(START, START);
 
-            GlobalNode global_node = new GlobalNode(START, START, 0 ,0);
+            GlobalNode global_node = new GlobalNode(START, START);
 
             Rngs r = new Rngs();
             r.plantSeeds(Integer.parseInt(seeds[j]));

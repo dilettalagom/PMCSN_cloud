@@ -6,20 +6,20 @@ public class GlobalNode {
     private double complete_time_cloudlet;
     private double complete_time_system;
 
-    private double area_cloudlet_taskA;
-    private double area_cloud_taskB;
+    private double area_cloudlet_taskA = 0;
+    private double area_cloud_taskB = 0;
 
-    private double area_cloudlet_taskB;
-    private double area_cloud_taskA;
+    private double area_cloudlet_taskB = 0;
+    private double area_cloud_taskA = 0;
 
-    private int working_cloudlet_taskA;
-    private int working_cloudlet_taskB;
+    private int working_cloudlet_taskA = 0;
+    private int working_cloudlet_taskB = 0;
 
-    private int working_cloud_taskA;
-    private int working_cloud_taskB;
+    private int working_cloud_taskA = 0;
+    private int working_cloud_taskB = 0;
 
-    private double complete_time_taskA;
-    private double complete_time_taskB;
+    private double complete_time_taskA = 0;
+    private double complete_time_taskB = 0;
 
 
 
@@ -27,18 +27,10 @@ public class GlobalNode {
     private int processed_cloud_taskA, processed_cloud_taskB;        // numero di job processati dal cloud per tipo
 
 
-    public GlobalNode(double time_cloudlet, double time_cloud, int ncl, int nc){
+    public GlobalNode(double time_cloudlet, double time_cloud) {
         this.complete_time_cloudlet = time_cloudlet;
         this.complete_time_cloud = time_cloud;
         this.complete_time_system = time_cloudlet + time_cloud;
-       // this.working_server_cloudlet = ncl;
-       // this.working_server_cloud = nc;
-        this.processed_cloudlet_taskA = 0;
-        this.processed_cloudlet_taskB = 0;
-        this.processed_cloud_taskA = 0;
-        this.processed_cloud_taskB = 0;
-        this.complete_time_taskA = 0;
-        this.complete_time_taskB = 0;
     }
 
     public int getWorking_cloudlet_taskA() {
@@ -138,7 +130,7 @@ public class GlobalNode {
         this.complete_time_cloudlet = complete_time_cloudlet;
     }
 
-    public double getComplete_time_cloud() {
+    double getComplete_time_cloud() {
         return complete_time_cloud;
     }
 
