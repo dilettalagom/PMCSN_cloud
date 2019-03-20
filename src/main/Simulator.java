@@ -74,33 +74,48 @@ public class Simulator {
             int e = this.nextEvent(system_events);
 
             clock.setNext(system_events.get(e).getTemp());
+            double istant =clock.getNext() - clock.getCurrent();
 
-            global_node.setComplete_time_cloudlet(global_node.getComplete_time_cloudlet() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_cloudlet());
-            global_node.setComplete_time_cloud(global_node.getComplete_time_cloud() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_cloud());
+            // calcola il tempo istantaneo di attraversamento del cloudlet
+            global_node.setComplete_time_cloudlet(global_node.getComplete_time_cloudlet() + istant * (global_node.getWorking_cloudlet_taskA()+global_node.getWorking_cloudlet_taskB()));
+            // calcola il tempo istantaneo di attraversamento del cloud
+            global_node.setComplete_time_cloud(global_node.getComplete_time_cloud() + istant *  (global_node.getWorking_cloud_taskA()+global_node.getWorking_cloud_taskB()));
+            // calcola il tempo istantaneo di attraversamento del sistema
+            global_node.setComplete_time_system(global_node.getComplete_time_system() + istant * ( global_node.getWorking_cloudlet_taskA()+ global_node.getWorking_cloudlet_taskB()+ global_node.getWorking_cloud_taskA()+ global_node.getWorking_cloud_taskA()));
 
-            global_node.setComplete_time_task1(global_node.getComplete_time_task1() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_task1() );
-            global_node.setComplete_time_task2(global_node.getComplete_time_task2() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_task2() );
+            //calcola il tempo di attraversamento nel sistema per un task di tipo A
+            global_node.setComplete_time_taskA(global_node.getComplete_time_taskA() + istant * ( global_node.getWorking_cloudlet_taskA() +  global_node.getWorking_cloud_taskA()));
+            //calcola il tempo di attraversamento nel sistema per un task di tipo B
+            global_node.setComplete_time_taskB(global_node.getComplete_time_taskB() + istant * ( global_node.getWorking_cloudlet_taskB() +  global_node.getWorking_cloud_taskB()));
 
-            global_node.setComplete_time_system(global_node.getComplete_time_system() + (clock.getNext() - clock.getCurrent()) * ( global_node.getWorking_server_cloudlet()));
+            //calcola il tempo di attraversamento nel cloudlet per un task di tipo A
+            global_node.setArea_cloudlet_taskA(global_node.getArea_cloudlet_taskA() + istant *  global_node.getWorking_cloudlet_taskA() );
+            //calcola il tempo di attraversamento nel cloudlet per un task di tipo B
+            global_node.setArea_cloudlet_taskB(global_node.getComplete_time_taskB() + istant *  global_node.getWorking_cloudlet_taskB() );
+
+            //calcola il tempo di attraversamento nel cloud per un task di tipo A
+            global_node.setArea_cloud_taskA(global_node.getArea_cloud_taskA() + istant * global_node.getWorking_cloud_taskA());
+            //calcola il tempo di attraversamento nel cloud per un task di tipo B
+            global_node.setArea_cloud_taskB(global_node.getArea_cloud_taskB() + istant * global_node.getWorking_cloud_taskB());
 
 
-            global_node.setComplete_time_system(global_node.getComplete_time_system() + (clock.getNext() - clock.getCurrent()) * ( global_node.getWorking_server_cloud() +global_node.getWorking_server_cloudlet()));
+            /*
+
+            global_node.setComplete_time_taskA(global_node.getComplete_time_taskA() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_taskA() );
+            global_node.setComplete_time_taskB(global_node.getComplete_time_taskB() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_taskB() );
+*/
 
 
-            print_on_file(globalNode_writer, new String[]{String.valueOf(clock.getCurrent()), //istante
-                    String.valueOf(global_node.getComplete_time_cloudlet()/(global_node.getCloudlet_number1()+global_node.getCloudlet_number2())),                                //area_cloudlet
-                    String.valueOf(global_node.getComplete_time_cloud()/(global_node.getCloud_number1()+global_node.getCloud_number2()))});                                 //area_cloud
+            print_on_file(globalNode_writer, new String[]{String.valueOf(clock.getCurrent() ),
+                    String.valueOf(global_node.getComplete_time_cloudlet()  / (global_node.getProcessed_cloudlet_taskA() + global_node.getProcessed_cloudlet_taskB() ) ),
+                    String.valueOf(global_node.getComplete_time_cloud()     / ( global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB() )),
+                    String.valueOf(global_node.getComplete_time_system()    / ( global_node.getProcessed_cloudlet_taskA() + global_node.getProcessed_cloudlet_taskB() +global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB() ))});
 
-            clock.setCurrent(clock.getNext());                              /* advance the clock*/
+
+            clock.setCurrent(clock.getNext());
 
             if (e == 0) { // processo un arrivo
 
-
-                if (system_events.get(e).getType() == 1) {
-                    global_node.setWorking_server_task1(global_node.getWorking_server_task1() + 1);
-                } else if(system_events.get(e).getType() == 2) {
-                    global_node.setWorking_server_task2(global_node.getWorking_server_task2() + 1);
-                }
 
                 int type = system_events.get(e).getType();
 
@@ -112,18 +127,20 @@ public class Simulator {
                     system_events.get(0).setType(0);
 
                 // se ho server disponibili assegno il task
-                if (global_node.getWorking_server_cloudlet() < SERVERS) { // ho dei server liberi -> ( arrivo cloudlet )
-
-                    global_node.setWorking_server_cloudlet(global_node.getWorking_server_cloudlet() + 1);
+                if (global_node.getWorking_cloudlet_taskA()+global_node.getWorking_cloudlet_taskB() < SERVERS) { // ho dei server liberi -> ( arrivo cloudlet )
 
                     // genero il tempo di servizio
                     double service = 0;
                     if (type == 1) {
-                        global_node.setCloudlet_number1(global_node.getCloudlet_number1() + 1);
+                        global_node.setWorking_cloudlet_taskA(global_node.getWorking_cloudlet_taskA() + 1);
+
+                        global_node.setProcessed_cloudlet_taskA(global_node.getProcessed_cloudlet_taskA() + 1);
                         service = this.getServiceCloudlet(mu1_cloudlet, r);
 
                     } else if (type == 2) {
-                        global_node.setCloudlet_number2(global_node.getCloudlet_number2() + 1);
+                        global_node.setWorking_cloudlet_taskB(global_node.getWorking_cloudlet_taskB() + 1);
+
+                        global_node.setProcessed_cloudlet_taskB(global_node.getProcessed_cloudlet_taskB() + 1);
                         service = this.getServiceCloudlet(mu2_cloudlet, r);
                     }
 
@@ -137,7 +154,6 @@ public class Simulator {
 
                 } else { // non ho server liberi -> mando al cloud  ( arrivo cloud)
 
-                    global_node.setWorking_server_cloud(global_node.getWorking_server_cloud() + 1);
 
                     //trovo il server libero ( se non esiste lo creo )
                     int cloud_server_selected = findOneCloud(system_events);
@@ -146,12 +162,16 @@ public class Simulator {
 
                     double service = 0;
                     if (system_events.get(e).getType() == 1) {
-                        global_node.setCloud_number1(global_node.getCloud_number1() + 1);
+                        global_node.setWorking_cloud_taskA(global_node.getWorking_cloud_taskA() + 1);
+
+                        global_node.setProcessed_cloud_taskA(global_node.getProcessed_cloud_taskA() + 1);
 
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task A
                         service = this.getServiceCloud(mu1_cloud, r);
                     } else {
-                        global_node.setCloud_number2(global_node.getCloud_number2() + 1);
+                        global_node.setWorking_cloud_taskB(global_node.getWorking_cloud_taskB() + 1);
+
+                        global_node.setProcessed_cloud_taskB(global_node.getProcessed_cloud_taskB() + 1);
 
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task B
                         service = this.getServiceCloud(mu2_cloud, r);
@@ -165,21 +185,24 @@ public class Simulator {
 
             } else { // processo una partenza
 
-                if (system_events.get(e).getType() == 1) {
-                    global_node.setWorking_server_task1(global_node.getWorking_server_task1() - 1);
-                } else if(system_events.get(e).getType() == 2) {
-                    global_node.setWorking_server_task2(global_node.getWorking_server_task2() - 1);
-                }
 
                 if (e <= SERVERS) { // processo una partenza cloudlet
 
-                    global_node.setWorking_server_cloudlet(global_node.getWorking_server_cloudlet() - 1);
+                    if (system_events.get(e).getType() == 1) {
+                        global_node.setWorking_cloudlet_taskA(global_node.getWorking_cloudlet_taskA() - 1);
+                    } else if(system_events.get(e).getType() == 2) {
+                        global_node.setWorking_cloudlet_taskB(global_node.getWorking_cloudlet_taskB() - 1);
+                    }
                     system_events.get(e).setType(0);
 
 
                 } else { //processo una partenza del cloud
 
-                    global_node.setWorking_server_cloud(global_node.getWorking_server_cloud() - 1);
+                    if (system_events.get(e).getType() == 1) {
+                        global_node.setWorking_cloud_taskA(global_node.getWorking_cloud_taskA() - 1);
+                    } else if(system_events.get(e).getType() == 2) {
+                        global_node.setWorking_cloud_taskB(global_node.getWorking_cloud_taskB() - 1);
+                    }
                     system_events.get(e).setType(0);
                 }
 
@@ -195,42 +218,53 @@ public class Simulator {
 
         System.err.println("Risultati prodotti dal seed: "+seed);
 
-        System.err.println("n1_cloudlet: "+ global_node.getCloudlet_number1()
-                + "\t\tn2_cloudlet: " + global_node.getCloudlet_number2() + "\n"
-                + "n1_cloud: " + global_node.getCloud_number1()
-                + "\t\tn2_cloud "+ global_node.getCloud_number2());
+        System.err.println("n1_cloudlet: "+ global_node.getProcessed_cloudlet_taskA()
+                + "\t\tn2_cloudlet: " + global_node.getProcessed_cloudlet_taskB() + "\n"
+                + "n1_cloud: " + global_node.getProcessed_cloud_taskA()
+                + "\t\tn2_cloud "+ global_node.getProcessed_cloud_taskB());
 
 
-        double totalTask = global_node.getCloudlet_number1() + global_node.getCloudlet_number2() + global_node.getCloud_number1() + global_node.getCloud_number2();
+        double totalTask = global_node.getProcessed_cloudlet_taskA() + global_node.getProcessed_cloudlet_taskB() + global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB();
 
         double lambdaToT = 1.0 / (clock.getCurrent() / totalTask);
-        double lambdaA = 1.0 / (clock.getCurrent() / (global_node.getCloudlet_number1() + global_node.getCloud_number1()));
-        double lambdaB = 1.0 / (clock.getCurrent() / (global_node.getCloudlet_number2() + global_node.getCloud_number2()));
+        double lambdaA = 1.0 / (clock.getCurrent() / (global_node.getProcessed_cloudlet_taskA() + global_node.getProcessed_cloud_taskA()));
+        double lambdaB = 1.0 / (clock.getCurrent() / (global_node.getProcessed_cloudlet_taskB() + global_node.getProcessed_cloud_taskB()));
 
-        double pq = (global_node.getCloud_number1() + global_node.getCloud_number2()) / totalTask;
+        double pq = (global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB()) / totalTask;
 
-        System.err.println(" lambda stimato = " + lambdaToT);
-        System.err.println(" lambda task A stimato = " + lambdaA);
-        System.err.println(" lambda task B stimato = " + lambdaB);
+        System.err.println("lambda stimato " + lambdaToT);
+        System.err.println("lambda task A stimato " + lambdaA);
+        System.err.println("lambda task B stimato " + lambdaB + "\n");
 
-        //System.err.println( "area totale, area task1 = " + global_node.getComplete_time_system()+","+ global_node.getComplete_time_task1() );
+        //System.err.println( "area totale, area task1 = " + global_node.getComplete_time_system()+","+ global_node.getComplete_time_taskA() );
 
-        System.err.println(" numero medio di task del cloudlet " + global_node.getComplete_time_cloudlet() / clock.getCurrent());
-        System.err.println(" numero medio di task del cloud " + global_node.getComplete_time_cloud() / clock.getCurrent());
+        System.err.println("numero medio di task del cloudlet " + global_node.getComplete_time_cloudlet() / clock.getCurrent());
+        System.err.println("numero medio di taskA del cloudlet " + global_node.getArea_cloudlet_taskA() / clock.getCurrent());
+        System.err.println("numero medio di taskB del cloudlet " + global_node.getArea_cloudlet_taskB() / clock.getCurrent()+"\n");
 
-        System.err.println(" tempo medio di risposta del cloudlet " + global_node.getComplete_time_cloudlet() / (global_node.getCloudlet_number1() + global_node.getCloudlet_number2()));
-        System.err.println(" tempo medio di risposta del cloud " + global_node.getComplete_time_cloud() / (global_node.getCloud_number1() + global_node.getCloud_number2()));
 
-        System.err.println(" tempo medio di risposta del sistema " + global_node.getComplete_time_system() / (global_node.getCloud_number1() + global_node.getCloud_number2() + global_node.getCloudlet_number1()+ global_node.getCloudlet_number2()));
+        System.err.println("numero medio di task del cloud " + global_node.getComplete_time_cloud() / clock.getCurrent());
+        System.err.println("numero medio di taskA del cloud " + global_node.getArea_cloud_taskA() / clock.getCurrent());
+        System.err.println("numero medio di taskB del cloud " + global_node.getArea_cloud_taskB() / clock.getCurrent()+"\n");
 
-        System.err.println("tempo di risposta sistema per classe 1= " + global_node.getComplete_time_task1() / (global_node.getCloudlet_number1()+global_node.getCloud_number1()));
-        System.err.println("tempo di risposta sistema per classe 2= " + global_node.getComplete_time_task2() / (global_node.getCloudlet_number2()+global_node.getCloud_number2()));
 
-        System.err.println("Throughtput A per il cloudlet= " +  (lambdaA*(1-pq)));
-        System.err.println("Throughtput B per il cloudlet= " +  (lambdaB*(1-pq)));
+        System.err.println("tempo di risposta del cloudlet " + global_node.getComplete_time_cloudlet() / (global_node.getProcessed_cloudlet_taskA() + global_node.getProcessed_cloudlet_taskB()));
+        System.err.println("tempo di risposta del cloudlet per taskA " + global_node.getArea_cloudlet_taskA() / global_node.getProcessed_cloudlet_taskA() );
+        System.err.println("tempo di risposta del cloudlet per taskB " + global_node.getArea_cloudlet_taskB() / global_node.getProcessed_cloudlet_taskB() +"\n");
 
-        System.err.println("= " +  (lambdaA*(1-pq)));
+        System.err.println("tempo di risposta del cloud " + global_node.getComplete_time_cloud() / (global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB()));
+        System.err.println("tempo di risposta del cloud per taskA " + global_node.getArea_cloud_taskA() / global_node.getProcessed_cloud_taskA() );
+        System.err.println("tempo di risposta del cloud per taskB " + global_node.getArea_cloud_taskB() / global_node.getProcessed_cloud_taskB() +"\n");
 
+        System.err.println("tempo medio di risposta del sistema " + global_node.getComplete_time_system() / (global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB() + global_node.getProcessed_cloudlet_taskA()+ global_node.getProcessed_cloudlet_taskB()));
+        System.err.println("tempo di risposta sistema per taskA " + global_node.getComplete_time_taskA() / (global_node.getProcessed_cloudlet_taskA()+global_node.getProcessed_cloud_taskA()));
+        System.err.println("tempo di risposta sistema per taskB " + global_node.getComplete_time_taskB() / (global_node.getProcessed_cloudlet_taskB()+global_node.getProcessed_cloud_taskB()) +"\n");
+
+        System.err.println("Throughtput A per il cloudlet " +  (lambdaA*(1-pq)));
+        System.err.println("Throughtput B per il cloudlet " +  (lambdaB*(1-pq)));
+
+        System.err.println("Throughtput A per il cloud " +  (lambdaA*(pq)));
+        System.err.println("Throughtput B per il cloud " +  (lambdaB*(pq))+"\n");
 
         System.err.println(" pq " + pq);
 
@@ -314,7 +348,7 @@ public class Simulator {
 
         try {
             printWriter = new PrintWriter(new FileWriter("./temp/"+ filename + seed + ".csv"));
-            print_on_file(printWriter, new String[]{"istante","cloudlet","cloud"});
+            print_on_file(printWriter, new String[]{"istante","cloudlet","cloud","sistema"});
         } catch (IOException e) {
             e.printStackTrace();
         }
