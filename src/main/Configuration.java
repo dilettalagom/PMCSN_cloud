@@ -9,8 +9,8 @@ public class Configuration {
     public static double lambda = 12.25;
     public static double lambda1 = 6.0;
 
-    //public static String[] seeds = {"215487963"};
-    public static String[] seeds = {"215487963","123456789","987654321"};
+    public static String[] seeds = {"215487963"};
+    //public static String[] seeds = {"215487963","123456789","987654321"};
 
     public static double START   = 0.0;            /* initial (open the door)        */
     public static double STOP    = 10000;          /* terminal (close the door) time */

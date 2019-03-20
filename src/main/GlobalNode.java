@@ -4,9 +4,23 @@ public class GlobalNode {
 
     private double complete_time_cloud;
     private double complete_time_cloudlet;
+    private double complete_time_system;
+
+    private double complete_time_cloudlet_task1;
+    private double complete_time_cloud_task1;
+
+    private double complete_time_cloudlet_task2;
+    private double complete_time_cloud_task2;
+
+    private double complete_time_task1;
+    private double complete_time_task2;
 
     private int working_server_cloudlet;
     private int working_server_cloud;
+
+    private int working_server_task1;
+    private int working_server_task2;
+
 
     private int cloudlet_number1, cloudlet_number2; // numero di job processati dal cloudlet per tipo
     private int cloud_number1, cloud_number2;        // numero di job processati dal cloud per tipo
@@ -15,14 +29,89 @@ public class GlobalNode {
     public GlobalNode(double time_cloudlet, double time_cloud, int ncl, int nc){
         this.complete_time_cloudlet = time_cloudlet;
         this.complete_time_cloud = time_cloud;
+        this.complete_time_system = time_cloudlet + time_cloud;
         this.working_server_cloudlet = ncl;
         this.working_server_cloud = nc;
         this.cloudlet_number1 = 0;
         this.cloudlet_number2 = 0;
         this.cloud_number1 = 0;
         this.cloud_number2 = 0;
+        this.complete_time_task1 = 0;
+        this.complete_time_task2 = 0;
     }
 
+
+    public int getWorking_server_task1() {
+        return working_server_task1;
+    }
+
+    public double getComplete_time_cloudlet_task1() {
+        return complete_time_cloudlet_task1;
+    }
+
+    public void setComplete_time_cloudlet_task1(double complete_time_cloudlet_task1) {
+        this.complete_time_cloudlet_task1 = complete_time_cloudlet_task1;
+    }
+
+    public double getComplete_time_cloud_task1() {
+        return complete_time_cloud_task1;
+    }
+
+    public void setComplete_time_cloud_task1(double complete_time_cloud_task1) {
+        this.complete_time_cloud_task1 = complete_time_cloud_task1;
+    }
+
+    public double getComplete_time_cloudlet_task2() {
+        return complete_time_cloudlet_task2;
+    }
+
+    public void setComplete_time_cloudlet_task2(double complete_time_cloudlet_task2) {
+        this.complete_time_cloudlet_task2 = complete_time_cloudlet_task2;
+    }
+
+    public double getComplete_time_cloud_task2() {
+        return complete_time_cloud_task2;
+    }
+
+    public void setComplete_time_cloud_task2(double complete_time_cloud_task2) {
+        this.complete_time_cloud_task2 = complete_time_cloud_task2;
+    }
+
+    public void setWorking_server_task1(int working_server_task1) {
+        this.working_server_task1 = working_server_task1;
+    }
+
+    public int getWorking_server_task2() {
+        return working_server_task2;
+    }
+
+    public void setWorking_server_task2(int working_server_task2) {
+        this.working_server_task2 = working_server_task2;
+    }
+
+    public double getComplete_time_task1() {
+        return complete_time_task1;
+    }
+
+    public void setComplete_time_task1(double complete_time_task1) {
+        this.complete_time_task1 = complete_time_task1;
+    }
+
+    public double getComplete_time_task2() {
+        return complete_time_task2;
+    }
+
+    public void setComplete_time_task2(double complete_time_task2) {
+        this.complete_time_task2 = complete_time_task2;
+    }
+
+    public double getComplete_time_system() {
+        return complete_time_system;
+    }
+
+    public void setComplete_time_system(double complete_time_system) {
+        this.complete_time_system = complete_time_system;
+    }
 
     public double getComplete_time_cloudlet() {
         return complete_time_cloudlet;

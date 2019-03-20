@@ -78,6 +78,15 @@ public class Simulator {
             global_node.setComplete_time_cloudlet(global_node.getComplete_time_cloudlet() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_cloudlet());
             global_node.setComplete_time_cloud(global_node.getComplete_time_cloud() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_cloud());
 
+            global_node.setComplete_time_task1(global_node.getComplete_time_task1() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_task1() );
+            global_node.setComplete_time_task2(global_node.getComplete_time_task2() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_task2() );
+
+            global_node.setComplete_time_system(global_node.getComplete_time_system() + (clock.getNext() - clock.getCurrent()) * ( global_node.getWorking_server_cloudlet()));
+
+
+            global_node.setComplete_time_system(global_node.getComplete_time_system() + (clock.getNext() - clock.getCurrent()) * ( global_node.getWorking_server_cloud() +global_node.getWorking_server_cloudlet()));
+
+
             print_on_file(globalNode_writer, new String[]{String.valueOf(clock.getCurrent()), //istante
                     String.valueOf(global_node.getComplete_time_cloudlet()/(global_node.getCloudlet_number1()+global_node.getCloudlet_number2())),                                //area_cloudlet
                     String.valueOf(global_node.getComplete_time_cloud()/(global_node.getCloud_number1()+global_node.getCloud_number2()))});                                 //area_cloud
@@ -85,6 +94,13 @@ public class Simulator {
             clock.setCurrent(clock.getNext());                              /* advance the clock*/
 
             if (e == 0) { // processo un arrivo
+
+
+                if (system_events.get(e).getType() == 1) {
+                    global_node.setWorking_server_task1(global_node.getWorking_server_task1() + 1);
+                } else if(system_events.get(e).getType() == 2) {
+                    global_node.setWorking_server_task2(global_node.getWorking_server_task2() + 1);
+                }
 
                 int type = system_events.get(e).getType();
 
@@ -102,11 +118,11 @@ public class Simulator {
 
                     // genero il tempo di servizio
                     double service = 0;
-                    if (system_events.get(e).getType() == 1) {
+                    if (type == 1) {
                         global_node.setCloudlet_number1(global_node.getCloudlet_number1() + 1);
                         service = this.getServiceCloudlet(mu1_cloudlet, r);
 
-                    } else if (system_events.get(0).getType() == 2) {
+                    } else if (type == 2) {
                         global_node.setCloudlet_number2(global_node.getCloudlet_number2() + 1);
                         service = this.getServiceCloudlet(mu2_cloudlet, r);
                     }
@@ -146,17 +162,29 @@ public class Simulator {
 
                 }
 
+
             } else { // processo una partenza
+
+                if (system_events.get(e).getType() == 1) {
+                    global_node.setWorking_server_task1(global_node.getWorking_server_task1() - 1);
+                } else if(system_events.get(e).getType() == 2) {
+                    global_node.setWorking_server_task2(global_node.getWorking_server_task2() - 1);
+                }
 
                 if (e <= SERVERS) { // processo una partenza cloudlet
 
                     global_node.setWorking_server_cloudlet(global_node.getWorking_server_cloudlet() - 1);
                     system_events.get(e).setType(0);
+
+
                 } else { //processo una partenza del cloud
 
                     global_node.setWorking_server_cloud(global_node.getWorking_server_cloud() - 1);
                     system_events.get(e).setType(0);
                 }
+
+
+
             }
         }
 
@@ -184,11 +212,25 @@ public class Simulator {
         System.err.println(" lambda stimato = " + lambdaToT);
         System.err.println(" lambda task A stimato = " + lambdaA);
         System.err.println(" lambda task B stimato = " + lambdaB);
+
+        //System.err.println( "area totale, area task1 = " + global_node.getComplete_time_system()+","+ global_node.getComplete_time_task1() );
+
         System.err.println(" numero medio di task del cloudlet " + global_node.getComplete_time_cloudlet() / clock.getCurrent());
         System.err.println(" numero medio di task del cloud " + global_node.getComplete_time_cloud() / clock.getCurrent());
 
         System.err.println(" tempo medio di risposta del cloudlet " + global_node.getComplete_time_cloudlet() / (global_node.getCloudlet_number1() + global_node.getCloudlet_number2()));
         System.err.println(" tempo medio di risposta del cloud " + global_node.getComplete_time_cloud() / (global_node.getCloud_number1() + global_node.getCloud_number2()));
+
+        System.err.println(" tempo medio di risposta del sistema " + global_node.getComplete_time_system() / (global_node.getCloud_number1() + global_node.getCloud_number2() + global_node.getCloudlet_number1()+ global_node.getCloudlet_number2()));
+
+        System.err.println("tempo di risposta sistema per classe 1= " + global_node.getComplete_time_task1() / (global_node.getCloudlet_number1()+global_node.getCloud_number1()));
+        System.err.println("tempo di risposta sistema per classe 2= " + global_node.getComplete_time_task2() / (global_node.getCloudlet_number2()+global_node.getCloud_number2()));
+
+        System.err.println("Throughtput A per il cloudlet= " +  (lambdaA*(1-pq)));
+        System.err.println("Throughtput B per il cloudlet= " +  (lambdaB*(1-pq)));
+
+        System.err.println("= " +  (lambdaA*(1-pq)));
+
 
         System.err.println(" pq " + pq);
 
