@@ -17,7 +17,7 @@ public class Simulator {
         return (-m * Math.log(1.0 - r.random()));
     }
 
-    public double hyperExponential(double mu, Rngs r) {
+    private double hyperExponential(double mu, Rngs r) {
         double p = 0.2;
         double m1 = 2 * p * mu;
         double m2 = 2 * (1 - p) * mu;
@@ -32,7 +32,7 @@ public class Simulator {
         }
     }
 
-    public double getArrival(double lambda, Rngs r) {
+    private double getArrival(double lambda, Rngs r) {
         /* --------------------------------------------------------------
          * generate the next arrival time
          * --------------------------------------------------------------
@@ -41,7 +41,7 @@ public class Simulator {
         return exponential(1.0 / lambda, r);
     }
 
-    public double getServiceCloudlet(double mu, Rngs r) {
+    private double getServiceCloudlet(double mu, Rngs r) {
         /* ------------------------------
          * generate the next service time
          * ------------------------------
@@ -50,7 +50,7 @@ public class Simulator {
         return (hyperExponential(mu, r));
     }
 
-    public double getServiceCloud(double mu, Rngs r) {
+    private double getServiceCloud(double mu, Rngs r) {
         /* ------------------------------
          * generate the next service time
          * ------------------------------
@@ -154,6 +154,13 @@ public class Simulator {
 
                 } else { // non ho server liberi -> mando al cloud  ( arrivo cloud)
 
+                    /* ToDO: se il job che mi è arrivato è di classe 1 (per l'algoritmo2
+                    *       se ci sono job di classe 2 in esecuzione nel cloudlet
+                    *       -> prendo uno di classe 2 e lo sposto nel cloud
+                    *       -> genero un nuovo tempo di servizio
+                    *       -> assegno il job di classe 1 al server
+                    *
+                    *       */
 
                     //trovo il server libero ( se non esiste lo creo )
                     int cloud_server_selected = findOneCloud(system_events);
@@ -274,6 +281,8 @@ public class Simulator {
         globalNode_writer.close();
 
     }
+
+
 
 
     private int nextEvent(ArrayList<EventNode> list_events) {
