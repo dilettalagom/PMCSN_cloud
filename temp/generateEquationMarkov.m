@@ -7,11 +7,12 @@ function generateEquationMarkov()
     ma = 0.45;
     mb = 0.27;
     
-    a = zeros(1,(n)*(n+1)/2);
-    states = string(a);
-    %Matrix = zeros(n*(n+1)/2,n*(n+1)/2);
-    equations = sym(a);
+    dim = zeros(1,(n)*(n+1)/2);
+    states = string(dim);
+    equations = sym(dim);
     count= 1;
+    
+    %Costruzione delle equazioni
     for layers = 1:n
         i = layers - 1;
         j = 0;
@@ -36,30 +37,31 @@ function generateEquationMarkov()
 
             
             str = 'p'+string(i)+'o'+string(j);
-            var = sym(str);
+            str = sym(str);
             if ( a ~= 0 )
                 str1 = 'p'+string(i+1)+'o'+string(j);
                 str2 = 'p'+string(i)+'o'+string(j+1);
-                var1 = sym(str1);
-                var2 = sym(str2);
+                str1 = sym(str1);
+                str2 = sym(str2);
+        
             else
-                var1 = sym('a');
-                var2 = sym('a');
+                str1 = sym('a');
+                str2 = sym('a');
             end
             if ( b1 ~= 0 )
                 str3 = 'p'+string(i-1)+'o'+string(j);
-                var3 = sym(str3);
+                str3 = sym(str3);
             else
-                var3 = sym('a');      
+                str3 = sym('a');      
             end
             if ( b2 ~= 0 )
                 str4 = 'p'+string(i)+'o'+string(j-1);
-                var4 = sym(str4);
+                str4 = sym(str4);
             else
-                var4 = sym('a');    
+                str4 = sym('a');    
             end
    
-            equations(count) = sym (var*(a*la + a*lb + i*ma + j*mb) - a*var1*(i + 1)*ma - a*var2*(j + 1)*mb - b1*var3*la - b2*var4*lb == 0);
+            equations(count) = sym (str*(a*la + a*lb + i*ma + j*mb) - a*str1*(i + 1)*ma - a*str2*(j + 1)*mb - b1*str3*la - b2*str4*lb == 0);
 
             states(count)= str;
             
@@ -69,36 +71,35 @@ function generateEquationMarkov()
             j=j+1;
         end
     end
-    v = sym(states);        
-    
-   
-    
-    %disp(v);
-    %disp(equations);
-           
+    states = sym(states);        
+               
     
     %%
-  
     
-    %%
-    x = states(1);
-    for i = 2:states.size(2)
-        x = sym(x) + sym( states(i) );
+    %Sostituzione dell' equazione degli stati che sommano a 1 all'ultima
+    %equazione
+    
+    count=count-1;
+    equations(count) = states(1);
+    for i = 2:count
+        equations(count) = equations(count) + states(i) ;
     end
-    equations(states.size(2)) = x - 1== 0;
+    equations(count) = equations(count) - 1== 0;
     
     %disp(x);
     
     %%
+    
+    %Risoluzione delle equazioni
    format long g;
-   [A,b] = equationsToMatrix(equations,v);
-   S = double(A);
-   [V,D] = eig(S);
-   
+   [A,b] = equationsToMatrix(equations,states);
+  
    X = linsolve(A,b);
    Y = double(X);
-   %P = [v(:),Y];
-   %%
   
-   sum(Y(211:231));
+   
+   %%
+    %somma delle probabilità degli stati dell'ultimo layer
+   sum(Y(211:231))
 end
+
