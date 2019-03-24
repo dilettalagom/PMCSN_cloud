@@ -14,7 +14,6 @@ public class Start {
 
         int j = 0;
         while ( j < seeds.length ){
-            Simulator s = new Simulator();
 
             // inizializzo struttura per contenere lo stato dei singoli server + l'arrivo
             ArrayList<EventNode> system_events = new ArrayList<>();
@@ -29,8 +28,14 @@ public class Start {
             Rngs r = new Rngs();
             r.plantSeeds(Integer.parseInt(seeds[j]));
 
-            //lancio la simulazione
-            s.RunSimulation(seeds[j], system_events, global_node, clock,r);
+            /*lancio la simulazione
+            Simulator s = new Simulator();
+            s.RunSimulation(seeds[j], system_events, global_node, clock,r);*/
+
+            //lancio la simulazione2
+            Simulator2 s2 = new Simulator2();
+            s2.RunSimulation2(seeds[j], system_events, global_node, clock,r);
+
 
             j++;
         }
