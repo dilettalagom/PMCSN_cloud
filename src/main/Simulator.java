@@ -74,7 +74,7 @@ public class Simulator {
             int e = this.nextEvent(system_events);
 
             clock.setNext(system_events.get(e).getTemp());
-            double istant =clock.getNext() - clock.getCurrent();
+            double istant = clock.getNext() - clock.getCurrent();
 
             // calcola il tempo istantaneo di attraversamento del cloudlet
             global_node.setComplete_time_cloudlet(global_node.getComplete_time_cloudlet() + istant * (global_node.getWorking_cloudlet_taskA()+global_node.getWorking_cloudlet_taskB()));
@@ -134,13 +134,13 @@ public class Simulator {
                     if (type == 1) {
                         global_node.setWorking_cloudlet_taskA(global_node.getWorking_cloudlet_taskA() + 1);
 
-                        global_node.setProcessed_cloudlet_taskA(global_node.getProcessed_cloudlet_taskA() + 1);
+                        //global_node.setProcessed_cloudlet_taskA(global_node.getProcessed_cloudlet_taskA() + 1);
                         service = this.getServiceCloudlet(mu1_cloudlet, r);
 
                     } else if (type == 2) {
                         global_node.setWorking_cloudlet_taskB(global_node.getWorking_cloudlet_taskB() + 1);
 
-                        global_node.setProcessed_cloudlet_taskB(global_node.getProcessed_cloudlet_taskB() + 1);
+                        //global_node.setProcessed_cloudlet_taskB(global_node.getProcessed_cloudlet_taskB() + 1);
                         service = this.getServiceCloudlet(mu2_cloudlet, r);
                     }
 
@@ -154,31 +154,24 @@ public class Simulator {
 
                 } else { // non ho server liberi -> mando al cloud  ( arrivo cloud)
 
-                    /* ToDO: se il job che mi è arrivato è di classe 1 (per l'algoritmo2
-                    *       se ci sono job di classe 2 in esecuzione nel cloudlet
-                    *       -> prendo uno di classe 2 e lo sposto nel cloud
-                    *       -> genero un nuovo tempo di servizio
-                    *       -> assegno il job di classe 1 al server
-                    *
-                    *       */
 
                     //trovo il server libero ( se non esiste lo creo )
                     int cloud_server_selected = findOneCloud(system_events);
 
-                    int typeCloud = system_events.get(0).getType();
+                    int typeCloud = system_events.get(e).getType();
 
                     double service = 0;
                     if (system_events.get(e).getType() == 1) {
                         global_node.setWorking_cloud_taskA(global_node.getWorking_cloud_taskA() + 1);
 
-                        global_node.setProcessed_cloud_taskA(global_node.getProcessed_cloud_taskA() + 1);
+                        //global_node.setProcessed_cloud_taskA(global_node.getProcessed_cloud_taskA() + 1);
 
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task A
                         service = this.getServiceCloud(mu1_cloud, r);
                     } else {
                         global_node.setWorking_cloud_taskB(global_node.getWorking_cloud_taskB() + 1);
 
-                        global_node.setProcessed_cloud_taskB(global_node.getProcessed_cloud_taskB() + 1);
+                        //global_node.setProcessed_cloud_taskB(global_node.getProcessed_cloud_taskB() + 1);
 
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task B
                         service = this.getServiceCloud(mu2_cloud, r);
@@ -197,8 +190,10 @@ public class Simulator {
 
                     if (system_events.get(e).getType() == 1) {
                         global_node.setWorking_cloudlet_taskA(global_node.getWorking_cloudlet_taskA() - 1);
+                        global_node.setProcessed_cloudlet_taskA(global_node.getProcessed_cloudlet_taskA() + 1);
                     } else if(system_events.get(e).getType() == 2) {
                         global_node.setWorking_cloudlet_taskB(global_node.getWorking_cloudlet_taskB() - 1);
+                        global_node.setProcessed_cloudlet_taskB(global_node.getProcessed_cloudlet_taskB() + 1);
                     }
                     system_events.get(e).setType(0);
 
@@ -207,8 +202,10 @@ public class Simulator {
 
                     if (system_events.get(e).getType() == 1) {
                         global_node.setWorking_cloud_taskA(global_node.getWorking_cloud_taskA() - 1);
+                        global_node.setProcessed_cloud_taskA(global_node.getProcessed_cloud_taskA() + 1);
                     } else if(system_events.get(e).getType() == 2) {
                         global_node.setWorking_cloud_taskB(global_node.getWorking_cloud_taskB() - 1);
+                        global_node.setProcessed_cloud_taskB(global_node.getProcessed_cloud_taskB() + 1);
                     }
                     system_events.get(e).setType(0);
                 }
@@ -233,9 +230,9 @@ public class Simulator {
 
         double totalTask = global_node.getProcessed_cloudlet_taskA() + global_node.getProcessed_cloudlet_taskB() + global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB();
 
-        double lambdaToT = 1.0 / (clock.getCurrent() / totalTask);
-        double lambdaA = 1.0 / (clock.getCurrent() / (global_node.getProcessed_cloudlet_taskA() + global_node.getProcessed_cloud_taskA()));
-        double lambdaB = 1.0 / (clock.getCurrent() / (global_node.getProcessed_cloudlet_taskB() + global_node.getProcessed_cloud_taskB()));
+        double lambdaToT = totalTask / clock.getCurrent();
+        double lambdaA = ( global_node.getProcessed_cloudlet_taskA() + global_node.getProcessed_cloud_taskA() ) /  clock.getCurrent() ;
+        double lambdaB = ( global_node.getProcessed_cloudlet_taskB() + global_node.getProcessed_cloud_taskB() ) / clock.getCurrent() ;
 
         double pq = (global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB()) / totalTask;
 

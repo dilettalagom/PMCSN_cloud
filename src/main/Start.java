@@ -28,8 +28,8 @@ public class Start {
             Rngs r = new Rngs();
             r.plantSeeds(Integer.parseInt(seeds[j]));
 
-            /*lancio la simulazione
-            Simulator s = new Simulator();
+            //lancio la simulazione
+            /*Simulator s = new Simulator();
             s.RunSimulation(seeds[j], system_events, global_node, clock,r);*/
 
             //lancio la simulazione2
