@@ -34,7 +34,7 @@ public class Start {
 
             //lancio la simulazione2
             Simulator2 s2 = new Simulator2();
-            s2.RunSimulation2(seeds[j], system_events, global_node, clock,r);
+            s2.RunSimulation(seeds[j], system_events, global_node, clock,r);
 
 
             j++;

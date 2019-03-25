@@ -2,11 +2,8 @@ package main;
 
 import pmcsn.Rngs;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
-
 import static main.Configuration.*;
 
 
@@ -62,7 +59,7 @@ public class Simulator2 {
         return (exponential(mu, r));
     }
 
-    public void RunSimulation2(String seed, ArrayList<EventNode> system_events, GlobalNode global_node, SystemClock clock, Rngs r) {
+    public void RunSimulation(String seed, ArrayList<EventNode> system_events, GlobalNode global_node, SystemClock clock, Rngs r) {
 
         //create file first time
         PrintWriter globalNode_writer = createNewResultFile("globalNode_results" ,seed);
@@ -119,7 +116,6 @@ public class Simulator2 {
 
             if (e == 0) { // processo un arrivo
 
-
                 int type = system_events.get(e).getType();
 
                 system_events.get(0).setTemp(this.getArrival(lambda, r) + clock.getCurrent());
@@ -157,55 +153,62 @@ public class Simulator2 {
 
                 } else { // non ho server liberi -> mando al cloud  ( arrivo cloud)
 
-                    /* ToDO: se il job che mi è arrivato è di classe 1 (per l'algoritmo2
-                    *       se ci sono job di classe 2 in esecuzione nel cloudlet
-                    *       -> prendo uno di classe 2 e lo sposto nel cloud
-                    *       -> genero un nuovo tempo di servizio
-                    *       -> assegno il job di classe 1 al server
-                    *
-                    *       */
+                    int switched_server = findType2ToSwitch(system_events);
 
-                    if (type == 1){
-                        int switched_server = findType2ToSwitch(system_events);
+                    if (type == 1 && switched_server < SERVERS) {
+                        /* ToDO: se il job che mi è arrivato è di classe 1 (per l'algoritmo2
+                         *       se ci sono job di classe 2 in esecuzione nel cloudlet
+                         *       -> prendo uno di classe 2 e lo sposto nel cloud
+                         *       -> genero un nuovo tempo di servizio
+                         *       -> assegno il job di classe 1 al server
+                         *
+                         *       */
                         //mando il task di switched_server al cloud
                         EventNode new_cloud_server = new EventNode();
-                        new_cloud_server.setTemp(system_events.get(switched_server).getTemp()+getServiceCloud(mu2_cloud,r));
+                       //TODO:new_cloud_server.setTemp(system_events.get(switched_server).getTemp() + getServiceCloud(mu2_cloud, r));
+                        new_cloud_server.setTemp(clock.getCurrent() + getServiceCloud(mu2_cloud, r));
                         new_cloud_server.setType(system_events.get(switched_server).getType());
                         system_events.add(new_cloud_server);
 
-                        //scambio
-                        system_events.get(switched_server).setTemp(getServiceCloudlet(mu2_cloudlet,r));
-                        system_events.get(switched_server).setType(type);
-
-                    }
-
-                    //trovo il server libero ( se non esiste lo creo )
-                    int cloud_server_selected = findOneCloud(system_events);
-
-                    int typeCloud = system_events.get(0).getType();
-
-                    double service = 0;
-                    if (system_events.get(e).getType() == 1) {
-                        global_node.setWorking_cloud_taskA(global_node.getWorking_cloud_taskA() + 1);
-
-                        global_node.setProcessed_cloud_taskA(global_node.getProcessed_cloud_taskA() + 1);
-
-                        // genero un servizio secondo la distribuzione del tempo di servizio per  task A
-                        service = this.getServiceCloud(mu1_cloud, r);
-                    } else {
                         global_node.setWorking_cloud_taskB(global_node.getWorking_cloud_taskB() + 1);
-
                         global_node.setProcessed_cloud_taskB(global_node.getProcessed_cloud_taskB() + 1);
 
-                        // genero un servizio secondo la distribuzione del tempo di servizio per  task B
-                        service = this.getServiceCloud(mu2_cloud, r);
+                        //scambio
+                        system_events.get(switched_server).setTemp(getServiceCloudlet(mu2_cloudlet, r)+ clock.getCurrent());
+                        system_events.get(switched_server).setType(type);
+
+                        global_node.setWorking_cloudlet_taskA(global_node.getWorking_cloudlet_taskA() + 1);
+                        global_node.setProcessed_cloudlet_taskA(global_node.getProcessed_cloudlet_taskA() + 1);
+
+                    } else {
+                        //trovo il server libero ( se non esiste lo creo )
+                        int cloud_server_selected = findOneCloud(system_events);
+
+                        int typeCloud = system_events.get(0).getType();
+
+                        double service = 0;
+                        if (system_events.get(e).getType() == 1) {
+                            global_node.setWorking_cloud_taskA(global_node.getWorking_cloud_taskA() + 1);
+
+                            global_node.setProcessed_cloud_taskA(global_node.getProcessed_cloud_taskA() + 1);
+
+                            // genero un servizio secondo la distribuzione del tempo di servizio per  task A
+                            service = this.getServiceCloud(mu1_cloud, r);
+                        } else {
+                            global_node.setWorking_cloud_taskB(global_node.getWorking_cloud_taskB() + 1);
+
+                            global_node.setProcessed_cloud_taskB(global_node.getProcessed_cloud_taskB() + 1);
+
+                            // genero un servizio secondo la distribuzione del tempo di servizio per  task B
+                            service = this.getServiceCloud(mu2_cloud, r);
+                        }
+
+
+                        system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
+                        system_events.get(cloud_server_selected).setType(typeCloud);
+
                     }
-
-                    system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
-                    system_events.get(cloud_server_selected).setType(typeCloud);
-
                 }
-
 
             } else { // processo una partenza
 
@@ -299,21 +302,7 @@ public class Simulator2 {
 
     }
 
-    private int findType2ToSwitch(ArrayList<EventNode> system_events) {
-        int event;
-        int i = 1;
 
-        while (system_events.get(i).getType() == 1)
-            i++;
-        event = i;
-        while (i < SERVERS) {
-            i++;
-            if ((system_events.get(i).getType() == 2) &&
-                    (system_events.get(i).getTemp() > system_events.get(event).getTemp()))
-                event = i;
-        }
-        return (event);
-    }
 
 
     private int nextEvent(ArrayList<EventNode> list_events) {
@@ -353,6 +342,22 @@ public class Simulator2 {
             system_events.add(new EventNode());
             return i;
         }
+    }
+
+    private int findType2ToSwitch(ArrayList<EventNode> system_events) {
+        int event;
+        int i = 1;
+
+        while (system_events.get(i).getType() == 1)
+            i++;
+        event = i;
+        while (i < SERVERS) {
+            i++;
+            if ((system_events.get(i).getType() == 2) &&
+                    (system_events.get(i).getTemp() > system_events.get(event).getTemp()))
+                event = i;
+        }
+        return (event);
     }
 
     private int findOneCloudlet(ArrayList<EventNode> listNode) {
