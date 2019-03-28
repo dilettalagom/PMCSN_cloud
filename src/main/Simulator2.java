@@ -63,6 +63,7 @@ public class Simulator2 {
 
         //create file first time
         PrintWriter globalNode_writer = createNewResultFile("globalNode_results" ,seed);
+        PrintWriter meanResults = createNewResultFile("mean_results" ,seed);
 
         // primo arrivo
         system_events.get(0).setTemp(this.getArrival(lambda, r) + clock.getCurrent());
@@ -82,7 +83,7 @@ public class Simulator2 {
             // calcola il tempo istantaneo di attraversamento del cloud
             global_node.setComplete_time_cloud(global_node.getComplete_time_cloud() + istant *  (global_node.getWorking_cloud_taskA()+global_node.getWorking_cloud_taskB()));
             // calcola il tempo istantaneo di attraversamento del sistema
-            global_node.setComplete_time_system(global_node.getComplete_time_system() + istant * ( global_node.getWorking_cloudlet_taskA()+ global_node.getWorking_cloudlet_taskB()+ global_node.getWorking_cloud_taskA()+ global_node.getWorking_cloud_taskA()));
+            global_node.setComplete_time_system(global_node.getComplete_time_system() + istant * ( global_node.getWorking_cloudlet_taskA()+ global_node.getWorking_cloudlet_taskB()+ global_node.getWorking_cloud_taskA()+ global_node.getWorking_cloud_taskB()));
 
             //calcola il tempo di attraversamento nel sistema per un task di tipo A
             global_node.setComplete_time_taskA(global_node.getComplete_time_taskA() + istant * ( global_node.getWorking_cloudlet_taskA() +  global_node.getWorking_cloud_taskA()));
@@ -92,19 +93,13 @@ public class Simulator2 {
             //calcola il tempo di attraversamento nel cloudlet per un task di tipo A
             global_node.setArea_cloudlet_taskA(global_node.getArea_cloudlet_taskA() + istant *  global_node.getWorking_cloudlet_taskA() );
             //calcola il tempo di attraversamento nel cloudlet per un task di tipo B
-            global_node.setArea_cloudlet_taskB(global_node.getComplete_time_taskB() + istant *  global_node.getWorking_cloudlet_taskB() );
+            global_node.setArea_cloudlet_taskB(global_node.getArea_cloudlet_taskB() + istant *  global_node.getWorking_cloudlet_taskB() );
 
             //calcola il tempo di attraversamento nel cloud per un task di tipo A
             global_node.setArea_cloud_taskA(global_node.getArea_cloud_taskA() + istant * global_node.getWorking_cloud_taskA());
             //calcola il tempo di attraversamento nel cloud per un task di tipo B
             global_node.setArea_cloud_taskB(global_node.getArea_cloud_taskB() + istant * global_node.getWorking_cloud_taskB());
 
-
-            /*
-
-            global_node.setComplete_time_taskA(global_node.getComplete_time_taskA() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_taskA() );
-            global_node.setComplete_time_taskB(global_node.getComplete_time_taskB() + (clock.getNext() - clock.getCurrent()) * global_node.getWorking_server_taskB() );
-*/
 
 
             print_on_file(globalNode_writer, new String[]{String.valueOf(clock.getCurrent() ),

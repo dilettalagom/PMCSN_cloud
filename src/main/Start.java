@@ -29,13 +29,13 @@ public class Start {
             r.plantSeeds(Integer.parseInt(seeds[j]));
 
             //lancio la simulazione
-            /*Simulator s = new Simulator();
-            s.RunSimulation(seeds[j], system_events, global_node, clock,r);*/
+            Simulator s = new Simulator();
+            s.RunSimulation(seeds[j], system_events, global_node, clock,r);
 
+            /*
             //lancio la simulazione2
             Simulator2 s2 = new Simulator2();
-            s2.RunSimulation(seeds[j], system_events, global_node, clock,r);
-
+            s2.RunSimulation(seeds[j], system_events, global_node, clock,r);*/
 
             j++;
         }

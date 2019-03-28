@@ -81,7 +81,7 @@ public class Simulator {
             // calcola il tempo istantaneo di attraversamento del cloud
             global_node.setComplete_time_cloud(global_node.getComplete_time_cloud() + istant *  (global_node.getWorking_cloud_taskA()+global_node.getWorking_cloud_taskB()));
             // calcola il tempo istantaneo di attraversamento del sistema
-            global_node.setComplete_time_system(global_node.getComplete_time_system() + istant * ( global_node.getWorking_cloudlet_taskA()+ global_node.getWorking_cloudlet_taskB()+ global_node.getWorking_cloud_taskA()+ global_node.getWorking_cloud_taskA()));
+            global_node.setComplete_time_system(global_node.getComplete_time_system() + istant * ( global_node.getWorking_cloudlet_taskA()+ global_node.getWorking_cloudlet_taskB()+ global_node.getWorking_cloud_taskA()+ global_node.getWorking_cloud_taskB()));
 
             //calcola il tempo di attraversamento nel sistema per un task di tipo A
             global_node.setComplete_time_taskA(global_node.getComplete_time_taskA() + istant * ( global_node.getWorking_cloudlet_taskA() +  global_node.getWorking_cloud_taskA()));
@@ -91,7 +91,7 @@ public class Simulator {
             //calcola il tempo di attraversamento nel cloudlet per un task di tipo A
             global_node.setArea_cloudlet_taskA(global_node.getArea_cloudlet_taskA() + istant *  global_node.getWorking_cloudlet_taskA() );
             //calcola il tempo di attraversamento nel cloudlet per un task di tipo B
-            global_node.setArea_cloudlet_taskB(global_node.getComplete_time_taskB() + istant *  global_node.getWorking_cloudlet_taskB() );
+            global_node.setArea_cloudlet_taskB(global_node.getArea_cloudlet_taskB() + istant *  global_node.getWorking_cloudlet_taskB() );
 
             //calcola il tempo di attraversamento nel cloud per un task di tipo A
             global_node.setArea_cloud_taskA(global_node.getArea_cloud_taskA() + istant * global_node.getWorking_cloud_taskA());
@@ -240,17 +240,13 @@ public class Simulator {
         System.err.println("lambda task A stimato " + lambdaA);
         System.err.println("lambda task B stimato " + lambdaB + "\n");
 
-        //System.err.println( "area totale, area task1 = " + global_node.getComplete_time_system()+","+ global_node.getComplete_time_taskA() );
-
         System.err.println("numero medio di task del cloudlet " + global_node.getComplete_time_cloudlet() / clock.getCurrent());
         System.err.println("numero medio di taskA del cloudlet " + global_node.getArea_cloudlet_taskA() / clock.getCurrent());
         System.err.println("numero medio di taskB del cloudlet " + global_node.getArea_cloudlet_taskB() / clock.getCurrent()+"\n");
 
-
         System.err.println("numero medio di task del cloud " + global_node.getComplete_time_cloud() / clock.getCurrent());
         System.err.println("numero medio di taskA del cloud " + global_node.getArea_cloud_taskA() / clock.getCurrent());
         System.err.println("numero medio di taskB del cloud " + global_node.getArea_cloud_taskB() / clock.getCurrent()+"\n");
-
 
         System.err.println("tempo di risposta del cloudlet " + global_node.getComplete_time_cloudlet() / (global_node.getProcessed_cloudlet_taskA() + global_node.getProcessed_cloudlet_taskB()));
         System.err.println("tempo di risposta del cloudlet per taskA " + global_node.getArea_cloudlet_taskA() / global_node.getProcessed_cloudlet_taskA() );
@@ -259,6 +255,8 @@ public class Simulator {
         System.err.println("tempo di risposta del cloud " + global_node.getComplete_time_cloud() / (global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB()));
         System.err.println("tempo di risposta del cloud per taskA " + global_node.getArea_cloud_taskA() / global_node.getProcessed_cloud_taskA() );
         System.err.println("tempo di risposta del cloud per taskB " + global_node.getArea_cloud_taskB() / global_node.getProcessed_cloud_taskB() +"\n");
+
+        System.err.println("\ntempi di risposta del sistema " + global_node.getComplete_time_system() );
 
         System.err.println("tempo medio di risposta del sistema " + global_node.getComplete_time_system() / (global_node.getProcessed_cloud_taskA() + global_node.getProcessed_cloud_taskB() + global_node.getProcessed_cloudlet_taskA()+ global_node.getProcessed_cloudlet_taskB()));
         System.err.println("tempo di risposta sistema per taskA " + global_node.getComplete_time_taskA() / (global_node.getProcessed_cloudlet_taskA()+global_node.getProcessed_cloud_taskA()));
