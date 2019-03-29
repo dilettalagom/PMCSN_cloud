@@ -7,6 +7,7 @@ import static restructed.Configuration.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,11 +18,16 @@ public class Simulator_alg1 extends GeneralSimulator {
     private GlobalNode global_node;
     private Cloudlet cloudlet;
     private Cloud cloud;
+    private ArrayList<Cloudlet_server> clet_servers;
 
 
     //init delle strutture caratteristiche del simulatore
     Simulator_alg1() {
 
+        this.clet_servers = new ArrayList<>();
+        for (int i = 0; i < SERVERS + 1; i++) {
+            clet_servers.add(new Cloudlet_server());
+        }
         this.system_events = new ArrayList<>();
         for (int i = 0; i < SERVERS + 1; i++) {
             system_events.add(new EventNode(START, 0));
@@ -37,7 +43,6 @@ public class Simulator_alg1 extends GeneralSimulator {
     private int nextEvent(ArrayList<EventNode> list_events) {
         int event;
         int i = 0;
-
         while (list_events.get(i).getType() == 0)       /* find the index of the first 'active' */
             i++;                                        /* element in the event list            */
         event = i;
@@ -53,23 +58,36 @@ public class Simulator_alg1 extends GeneralSimulator {
     public boolean runSimulator(Rngs r, String selected_seed) {
 
 
-        PrintWriter instant_writer = null;
-        PrintWriter mean_writer = null;
+        //PrintWriter instant_writer = null;
+        /*PrintWriter mean_writer = null;
         try {
-            instant_writer = new PrintWriter(new FileWriter("temp/" + "instant_writer" + selected_seed + ".csv"));
-            print_on_file(instant_writer, new String[]{"istante", "cloudlet", "cloud", "sistema"});
+            //instant_writer = new PrintWriter(new FileWriter("temp/" + "instant_writer" + selected_seed + ".csv"));
             mean_writer = new PrintWriter(new FileWriter("temp/" + "mean_writer" + selected_seed + ".csv"));
-            print_on_file(instant_writer, new String[]{"seed", "n1_cloudlet", "n2_cloudlet", "n1_cloud", "n2_cloud"});
+            System.out.println(mean_writer);
+            //print_on_file(instant_writer, new String[]{"istante", "cloudlet", "cloud", "sistema"});
+            print_on_file(mean_writer, new String[]{"seed", "n1_cloudlet", "n2_cloudlet", "n1_cloud", "n2_cloud"});
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
         system_events.get(0).setType(getType(r));          // devo decidere se il primo arrivo è di tipo A o B
 
         // type = 0 -> simulazione terminata
-        while (system_events.get(0).getType() != 0) {
+
+        // simulazione termina quando :
+        // se il type del prossimo arrivo è 0 -> vuol dire che gli arrivi sono terminati
+        // e termina quando tutti i server dentro il cloudlet e il cloud hanno type = 0
+        while (system_events.get(0).getType() != 0 ) {
+
+            if (system_events.get(0).getTemp() > STOP ) {
+                //System.out.println(system_events);
+                if ( check_system_servers() ){
+                    break;
+                }
+            }
+
 
             int e = this.nextEvent(system_events);
 
@@ -100,33 +118,38 @@ public class Simulator_alg1 extends GeneralSimulator {
             cloud.setArea_task2(cloud.getArea_task2() + instant * cloud.getWorking_task2());
 
 
-            print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
+            /*print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
                     String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()))});
-
+*/
 
             clock.setCurrent(clock.getNext());
+
 
             if (e == 0) { // processo un arrivo
 
                 int type = system_events.get(e).getType();
 
-                system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
-                system_events.get(0).setType(getType(r));
-
-                // termino esecuzione al prossimo while
-                if (system_events.get(0).getTemp() > STOP)
+                if (system_events.get(0).getTemp() <= STOP) {
+                    system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
+                    system_events.get(0).setType(getType(r));
+                }
+                else {
                     system_events.get(0).setType(0);
+                }
 
                 // se ho server disponibili assegno il task
                 if (cloudlet.getWorking_task1() + cloudlet.getWorking_task2() < SERVERS) { // ho dei server liberi -> ( arrivo cloudlet )
 
+                    //trovo il server libero da più tempo inattivo
+                    int cloudlet_server_selected = findOneCloudlet(system_events);
+
                     double service = 0;
                     if (type == 1) {
                         cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
-
                         service = getServiceCloudlet(mu1_cloudlet, r);
+
 
                     } else if (type == 2) {
                         cloudlet.setWorking_task2(cloudlet.getWorking_task2() + 1);
@@ -134,8 +157,10 @@ public class Simulator_alg1 extends GeneralSimulator {
                         service = getServiceCloudlet(mu2_cloudlet, r);
                     }
 
-                    //trovo il server libero da più tempo inattivo
-                    int cloudlet_server_selected = findOneCloudlet(system_events);
+
+
+                    clet_servers.get(cloudlet_server_selected).setService(clet_servers.get(cloudlet_server_selected).getService() + service );
+
 
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
@@ -155,6 +180,7 @@ public class Simulator_alg1 extends GeneralSimulator {
 
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task A
                         service = getServiceCloud(mu1_cloud, r);
+
                     } else {
                         cloud.setWorking_task2(cloud.getWorking_task2() + 1);
 
@@ -169,15 +195,19 @@ public class Simulator_alg1 extends GeneralSimulator {
 
             } else { // processo una partenza
 
+
+
                 if (e <= SERVERS) { // processo una partenza cloudlet
 
                     if (system_events.get(e).getType() == 1) {
                         cloudlet.setWorking_task1(cloudlet.getWorking_task1() - 1);
                         cloudlet.setProcessed_task1(cloudlet.getProcessed_task1() + 1);
+                        clet_servers.get(e).setProcessed_task1(clet_servers.get(e).getProcessed_task1() + 1 );
 
                     } else if (system_events.get(e).getType() == 2) {
                         cloudlet.setWorking_task2(cloudlet.getWorking_task2() - 1);
                         cloudlet.setProcessed_task2(cloudlet.getProcessed_task2() + 1);
+                        clet_servers.get(e).setProcessed_task2(clet_servers.get(e).getProcessed_task2() + 1 );
                     }
                     system_events.get(e).setType(0);
 
@@ -271,7 +301,19 @@ public class Simulator_alg1 extends GeneralSimulator {
         System.out.println("Throughtput 1 per il cloud " + (lambda1 * (pq)));
         System.out.println("Throughtput 2 per il cloud " + (lambda2 * (pq)) + "\n");
 
-        System.out.println(" pq " + pq);
+        System.out.println(" pq " + pq +"\n");
+
+        DecimalFormat g = new DecimalFormat("###0.000000000");
+
+        System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
+
+
+        for (int s = 1; s <= SERVERS; s++) {
+            System.out.print(s + "\t\t" +
+                    g.format(clet_servers.get(s).getService() / clock.getCurrent())+ "\t\t" +
+                    clet_servers.get(s).getProcessed_task1()+ "\t\t" + clet_servers.get(s).getProcessed_task2()+ "\n" );
+        }
+
         allResults.addAll(Arrays.asList( Double.toString(lambda1 * (pq)), Double.toString(lambda2 * (pq)),  Double.toString(pq)));
 
 
@@ -282,8 +324,21 @@ public class Simulator_alg1 extends GeneralSimulator {
                 temp.length,
                 String[].class);
 
-         print_on_file(mean_writer, str);
+        /*print_on_file(mean_writer, str);
+        assert mean_writer != null ;
+        mean_writer.close();*/
         return true;
+    }
+
+    private boolean check_system_servers() {
+
+        for (EventNode e : this.system_events) {
+            if (e.getType() != 0){
+                return false;
+            }
+        }
+        return true;
+
     }
 
 
@@ -332,7 +387,10 @@ public class Simulator_alg1 extends GeneralSimulator {
 
     private void print_on_file(PrintWriter writer, String[] row) {
 
+
+
         for (String s : row) {
+            System.out.println(s);
             writer.write(s);
             writer.write(';');
         }

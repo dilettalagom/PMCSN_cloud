@@ -33,6 +33,6 @@ public class EventNode {
 
     @Override
     public String toString() {
-        return "temp: '" + this.temp + "', type: '" + this.type ;
+        return "', type: '" + this.type ;
     }
 }

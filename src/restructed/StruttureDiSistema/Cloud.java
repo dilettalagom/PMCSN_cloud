@@ -9,7 +9,7 @@ public class Cloud {
     private int working_task2 = 0;
 
     private int processed_task1 = 0;
-    private int processed_task2 =0;        // numero di job processati dal cloud per tipo
+    private int processed_task2 = 0;        // numero di job processati dal cloud per tipo
 
     public double getArea_task1() {
         return area_task1;
