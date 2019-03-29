@@ -293,13 +293,24 @@ public class Simulator_alg1 extends GeneralSimulator {
                 Double.toString( global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
                 Double.toString(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))));
 
-        System.out.println("Throughtput 1 per il cloudlet " + (lambda1 * (1 - pq)));
-        System.out.println("Throughtput 2 per il cloudlet " + (lambda2 * (1 - pq)));
+
+        System.out.println("Throughtput per il cloudlet " + ( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / (clock.getCurrent()  ) );
+        System.out.println("Throughtput per il cloud " + ( cloud.getProcessed_task1() + cloud.getProcessed_task2()) / (clock.getCurrent()   )+"\n" );
+
+        System.out.println("Throughtput Task1 per il sistema " + ( cloudlet.getProcessed_task1() + cloud.getProcessed_task1()) / (clock.getCurrent()  ) );
+        System.out.println("Throughtput Task2 per il sistema " + ( cloudlet.getProcessed_task2() + cloud.getProcessed_task2()) / (clock.getCurrent()   )+"\n"  );
+
+        System.out.println("Throughtput Task1 per il cloudlet " + ( cloudlet.getProcessed_task1() ) / (clock.getCurrent()  ) );
+        System.out.println("Throughtput Task2 per il cloudlet " + ( cloudlet.getProcessed_task2() ) / (clock.getCurrent()  )  );
+        System.out.println("Throughtput Task1 per il cloudlet (secondo modo)" + (lambda1 * (1 - pq)));
+        System.out.println("Throughtput Task2 per il cloudlet (secondo modo)" + (lambda2 * (1 - pq))+"\n");
+
         allResults.addAll(Arrays.asList( Double.toString(lambda1 * (1 - pq)), Double.toString(lambda2 * (1 - pq))));
 
-
-        System.out.println("Throughtput 1 per il cloud " + (lambda1 * (pq)));
-        System.out.println("Throughtput 2 per il cloud " + (lambda2 * (pq)) + "\n");
+        System.out.println("Throughtput Task1 per il cloud " + ( cloud.getProcessed_task1() ) / (clock.getCurrent()  ) );
+        System.out.println("Throughtput Task2 per il cloud " + ( cloud.getProcessed_task2() ) / (clock.getCurrent()  )  );
+        System.out.println("Throughtput Task1 per il cloud (secondo modo)" + (lambda1 * (pq)));
+        System.out.println("Throughtput Task2 per il cloud (secondo modo)" + (lambda2 * (pq)) + "\n");
 
         System.out.println(" pq " + pq +"\n");
 
