@@ -88,6 +88,9 @@ abstract class GeneralSimulator {
         return (event);
     }
 
+
+    public abstract boolean RunSimulation(Rngs r, String selected_seed, String algoritmo);
+
     void print_on_file(PrintWriter writer, String[] row) {
 
         for (String s : row) {
@@ -130,5 +133,47 @@ abstract class GeneralSimulator {
         return writer;
     }
 
+    public int findOneCloud(ArrayList<EventNode> system_events) {
+        /* -----------------------------------------------------
+         * return the index of the first available server
+         * -----------------------------------------------------
+         */
+        // se non ci sono serventi liberi nel cloud, ne creo uno nuovo
+
+        int i = SERVERS + 1;
+        if (system_events.size() == SERVERS) {
+            system_events.add(new EventNode());
+            return i;
+
+        } else {
+            for (; i < system_events.size(); i++) {
+                if (system_events.get(i).getType() == 0) {
+                    return i;
+                }
+            }
+            system_events.add(new EventNode());
+            return i;
+        }
+    }
+
+    public int findOneCloudlet(ArrayList<EventNode> listNode) {
+        /* -----------------------------------------------------
+         * return the index of the available server with longest idle period
+         * -----------------------------------------------------
+         */
+        int server;
+        int i = 1;
+
+        while (listNode.get(i).getType() == 1)          /* find the index of the first available */
+            i++;                                        /* (idle) server                         */
+        server = i;
+        while (i < SERVERS) {                           /* now, check the others to find which   */
+            i++;                                        /* has been idle longest                 */
+            if ((listNode.get(i).getType() == 0) &&
+                    (listNode.get(i).getTemp() < listNode.get(server).getTemp()))
+                server = i;
+        }
+        return (server);
+    }
 
 }

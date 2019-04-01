@@ -4,12 +4,10 @@ import pmcsn.Rngs;
 import restructed.StruttureDiSistema.*;
 
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static restructed.Configuration.*;
-
 
 public class Simulator_alg2 extends GeneralSimulator {
 
@@ -18,7 +16,7 @@ public class Simulator_alg2 extends GeneralSimulator {
     private GlobalNode global_node;
     private Cloudlet cloudlet;
     private Cloud cloud;
-    //private ArrayList<Cloudlet_server> clet_servers;
+    //private ArrayList<Server> clet_servers;
 
 
     //init delle strutture caratteristiche del simulatore
@@ -26,7 +24,7 @@ public class Simulator_alg2 extends GeneralSimulator {
 
         /*this.clet_servers = new ArrayList<>();
         for (int i = 0; i < SERVERS + 1; i++) {
-            clet_servers.add(new Cloudlet_server());
+            clet_servers.add(new Server());
         }*/
         this.system_events = new ArrayList<>();
         for (int i = 0; i < SERVERS + 1; i++) {
@@ -39,6 +37,7 @@ public class Simulator_alg2 extends GeneralSimulator {
 
     }
 
+    @Override
     public boolean RunSimulation(Rngs r, String selected_seed, String algoritmo) {
 
         PrintWriter instant_writer = createFile("instant_writer", algoritmo, selected_seed);
@@ -49,16 +48,16 @@ public class Simulator_alg2 extends GeneralSimulator {
             return false;
         }
 
+
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
         system_events.get(0).setType(getType(r));          // devo decidere se il primo arrivo è di tipo A o B
 
-        // type = 0 -> simulazione terminata
         while (system_events.get(0).getType() != 0) {
 
-            if (system_events.get(0).getTemp() > STOP ) {
+            if (system_events.get(0).getTemp() > STOP) {
                 //System.out.println(system_events);
-                if ( check_system_servers(this.system_events) ){
+                if (check_system_servers(this.system_events)) {
                     break;
                 }
             }
@@ -98,53 +97,31 @@ public class Simulator_alg2 extends GeneralSimulator {
                     String.valueOf(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()))});
 
 
+
             clock.setCurrent(clock.getNext());
 
-            int total_cloudlet_task = 0;
             if (e == 0) { // processo un arrivo
 
-                int type = system_events.get(e).getType();
-
-                if (system_events.get(0).getTemp() <= STOP) {
-                    system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
-                    system_events.get(0).setType(getType(r));
-                }
-                else {
-                    system_events.get(0).setType(0);
-                }
-
-
-                // se ho server disponibili assegno il task
-                if (cloudlet.getWorking_task1() + cloudlet.getWorking_task2() < SERVERS) { // ho dei server liberi -> ( arrivo cloudlet )
-
-
-                    int cloudlet_server_selected = this.findOneCloudlet(system_events);
-                    double service = 0;
-                    if (type == 1) {
-                        cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
-
-                        //global_node.setProcessed_cloudlet_taskA(global_node.getProcessed_cloudlet_taskA() + 1);
-                        service = this.getServiceCloudlet(mu1_cloudlet, r);
-
-                    } else if (type == 2) {
-                        cloudlet.setWorking_task2(cloudlet.getWorking_task2() + 1);
-
-                        //global_node.setProcessed_cloudlet_taskB(global_node.getProcessed_cloudlet_taskB() + 1);
-                        service = this.getServiceCloudlet(mu2_cloudlet, r);
-                    }
-
-                    //clet_servers.get(cloudlet_server_selected).setService(clet_servers.get(cloudlet_server_selected).getService() + service );
-
+                if (cloudlet.getWorking_task1() + cloudlet.getWorking_task2() < SERVERS) {
 
                     //trovo il server libero da più tempo inattivo
+                    int cloudlet_server_selected = findOneCloudlet(system_events);
+
+                    double service = 0;
+                    if (system_events.get(e).getType() == 1) {
+                        cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
+                        service = getServiceCloudlet(mu1_cloudlet, r);
+
+
+                    } else {
+                        cloudlet.setWorking_task2(cloudlet.getWorking_task2() + 1);
+                        service = getServiceCloudlet(mu2_cloudlet, r);
+                    }
 
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
-                    system_events.get(cloudlet_server_selected).setType(type);
-
-
-                } else if (cloudlet.getWorking_task1() < S && type == 1) {
-
+                    system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
+                } else if (system_events.get(e).getType() == 1 && cloudlet.getWorking_task2() > 0) {
                     // caso in cui mi arriva un task di tipo 1 ed ho dei task di tipo 2 nel cloudelt -> cambio
                     int cloud_server_selected = findOneCloud(system_events);
                     int switched_server = findType2ToSwitch(system_events);
@@ -158,14 +135,12 @@ public class Simulator_alg2 extends GeneralSimulator {
 
                     //scambio
                     system_events.get(switched_server).setTemp(getServiceCloudlet(mu1_cloudlet, r) + clock.getCurrent());
-                    system_events.get(switched_server).setType(type);
+                    system_events.get(switched_server).setType(system_events.get(e).getType());
 
                     cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
 
-                } else { // mando al cloud ( arrivo cloud)
-                    // non ho server liberi e nel cloudlet tutti i server sono occupati da job di classe 1
 
-                    //trovo il server libero ( se non esiste lo creo )
+                } else {
                     int cloud_server_selected = findOneCloud(system_events);
                     int typeCloud = system_events.get(e).getType();
 
@@ -187,10 +162,14 @@ public class Simulator_alg2 extends GeneralSimulator {
                     system_events.get(cloud_server_selected).setType(typeCloud);
 
                 }
-
-            } else { // processo una partenza
-
-
+                if (system_events.get(0).getTemp() <= STOP) {
+                    system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
+                    system_events.get(0).setType(getType(r));
+                }
+                else {
+                    system_events.get(0).setType(0);
+                }
+            } else { //partenze
                 if (e <= SERVERS) { // processo una partenza cloudlet
 
                     if (system_events.get(e).getType() == 1) {
@@ -199,7 +178,7 @@ public class Simulator_alg2 extends GeneralSimulator {
                         //clet_servers.get(e).setProcessed_task1(clet_servers.get(e).getProcessed_task1() + 1 );
 
 
-                    } else if(system_events.get(e).getType() == 2) {
+                    } else if (system_events.get(e).getType() == 2) {
                         cloudlet.setWorking_task2(cloudlet.getWorking_task2() - 1);
                         cloudlet.setProcessed_task2(cloudlet.getProcessed_task2() + 1);
                         //clet_servers.get(e).setProcessed_task2(clet_servers.get(e).getProcessed_task2() + 1 );
@@ -213,17 +192,17 @@ public class Simulator_alg2 extends GeneralSimulator {
                         cloud.setWorking_task1(cloud.getWorking_task1() - 1);
                         cloud.setProcessed_task1(cloud.getProcessed_task1() + 1);
 
-                    } else if(system_events.get(e).getType() == 2) {
+                    } else if (system_events.get(e).getType() == 2) {
                         cloud.setWorking_task2(cloud.getWorking_task2() - 1);
                         cloud.setProcessed_task2(cloud.getProcessed_task2() + 1);
                     }
                     system_events.get(e).setType(0);
                 }
 
-
-
             }
+
         }
+
 
         ArrayList<String> allResults = new ArrayList<>();
 
@@ -233,12 +212,21 @@ public class Simulator_alg2 extends GeneralSimulator {
         System.out.println("n1_cloudlet: " + cloudlet.getProcessed_task1()
                 + "\t\tn2_cloudlet: " + cloudlet.getProcessed_task2() + "\n"
                 + "n1_cloud: " + cloud.getProcessed_task1()
-                + "\t\tn2_cloud " + cloud.getProcessed_task2());
+                + "\t\tn2_cloud " + cloud.getProcessed_task2()+ "\n");
 
         allResults.addAll(Arrays.asList(Integer.toString(cloudlet.getProcessed_task1()), Integer.toString(cloudlet.getProcessed_task2()), Integer.toString(cloud.getProcessed_task1()), Integer.toString(cloud.getProcessed_task2())));
 
 
         double totalTask = cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2();
+
+        System.out.println("total task: " + totalTask + "\n");
+
+        System.out.println("clock: " + clock.getCurrent() + "\n");
+
+        int task1_system = cloudlet.getProcessed_task1() + cloud.getProcessed_task1();
+        int tasl2_system=cloudlet.getProcessed_task2() + cloud.getProcessed_task2();
+
+        System.out.println(task1_system + "\t" +tasl2_system +"\n" );
 
         double lambdaToT = totalTask / clock.getCurrent();
         double lambda1 = (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()) / clock.getCurrent();
@@ -289,8 +277,33 @@ public class Simulator_alg2 extends GeneralSimulator {
                 String.format("%.6f", global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
                 String.format("%.6f",global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))));
 
-        System.out.println("Throughtput per il cloudlet " + ( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / (clock.getCurrent()  ) );
+        double Throughtput_cloudlet = ( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / (clock.getCurrent()  ) ;
+        double Throughtput_cloud = ( cloud.getProcessed_task1() + cloud.getProcessed_task2()) / (clock.getCurrent()   );
+
+
+        System.out.println("Throughtput per il cloudlet " + ( Throughtput_cloudlet  ) );
         System.out.println("Throughtput per il cloud " + ( cloud.getProcessed_task1() + cloud.getProcessed_task2()) / (clock.getCurrent()   )+"\n" );
+
+        double p1_new = (double)cloudlet.getProcessed_task1() / ( (double)cloudlet.getProcessed_task1()+(double)cloudlet.getProcessed_task2() );
+        double p2_new = (double)cloudlet.getProcessed_task2() / ( (double)cloudlet.getProcessed_task1()+(double)cloudlet.getProcessed_task2() );
+
+        System.out.println("% of task1 on cloudlet " + ( p1_new ) );
+        System.out.println("% of task2 on cloudlet " + ( p2_new ) + "\n");
+
+        System.out.println("Throughtput of cloudlet for task1 " + ( Throughtput_cloudlet* p1_new  )       );
+        System.out.println("Throughtput of cloudlet for task2 " + ( Throughtput_cloudlet* p2_new  ) + "\n");
+
+        double p1_cloud = (double)cloud.getProcessed_task1() / ( (double)cloud.getProcessed_task1()+(double)cloud.getProcessed_task2() );
+        double p2_cloud = (double)cloud.getProcessed_task2() / ( (double)cloud.getProcessed_task1()+(double)cloud.getProcessed_task2() );
+
+        System.out.println("% of task1 on cloud " + ( p1_cloud ) );
+        System.out.println("% of task2 on cloud " + ( p2_cloud ) + "\n");
+
+        System.out.println("Throughtput of cloud for task1 " + ( Throughtput_cloud* p1_cloud) );
+        System.out.println("Throughtput of cloud for task2 " + ( Throughtput_cloud* p2_cloud  ) + "\n");
+
+        System.out.println("Throughtput task1 " + ( Throughtput_cloudlet* p1_new + Throughtput_cloud* p1_cloud) );
+        System.out.println("Throughtput task2 " + ( Throughtput_cloudlet* p2_new + Throughtput_cloud* p2_cloud  ) + "\n");
 
         System.out.println("Throughtput Task1 per il sistema " + ( cloudlet.getProcessed_task1() + cloud.getProcessed_task1()) / (clock.getCurrent()  ) );
         System.out.println("Throughtput Task2 per il sistema " + ( cloudlet.getProcessed_task2() + cloud.getProcessed_task2()) / (clock.getCurrent()   )+"\n"  );
@@ -301,7 +314,7 @@ public class Simulator_alg2 extends GeneralSimulator {
         System.out.println("Throughtput Task2 per il cloudlet (secondo modo)" + (lambda2 * (1 - pq))+"\n");
 
         System.out.println("Throughtput Task1 per il cloud " + ( cloud.getProcessed_task1() ) / (clock.getCurrent()  ) );
-        System.out.println("Throughtput Task2 per il cloud " + ( cloud.getProcessed_task2() ) / (clock.getCurrent()  )  );
+        System.out.println("Throughtput Task2 per il cloud " + ( cloud.getProcessed_task2() ) / (clock.getCurrent()  ) );
         System.out.println("Throughtput Task1 per il cloud (secondo modo)" + (lambda1 * (pq)));
         System.out.println("Throughtput Task2 per il cloud (secondo modo)" + (lambda2 * (pq)) + "\n");
 
@@ -311,7 +324,7 @@ public class Simulator_alg2 extends GeneralSimulator {
         System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
         for (int s = 1; s <= SERVERS; s++) {
             System.out.print(s + "\t\t" +
-                    g.format(clet_servers.get(s).getService() / clock.getCurrent())+ "\t\t" +
+                    g.format(clet_servers.get(s).getTotal_service() / clock.getCurrent())+ "\t\t" +
                     clet_servers.get(s).getProcessed_task1()+ "\t\t" + clet_servers.get(s).getProcessed_task2()+ "\n" );
         }*/
 
@@ -328,35 +341,6 @@ public class Simulator_alg2 extends GeneralSimulator {
         mean_writer.close();
 
         return true;
-
-    }
-
-
-
-
-
-
-    private int findOneCloud(ArrayList<EventNode> system_events) {
-        /* -----------------------------------------------------
-         * return the index of the first available server
-         * -----------------------------------------------------
-         */
-        // se non ci sono serventi liberi nel cloud, ne creo 1
-
-        int i = SERVERS + 1;
-        if (system_events.size() == SERVERS) {
-            system_events.add(new EventNode());
-            return i;
-
-        } else {
-            for (; i < system_events.size(); i++) {
-                if (system_events.get(i).getType() == 0) {
-                    return i;
-                }
-            }
-            system_events.add(new EventNode());
-            return i;
-        }
     }
 
     private int findType2ToSwitch(ArrayList<EventNode> system_events) {
@@ -374,29 +358,4 @@ public class Simulator_alg2 extends GeneralSimulator {
         }
         return (event);
     }
-
-    private int findOneCloudlet(ArrayList<EventNode> listNode) {
-        /* -----------------------------------------------------
-         * return the index of the available server idle longest
-         * -----------------------------------------------------
-         */
-        int server;
-        int i = 1;
-
-        while (listNode.get(i).getType() == 1)          /* find the index of the first available */
-            i++;                                        /* (idle) server                         */
-        server = i;
-        while (i < SERVERS) {                           /* now, check the others to find which   */
-            i++;                                        /* has been idle longest                 */
-            if ((listNode.get(i).getType() == 0) &&
-                    (listNode.get(i).getTemp() < listNode.get(server).getTemp()))
-                server = i;
-        }
-        return (server);
-    }
-
-
 }
-
-
-

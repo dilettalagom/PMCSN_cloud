@@ -33,6 +33,7 @@ public class Start {
                         System.out.print("error");
                     break;
                 }
+                //TODO: gestisci l'errore
 
             }
 

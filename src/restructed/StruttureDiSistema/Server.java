@@ -1,21 +1,30 @@
 package restructed.StruttureDiSistema;
 
-public class Cloudlet_server {
+public class Server {
 
-    private double service = 0.0;
+    private double total_service = 0.0;
     private int processed_task1 = 0;
     private int processed_task2 = 0;
+    private double last_service =0.0;
 
-    public Cloudlet_server() {
+    public Server() {
 
     }
 
-    public double getService() {
-        return service;
+    public double getLast_service() {
+        return last_service;
     }
 
-    public void setService(double service) {
-        this.service = service;
+    public void setLast_service(double last_service) {
+        this.last_service = last_service;
+    }
+
+    public double getTotal_service() {
+        return total_service;
+    }
+
+    public void setTotal_service(double total_service) {
+        this.total_service = total_service;
     }
 
     public int getProcessed_task1() {

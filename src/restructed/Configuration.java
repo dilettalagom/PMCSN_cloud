@@ -9,7 +9,7 @@ public class Configuration {
     static double lambda = 12.25;
     static double lambda1 = 6.0;
 
-    static String[] seeds = {"215487963"};
+    static String[] seeds = {"215487963", "215487963"};
     //public static String[] seeds = {"215487963","123456789","987654321"};
 
     static double START   = 0.0;            /* initial (open the door)        */
