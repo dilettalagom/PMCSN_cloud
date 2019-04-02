@@ -116,15 +116,17 @@ public abstract class GeneralSimulator {
         PrintWriter writer = null;
         try {
             switch (filename) {
-                case "instant_writer":
-
+                case "instantCompleteTime":
+                    //Tempi di Completamento istantanei per : Cloudlet, Cloud, Sistema
                     writer = new PrintWriter(new FileWriter("temp/" + filename + algoritmo + selected_seed + ".csv"));
                     print_on_file(writer, new String[]{"istante", "cloudlet", "cloud", "sistema"});
                     break;
-                case "mean_writer":
+                case "meanResponseTime":
+                    //Tempi di Risposta medi per : Cloudlet, Cloud, Sistema
                     writer = new PrintWriter(new FileWriter("temp/" + filename + algoritmo + selected_seed + ".csv"));
-                    //TODO: decidere quali valori vogliamo sul file delle statistiche medie
-                    print_on_file(writer, new String[]{"seed", "n1_cloudlet", "n2_cloudlet", "n1_cloud", "n2_cloud"});
+                    print_on_file(writer, new String[]{"seed", "cloudlet", "cloudlet_task1", "cloudlet_task2",
+                                                                "cloud", "cloud_task1", "cloud_task2",
+                                                                "system", "system_task1", "system_task2"});
                     break;
             }
         } catch (IOException e) {

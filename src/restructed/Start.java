@@ -45,6 +45,7 @@ public class Start {
                 e.printStackTrace();
             }
 
+            for (String selected_seed : seeds) {
 
             for (int j = 0; j< STOP_T.length; j++){
 

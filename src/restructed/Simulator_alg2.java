@@ -197,6 +197,7 @@ public class Simulator_alg2 extends GeneralSimulator {
 
         }
 
+
         ArrayList<String> allResults = new ArrayList<>();
         DecimalFormat f = new DecimalFormat("###0.000000");
 
