@@ -204,6 +204,8 @@ public class Simulator_alg1 extends GeneralSimulator {
             }
         }
 
+        //TODO: tempi di risposta x3 --> in base a stop diversi
+
         ArrayList<String> allResults = new ArrayList<>();
 
         System.out.println("Risultati prodotti dal seed: " + selected_seed);
