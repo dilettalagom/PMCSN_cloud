@@ -100,7 +100,9 @@ function generateEquationMarkov()
    
    %%
    %somma delle probabilità degli stati dell'ultimo layer
-   sum(Y(211:231))
+   l= length(Y);
+   u= l-20;
+   pq = sum( Y( u:l ) )
    
    %%
     s = 0;
@@ -111,10 +113,39 @@ function generateEquationMarkov()
             s = s + (layers-1)*Y(count+k-1);
             
         end
-        count=count+k
+        count=count+k;
     end
 
 
  %%
- t = s / 12.25 % cloudlet
+ Rclet = s / 12.25 % cloudlet
  
+ mAc= 0.25
+ mBc = 0.22
+ 
+ Rc = pq*(mAc+mBc)/2
+ 
+ Rtot = Rclet+Rc
+ 
+%%
+
+Alg1 = importIntervalConfidence('215487963_Alg1.csv', 2, 201);
+cat= [100,200,300,400,500,600,700,800,900,1000];
+
+means= 1:length(cat);
+errors= 1:length(cat);
+
+for i = 1:length(cat)
+    AlgFiltered=Alg1(Alg1.stop==cat(i),:);
+    [h,p,ci,zval] = ztest(AlgFiltered.system,mean(AlgFiltered.system),std(AlgFiltered.system),0.05,0);
+    means(i)=mean(AlgFiltered.system);
+    errors(i)=abs(ci(1)-ci(2));
+end
+figure;
+xlim([0 1200])
+ylim([1.45 1.85])
+yline(Rtot);
+hold on
+errorbar(cat,means,errors,'rx');
+
+

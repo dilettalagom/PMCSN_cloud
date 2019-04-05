@@ -227,16 +227,10 @@ public class Simulator_alg2 extends GeneralSimulator {
         System.out.println("numero medio di task  del cloudlet " + f.format(global_node.getComplete_time_cloudlet() / clock.getCurrent()));
         System.out.println("numero medio di task1 del cloudlet " + f.format(cloudlet.getArea_task1() / clock.getCurrent()));
         System.out.println("numero medio di task2 del cloudlet " + f.format(cloudlet.getArea_task2() / clock.getCurrent()) + "\n");
-        allResults.addAll(Arrays.asList( f.format(global_node.getComplete_time_cloudlet() / clock.getCurrent()),
-                f.format(cloudlet.getArea_task1() / clock.getCurrent()),
-                f.format(cloudlet.getArea_task2() / clock.getCurrent())));
 
         System.out.println("numero medio di task  del cloud " + f.format(global_node.getComplete_time_cloud() / clock.getCurrent()));
         System.out.println("numero medio di task1 del cloud " + f.format(cloud.getArea_task1() / clock.getCurrent()));
         System.out.println("numero medio di task2 del cloud " + f.format(cloud.getArea_task2() / clock.getCurrent()) + "\n");
-        allResults.addAll(Arrays.asList( f.format( global_node.getComplete_time_cloud() / clock.getCurrent()),
-                f.format( cloud.getArea_task1() / clock.getCurrent()),
-                f.format( cloud.getArea_task2() / clock.getCurrent())));
 
         System.out.println("tempo di risposta del cloudlet " + f.format(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())) );
         System.out.println("tempo di risposta del cloudlet per task1 " + f.format(cloudlet.getArea_task1() / cloudlet.getProcessed_task1()) );
