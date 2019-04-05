@@ -99,7 +99,22 @@ function generateEquationMarkov()
   
    
    %%
-    %somma delle probabilità degli stati dell'ultimo layer
+   %somma delle probabilità degli stati dell'ultimo layer
    sum(Y(211:231))
-end
+   
+   %%
+    s = 0;
+    count= 2;
+    for layers = 2:n
+        display("layer: " + layers);
+        for k = 1:layers
+            s = s + (layers-1)*Y(count+k-1);
+            
+        end
+        count=count+k
+    end
 
+
+ %%
+ t = s / 12.25 % cloudlet
+ 

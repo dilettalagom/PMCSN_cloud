@@ -16,7 +16,7 @@ public class Configuration {
     //public static String[] seeds = {"215487963","123456789","987654321"};
 
     public static double START   = 0.0;            /* initial (open the door)        */
-    //public static double STOP    = 50;          /* terminal (close the door) time */
+    public static double STOP_Stazionario   = 100000;          /* terminal (close the door) time */
     public static double[] STOP_T = {20.0,50.0,100.0,150.0,200.0,500.0};
     public static int    SERVERS = 20;             /* number of servers              */
     public static double S = 15;

@@ -89,12 +89,12 @@ public class Simulator_alg1 extends GeneralSimulator {
             cloud.setArea_task2(cloud.getArea_task2() + instant * cloud.getWorking_task2());
 
 
-           /* print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
+           /*print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
                     String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()))});
-
 */
+
             clock.setCurrent(clock.getNext());
 
 
@@ -197,6 +197,8 @@ public class Simulator_alg1 extends GeneralSimulator {
 
             }
         }
+
+        // TODO: normalizzare il tempo di risposta nel cloudlet ( ovvero moltiplicare per 1-pq)
 
         ArrayList<String> allResults = new ArrayList<>();
         DecimalFormat f = new DecimalFormat("###0.000000");
