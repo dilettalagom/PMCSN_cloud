@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import static restructed.Configuration.*;
 
 
-abstract class GeneralSimulator {
+public abstract class GeneralSimulator {
 
 
-    private double exponential(double m, Rngs r) {
+    public double exponential(double m, Rngs r) {
         /* ------------------------------
          * generate an Exponential random variate, use m > 0.0
          * ------------------------------
@@ -22,7 +22,7 @@ abstract class GeneralSimulator {
         return (-m * Math.log(1.0 - r.random()));
     }
 
-    private double hyperExponential(double mu, Rngs r) {
+    public double hyperExponential(double mu, Rngs r) {
         double p = 0.2;
         double m1 = 2 * p * mu;
         double m2 = 2 * (1 - p) * mu;
@@ -37,7 +37,7 @@ abstract class GeneralSimulator {
         }
     }
 
-    int getType(Rngs r) {
+    public int getType(Rngs r) {
         double pA = lambda1 / lambda;
         double random = r.random();
         if (random < pA) {
@@ -45,7 +45,7 @@ abstract class GeneralSimulator {
         } else return 2;
     }
 
-    double getArrival(double lambda, Rngs r) {
+    public double getArrival(double lambda, Rngs r) {
         /* ------------------------------
          * generate the next arrival time
          * ------------------------------
@@ -54,7 +54,7 @@ abstract class GeneralSimulator {
         return exponential(1.0 / lambda, r);
     }
 
-    double getServiceCloudlet(double mu, Rngs r) {
+    public double getServiceCloudlet(double mu, Rngs r) {
         /* ------------------------------
          * generate the next service time
          * ------------------------------
@@ -63,7 +63,7 @@ abstract class GeneralSimulator {
         return (hyperExponential(mu, r));
     }
 
-    double getServiceCloud(double mu, Rngs r) {
+    public double getServiceCloud(double mu, Rngs r) {
         /* ------------------------------
          * generate the next service time
          * ------------------------------
@@ -72,7 +72,7 @@ abstract class GeneralSimulator {
         return (exponential(mu, r));
     }
 
-    int nextEvent(ArrayList<EventNode> list_events) {
+    public int nextEvent(ArrayList<EventNode> list_events) {
         int event;
         int i = 0;
 
@@ -89,9 +89,9 @@ abstract class GeneralSimulator {
     }
 
 
-    public abstract boolean RunSimulation(Rngs r, String selected_seed, String algoritmo);
+    public abstract ArrayList<String> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo);
 
-    void print_on_file(PrintWriter writer, String[] row) {
+    public void print_on_file(PrintWriter writer, String[] row) {
 
         for (String s : row) {
             writer.write(s);
@@ -100,7 +100,7 @@ abstract class GeneralSimulator {
         writer.write(System.getProperty("line.separator"));
     }
 
-    boolean check_system_servers(ArrayList<EventNode> system_events) {
+    public boolean check_system_servers(ArrayList<EventNode> system_events) {
 
         for (EventNode e : system_events) {
             if (e.getType() != 0){
@@ -111,7 +111,7 @@ abstract class GeneralSimulator {
 
     }
 
-    PrintWriter createFile(String filename, String algoritmo, String selected_seed){
+    public PrintWriter createFile(String filename, String algoritmo, String selected_seed){
 
         PrintWriter writer = null;
         try {
