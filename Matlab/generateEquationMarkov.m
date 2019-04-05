@@ -129,23 +129,43 @@ function generateEquationMarkov()
  
 %%
 
-Alg1 = importIntervalConfidence('215487963_Alg1.csv', 2, 201);
-cat= [100,200,300,400,500,600,700,800,900,1000];
+Alg1 = importIntervalConfidence('215487963_Alg1.csv', 3, 322);
+Alg1_seed2 = importIntervalConfidence('222222222_Alg1.csv', 3, 322);
+stop = [100.0,200.0,300.0,400.0,500.0,600.0,700.0,800.0,900.0,1000.0,1100.0,1200.0,1300.0,1400.0,1500.0,1600.0];
 
-means= 1:length(cat);
-errors= 1:length(cat);
 
-for i = 1:length(cat)
-    AlgFiltered=Alg1(Alg1.stop==cat(i),:);
+%%
+means= 1:length(stop);
+errors= 1:length(stop);
+
+means1= 1:length(stop);
+errors1= 1:length(stop);
+
+
+for i = 1:length(stop)
+    AlgFiltered=Alg1(Alg1.stop==stop(i),:);
+    Alg1_seed2F = Alg1_seed2(Alg1_seed2.stop==stop(i),:);
     [h,p,ci,zval] = ztest(AlgFiltered.system,mean(AlgFiltered.system),std(AlgFiltered.system),0.05,0);
+    [h1,p2,ci1,zval1] = ztest(Alg1_seed2F.system,mean(Alg1_seed2F.system),std(Alg1_seed2F.system),0.05,0);
+
     means(i)=mean(AlgFiltered.system);
     errors(i)=abs(ci(1)-ci(2));
+    
+    means1(i)=mean(Alg1_seed2F.system);
+    errors1(i)=abs(ci1(1)-ci1(2));
 end
 figure;
-xlim([0 1200])
+xlim([0 1800])
 ylim([1.45 1.85])
-yline(Rtot);
+yline(Rtot,'blue');
 hold on
-errorbar(cat,means,errors,'rx');
+errorbar(stop,means,errors,'ro');
+
+figure;
+xlim([0 1800])
+ylim([1.45 1.85])
+yline(Rtot,'blue');
+hold on
+errorbar(stop,means1,errors1,'ro');
 
 

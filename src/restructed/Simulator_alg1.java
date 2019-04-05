@@ -207,7 +207,7 @@ public class Simulator_alg1 extends GeneralSimulator {
         f.setGroupingUsed(false);
         f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 
-        System.out.println("\n\n------------------------Risultati prodotti dal valore di stop: " + STOP + " ------------------------\n");
+        //System.out.println("\n\n------------------------Risultati prodotti dal valore di stop: " + STOP + " ------------------------\n");
         allResults.addAll(Arrays.asList( selected_seed,f.format(STOP) ));
 
         /*System.out.println("n1_cloudlet: " + cloudlet.getProcessed_task1()
@@ -275,7 +275,7 @@ public class Simulator_alg1 extends GeneralSimulator {
         }
 
         */
-        System.out.println("\n\n");
+        //System.out.println("\n\n");
 
 
 
