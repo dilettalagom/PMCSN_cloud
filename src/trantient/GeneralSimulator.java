@@ -1,14 +1,15 @@
-package restructed;
+package trantient;
 
 import pmcsn.Rngs;
-import restructed.StruttureDiSistema.EventNode;
+import pmcsn.Util;
+import StruttureDiSistema.EventNode;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import static restructed.Configuration.*;
+import static trantient.Configuration.*;
 
 
 public abstract class GeneralSimulator {
@@ -89,17 +90,6 @@ public abstract class GeneralSimulator {
     }
 
 
-    public abstract ArrayList<String> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo);
-
-    public void print_on_file(PrintWriter writer, String[] row) {
-
-        for (String s : row) {
-            writer.write(s);
-            writer.write(';');
-        }
-        writer.write(System.getProperty("line.separator"));
-    }
-
     public boolean check_system_servers(ArrayList<EventNode> system_events) {
 
         for (EventNode e : system_events) {
@@ -118,13 +108,13 @@ public abstract class GeneralSimulator {
             switch (filename) {
                 case "instantCompleteTime":
                     //Tempi di Completamento istantanei per : Cloudlet, Cloud, Sistema
-                    writer = new PrintWriter(new FileWriter("temp/" + filename + algoritmo + selected_seed + ".csv"));
-                    print_on_file(writer, new String[]{"istante", "cloudlet", "cloud", "sistema"});
+                    writer = new PrintWriter(new FileWriter("Matlab/" + filename + algoritmo + selected_seed + ".csv"));
+                    Util.print_on_file(writer, new String[]{"istante", "cloudlet", "cloud", "sistema"});
                     break;
                 case "meanResponseTime":
                     //Tempi di Risposta medi per : Cloudlet, Cloud, Sistema
-                    writer = new PrintWriter(new FileWriter("temp/" + filename + algoritmo + selected_seed + ".csv"));
-                    print_on_file(writer, new String[]{"seed", "cloudlet", "cloudlet_task1", "cloudlet_task2",
+                    writer = new PrintWriter(new FileWriter("Matlab/" + filename + algoritmo + selected_seed + ".csv"));
+                    Util.print_on_file(writer, new String[]{"seed", "cloudlet", "cloudlet_task1", "cloudlet_task2",
                                                                 "cloud", "cloud_task1", "cloud_task2",
                                                                 "system", "system_task1", "system_task2"});
                     break;
@@ -177,5 +167,9 @@ public abstract class GeneralSimulator {
         }
         return (server);
     }
+
+    public abstract ArrayList<String> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo);
+    public abstract void RunBatch(Rngs r, double STOP, String selected_seed, String algoritmo);
+
 
 }

@@ -1,4 +1,4 @@
-package restructed.StruttureDiSistema;
+package StruttureDiSistema;
 
 public class GlobalNode {
 
@@ -55,4 +55,14 @@ public class GlobalNode {
         this.complete_time_cloud = complete_time_cloud;
     }
 
+    public void setEmpty() {
+
+        this.complete_time_cloud = 0.0;
+        this.complete_time_cloudlet = 0.0;
+        this.complete_time_system = 0.0;
+
+        this.complete_time_task1 = 0.0;
+        this.complete_time_task2 = 0.0;
+
+    }
 }

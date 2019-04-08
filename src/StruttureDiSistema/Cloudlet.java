@@ -1,4 +1,8 @@
-package restructed.StruttureDiSistema;
+package StruttureDiSistema;
+
+import java.util.ArrayList;
+
+import static trantient.Configuration.SERVERS;
 
 public class Cloudlet {
 
@@ -60,5 +64,24 @@ public class Cloudlet {
 
     public void setProcessed_task2(int processed_task2) {
         this.processed_task2 = processed_task2;
+    }
+
+    public void resetCloudlet(ArrayList<EventNode> system_events) {
+        this.area_task1 = 0.0;
+        this.area_task2 = 0.0;
+
+        this.processed_task1 = 0;
+        this.processed_task2 = 0;
+
+        this.working_task1 = 0;
+        this.working_task2 = 0;
+
+        for (int i=1; i<SERVERS; i++){
+            if (system_events.get(i).getType() == 1)
+                this.working_task1++;
+            else if (system_events.get(i).getType() == 2)
+                this.working_task2++;
+        }
+
     }
 }

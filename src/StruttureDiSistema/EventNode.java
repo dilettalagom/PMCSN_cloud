@@ -1,4 +1,4 @@
-package restructed.StruttureDiSistema;
+package StruttureDiSistema;
 
 public class EventNode {
 

@@ -1,4 +1,4 @@
-package restructed.StruttureDiSistema;
+package StruttureDiSistema;
 
 public class SystemClock {
 
@@ -25,6 +25,11 @@ public class SystemClock {
 
     public void setNext(double next) {
         this.next = next;
+    }
+
+    public void setEmpty() {
+        this.current = 0.0;
+        this.next = 0.0;
     }
 
 }

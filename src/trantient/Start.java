@@ -1,5 +1,6 @@
-package restructed;
+package trantient;
 import pmcsn.Rngs;
+import pmcsn.Util;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static restructed.Configuration.*;
+import static trantient.Configuration.*;
 
 
 
@@ -62,7 +63,7 @@ public class Start {
 
                     switch (selected) {
                         case 1: {
-                            Simulator_alg1 s_algorith1 = new Simulator_alg1();
+                            Simulator1_Tran s_algorith1 = new Simulator1_Tran();
                             ArrayList<String> values = s_algorith1.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), "Alg1");
 
                             Object[] temp = values.toArray();
@@ -74,7 +75,7 @@ public class Start {
                             break;
                         }
                         case 2: {
-                            Simulator_alg2 s_algorith2 = new Simulator_alg2();
+                            Simulator2_Tran s_algorith2 = new Simulator2_Tran();
                             ArrayList<String> values = s_algorith2.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), "Alg2_");
 
 

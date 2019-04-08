@@ -1,4 +1,4 @@
-package restructed;
+package trantient;
 
 public class Configuration {
 
@@ -12,6 +12,7 @@ public class Configuration {
     public static String[] seeds = {"215487963", "987654321"};
     public static String seed = "215487963";
     public static int replications = 20;
+    public static int batch_interval = 100;
 
     //public static String[] seeds = {"215487963","123456789","987654321"};
 
