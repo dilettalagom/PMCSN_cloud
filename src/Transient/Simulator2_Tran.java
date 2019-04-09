@@ -1,9 +1,7 @@
-package trantient;
+package Transient;
 
 import pmcsn.Rngs;
 import StruttureDiSistema.*;
-
-import static pmcsn.Configuration.*;
 
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -12,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
-public class Simulator1_Tran extends GeneralSimulator {
+import static pmcsn.Configuration.*;
+
+public class Simulator2_Tran extends GeneralSimulator {
 
     private ArrayList<EventNode> system_events;
     private SystemClock clock;
@@ -23,12 +23,13 @@ public class Simulator1_Tran extends GeneralSimulator {
 
 
     //init delle strutture caratteristiche del simulatore
-    Simulator1_Tran() {
+    Simulator2_Tran() {
 
         this.clet_servers = new ArrayList<>();
         for (int i = 0; i < SERVERS + 1; i++) {
             clet_servers.add(new Server());
         }
+
         this.system_events = new ArrayList<>();
         for (int i = 0; i < SERVERS + 1; i++) {
             system_events.add(new EventNode(START, 0));
@@ -41,29 +42,23 @@ public class Simulator1_Tran extends GeneralSimulator {
     }
 
     @Override
-    public ArrayList<String> RunSimulation(Rngs r,double STOP, String selected_seed, String algoritmo) {
+    public ArrayList<String> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo) {
 
-
-       // PrintWriter instant_writer = createFile("instantCompleteTime", algoritmo, selected_seed);
+        //PrintWriter instant_writer = createFile("instantCompleteTime", algoritmo, selected_seed);
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
         system_events.get(0).setType(getType(r));          // devo decidere se il primo arrivo è di tipo A o B
 
-        // simulazione termina quando :
-        // se il type del prossimo arrivo è 0 -> vuol dire che gli arrivi sono terminati
-        // e termina quando tutti i server dentro il cloudlet e il cloud hanno type = 0
-        while (system_events.get(0).getType() != 0 ) {
+        while (system_events.get(0).getType() != 0) {
 
-            if (system_events.get(0).getTemp() > STOP ) {
-                //System.out.println(system_events);
-                if ( check_system_servers(this.system_events) ){
+            if (system_events.get(0).getTemp() > STOP) {
+                if (check_system_servers(this.system_events)) {
                     break;
                 }
             }
 
-
-            int e = this.nextEvent(system_events);
+            int e = nextEvent(system_events);
 
             clock.setNext(system_events.get(e).getTemp());
             double instant = clock.getNext() - clock.getCurrent();
@@ -92,19 +87,80 @@ public class Simulator1_Tran extends GeneralSimulator {
             cloud.setArea_task2(cloud.getArea_task2() + instant * cloud.getWorking_task2());
 
 
-          /*  Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
+           /* Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
                     String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()))});
 
-           */
-            clock.setCurrent(clock.getNext());
+            */
 
+            clock.setCurrent(clock.getNext());
 
             if (e == 0) { // processo un arrivo
 
-                int type = system_events.get(e).getType();
+                if (cloudlet.getWorking_task1() + cloudlet.getWorking_task2() < SERVERS) {
 
+                    //trovo il server libero da più tempo inattivo
+                    int cloudlet_server_selected = findOneCloudlet(system_events);
+
+                    double service = 0;
+                    if (system_events.get(e).getType() == 1) {
+                        cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
+                        service = getServiceCloudlet(mu1_cloudlet, r);
+
+
+                    } else {
+                        cloudlet.setWorking_task2(cloudlet.getWorking_task2() + 1);
+                        service = getServiceCloudlet(mu2_cloudlet, r);
+                    }
+
+                    // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
+                    system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
+                    system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
+
+
+
+                } else if (system_events.get(e).getType() == 1 && cloudlet.getWorking_task2() > 0) {
+                    // caso in cui mi arriva un task di tipo 1 ed ho dei task di tipo 2 nel cloudelt -> cambio
+                    int cloud_server_selected = findOneCloud(system_events);
+                    int switched_server = findType2ToSwitch(system_events);
+
+
+                    system_events.get(cloud_server_selected).setTemp((clock.getCurrent() + getServiceCloud(mu2_cloud, r)));
+                    system_events.get(cloud_server_selected).setType(system_events.get(switched_server).getType());
+
+                    cloud.setWorking_task2(cloud.getWorking_task2() + 1);
+                    cloudlet.setWorking_task2(cloudlet.getWorking_task2() - 1);
+
+                    //scambio
+                    system_events.get(switched_server).setTemp(getServiceCloudlet(mu1_cloudlet, r) + clock.getCurrent());
+                    system_events.get(switched_server).setType(system_events.get(e).getType());
+
+                    cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
+
+
+                } else {
+                    int cloud_server_selected = findOneCloud(system_events);
+                    int typeCloud = system_events.get(e).getType();
+
+
+                    double service = 0;
+                    if (system_events.get(e).getType() == 1) {
+                        cloud.setWorking_task1(cloud.getWorking_task1() + 1);
+
+                        // genero un servizio secondo la distribuzione del tempo di servizio per  task A
+                        service = this.getServiceCloud(mu1_cloud, r);
+                    } else {
+                        cloud.setWorking_task2(cloud.getWorking_task2() + 1);
+
+                        // genero un servizio secondo la distribuzione del tempo di servizio per  task B
+                        service = this.getServiceCloud(mu2_cloud, r);
+                    }
+
+                    system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
+                    system_events.get(cloud_server_selected).setType(typeCloud);
+
+                }
                 if (system_events.get(0).getTemp() <= STOP) {
                     system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
                     system_events.get(0).setType(getType(r));
@@ -112,74 +168,24 @@ public class Simulator1_Tran extends GeneralSimulator {
                 else {
                     system_events.get(0).setType(0);
                 }
-
-                // se ho server disponibili assegno il task
-                if (cloudlet.getWorking_task1() + cloudlet.getWorking_task2() < SERVERS) { // ho dei server liberi -> ( arrivo cloudlet )
-
-                    //trovo il server libero da più tempo inattivo
-                    int cloudlet_server_selected = findOneCloudlet(system_events);
-
-                    double service = 0;
-                    if (type == 1) {
-                        cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
-                        service = getServiceCloudlet(mu1_cloudlet, r);
-
-
-                    } else if (type == 2) {
-                        cloudlet.setWorking_task2(cloudlet.getWorking_task2() + 1);
-
-                        service = getServiceCloudlet(mu2_cloudlet, r);
-                    }
-
-
-                    clet_servers.get(cloudlet_server_selected).setTotal_service(clet_servers.get(cloudlet_server_selected).getTotal_service() + service );
-
-                    // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
-                    system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
-                    system_events.get(cloudlet_server_selected).setType(type);
-
-
-                } else { // non ho server liberi -> mando al cloud  ( arrivo cloud)
-
-                    //trovo il server libero ( se non esiste lo creo )
-                    int cloud_server_selected = findOneCloud(system_events);
-
-                    int typeCloud = system_events.get(e).getType();
-
-                    double service = 0;
-                    if (system_events.get(e).getType() == 1) {
-                        cloud.setWorking_task1(cloud.getWorking_task1() + 1);
-
-                        // genero un servizio secondo la distribuzione del tempo di servizio per  task A
-                        service = getServiceCloud(mu1_cloud, r);
-
-                    } else {
-                        cloud.setWorking_task2(cloud.getWorking_task2() + 1);
-
-                        // genero un servizio secondo la distribuzione del tempo di servizio per  task B
-                        service = getServiceCloud(mu2_cloud, r);
-                    }
-
-                    system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
-                    system_events.get(cloud_server_selected).setType(typeCloud);
-
-                }
-
-            } else { // processo una partenza
-
+            } else { //partenze
                 if (e <= SERVERS) { // processo una partenza cloudlet
 
                     if (system_events.get(e).getType() == 1) {
                         cloudlet.setWorking_task1(cloudlet.getWorking_task1() - 1);
                         cloudlet.setProcessed_task1(cloudlet.getProcessed_task1() + 1);
+
                         clet_servers.get(e).setProcessed_task1(clet_servers.get(e).getProcessed_task1() + 1 );
+
 
                     } else if (system_events.get(e).getType() == 2) {
                         cloudlet.setWorking_task2(cloudlet.getWorking_task2() - 1);
                         cloudlet.setProcessed_task2(cloudlet.getProcessed_task2() + 1);
+
                         clet_servers.get(e).setProcessed_task2(clet_servers.get(e).getProcessed_task2() + 1 );
                     }
                     system_events.get(e).setType(0);
+
 
                 } else { //processo una partenza del cloud
 
@@ -193,17 +199,18 @@ public class Simulator1_Tran extends GeneralSimulator {
                     }
                     system_events.get(e).setType(0);
                 }
+
             }
+
         }
 
-        // TODO: normalizzare il tempo di risposta nel cloudlet ( ovvero moltiplicare per 1-pq)
 
         DecimalFormat f = new DecimalFormat("###0.000000");
         f.setGroupingUsed(false);
         f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 
-        System.out.println("\n\n------------------------Risultati prodotti dal valore di stop: " + STOP + " ------------------------\n");
-        ArrayList<String> allResults = new ArrayList<>(Arrays.asList(selected_seed, f.format(STOP)));
+        System.out.println("\n\n------------------------Risultati prodotti dal seed: " + selected_seed+ " ------------------------\n");
+        ArrayList<String> allResults = new ArrayList<>(Arrays.asList(selected_seed, Double.toString(STOP)));
 
         System.out.println("n1_cloudlet: " + cloudlet.getProcessed_task1()
                 + "\t\tn2_cloudlet: " + cloudlet.getProcessed_task2() + "\n"
@@ -263,22 +270,39 @@ public class Simulator1_Tran extends GeneralSimulator {
 
         System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
 
+        System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
         for (int s = 1; s <= SERVERS; s++) {
             System.out.print(s + "\t\t" +
                     f.format(clet_servers.get(s).getTotal_service() / clock.getCurrent())+ "\t\t" +
                     clet_servers.get(s).getProcessed_task1()+ "\t\t" + clet_servers.get(s).getProcessed_task2()+ "\n" );
         }
+
         System.out.println("\n\n");
 
         //instant_writer.close();
 
         return allResults;
+    }
 
+
+    private int findType2ToSwitch(ArrayList<EventNode> system_events) {
+        int event;
+        int i = 1;
+
+        while (system_events.get(i).getType() == 1)
+            i++;
+        event = i;
+        while (i < SERVERS) {
+            i++;
+            if ((system_events.get(i).getType() == 2) &&
+                    (system_events.get(i).getTemp() > system_events.get(event).getTemp()))
+                event = i;
+        }
+        return (event);
     }
 
     @Override
     public void RunBatch(Rngs r, double STOP, PrintWriter writer) {
 
     }
-
 }

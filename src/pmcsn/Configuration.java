@@ -9,7 +9,7 @@ public class Configuration {
     public static double lambda = 12.25;
     public static double lambda1 = 6.0;
 
-    public static String[] seeds = {"215487963","123456789","987654321"};
+    public static String[] seeds_collection = {"215487963","123456789","987654321"};
     public static String seed = "215487963";
     public static int tran_replications = 10;
     public static int batch_interval = 1000;

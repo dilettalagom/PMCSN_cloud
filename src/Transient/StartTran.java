@@ -1,4 +1,4 @@
-package trantient;
+package Transient;
 import pmcsn.Rngs;
 import pmcsn.Util;
 
@@ -6,6 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -19,6 +22,15 @@ public class StartTran {
 
         Rngs r = new Rngs();
         r.plantSeeds(Long.parseLong(seed));
+
+        Path path = Paths.get("../PMCSN_cloud/Matlab/transient");
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            System.out.print("C'è stato un errore durante la creazione della cartella\n");
+            System.exit(1);
+        }
+
 
         while (true) {
 
@@ -38,7 +50,7 @@ public class StartTran {
 
             PrintWriter writer = null;
             try {
-                writer = new PrintWriter(new FileWriter("Matlab/" +"IntervalloConfidenza"+ seed + "_Alg" + selected + ".csv"));
+                writer = new PrintWriter(new FileWriter("Matlab/transient/" +"IntervalloConfidenza"+ seed + "_Alg" + selected + ".csv"));
 
                 Util.print_on_file(writer, new String[]{"seed","stop", "cloudlet", "cloudlet_task1", "cloudlet_task2",
                         "cloud", "cloud_task1", "cloud_task2",

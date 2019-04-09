@@ -1,4 +1,4 @@
-package batch;
+package Batch;
 
 import pmcsn.Rngs;
 import pmcsn.Util;
@@ -62,7 +62,7 @@ public class Simulator2_Batch extends GeneralSimulator {
 
         while (system_events.get(0).getType() != 0) {
 
-            if(clock.getCurrent()> batch * batch_interval) {
+            if(clock.getCurrent()> batch * batch_interval && batch*batch_interval < STOP) {
                 System.out.println(batch);
 
                 ArrayList<String> batchValues = new ArrayList<>(Arrays.asList(Integer.toString(batch),
@@ -96,7 +96,6 @@ public class Simulator2_Batch extends GeneralSimulator {
                 system_events.get(0).setType(getType(r));
 
                 batch++;
-
             }
 
             if (system_events.get(0).getTemp() > STOP) {
@@ -174,7 +173,6 @@ public class Simulator2_Batch extends GeneralSimulator {
 
                     cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
 
-
                 } else {
                     int cloud_server_selected = findOneCloud(system_events);
                     int typeCloud = system_events.get(e).getType();
@@ -197,6 +195,7 @@ public class Simulator2_Batch extends GeneralSimulator {
                     system_events.get(cloud_server_selected).setType(typeCloud);
 
                 }
+
                 if (system_events.get(0).getTemp() <= STOP) {
                     system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
                     system_events.get(0).setType(getType(r));
@@ -237,7 +236,7 @@ public class Simulator2_Batch extends GeneralSimulator {
             }
         }
 
-        //ultimo batch che svuota le code, bloccando gli arrivi
+        //ultimo Batch che svuota le code, bloccando gli arrivi
         ArrayList<String> batchValues = new ArrayList<>(Arrays.asList(Integer.toString(batch),
                 f.format(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
                 f.format(cloudlet.getArea_task1() / cloudlet.getProcessed_task1()),
