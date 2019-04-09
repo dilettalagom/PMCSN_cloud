@@ -1,5 +1,7 @@
-1) putSeed()
-2) sceglie il test per la correlazione dei seed -> test ChiQuadroPearson
-3) stampe su files
-4) intervallo di confidenza
+
+1) scegliere il test per la correlazione dei seed -> test ChiQuadroPearson
+2) scegliere grandezza batch
+3) formule analitiche che giustificano il simulatore
+4) relazione
+
 

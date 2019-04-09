@@ -2,15 +2,14 @@ package batch;
 
 import pmcsn.Rngs;
 import pmcsn.Util;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Scanner;
 
-import static trantient.Configuration.STOP_Stazionario;
-import static trantient.Configuration.seed;
+import static trantient.Configuration.*;
 
 
 public class StartBatch {
@@ -18,12 +17,11 @@ public class StartBatch {
     public static void main(String[] args) {
 
         Rngs r = new Rngs();
-        r.plantSeeds(Long.parseLong(seed));
 
         while (true) {
 
             int selected = 0;
-            System.out.print("Quale dei due simulatori vuoi runnare? [1 or 2] \t (Inserire 0 per terminare): ");
+            System.out.print("\n\t\t\tBenvenuto nella simulazione batch.\nQuale dei due simulatori vuoi runnare? [1 or 2] \t (Inserire 0 per terminare): ");
             Scanner reader = new Scanner(new InputStreamReader(System.in));
             try {
                 selected = reader.nextInt();
@@ -35,50 +33,41 @@ public class StartBatch {
                 System.exit(0);
             }
 
-            String filename = seed + "_Batch_Alg1" + selected;
-            PrintWriter writer = null;
-            try {
-                writer = new PrintWriter(new FileWriter("Matlab/" + filename + ".csv"));
-                Util.print_on_file(writer, new String[]{"seed", "stop", "cloudlet", "cloudlet_task1", "cloudlet_task2",
-                        "cloud", "cloud_task1", "cloud_task2",
-                        "system", "system_task1", "system_task2"});
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            for(String seed : seeds) {
 
+                r.plantSeeds(Long.parseLong(seed));
 
-            // for (double stop : STOP_T) {
-            //   for (int i = 0; i < replications; i++) {
-
-            //TODO: errore in cloud--> a volte negativi
-            switch (selected) {
-                case 1: {
-                    Simulator1_Batch s1Batch = new Simulator1_Batch();
-                    ArrayList<String> values = s1Batch.RunSimulation(r, STOP_Stazionario, Long.toString(r.getSeed()), "Alg1");
-                    Util.print_on_file(writer, Util.convertArrayList(values));
-                    break;
+                PrintWriter batchWriter = null;
+                try {
+                    batchWriter = new PrintWriter(new FileWriter("Matlab/" + "batchFile" + seed + "_Alg" + selected + ".csv"));
+                    Util.print_on_file(batchWriter, new String[]{"batch", "cloudlet", "cloudlet_task1", "cloudlet_task2",
+                            "cloud", "cloud_task1", "cloud_task2",
+                            "system", "system_task1", "system_task2"});
+                } catch (IOException e) {
+                    System.out.print("C'è stato un errore durante la creazione del file\n");
+                    System.exit(1);
                 }
-                case 2: {
-                    Simulator2_Batch s_algorith2 = new Simulator2_Batch();
-                    ArrayList<String> values = s_algorith2.RunSimulation(r, STOP_Stazionario, Long.toString(r.getSeed()), "Alg2_");
 
-                    Util.print_on_file(writer, Util.convertArrayList(values));
-                    break;
+                switch (selected) {
+                    case 1: {
+                        Simulator1_Batch s1Batch = new Simulator1_Batch();
+                        s1Batch.RunBatch(r, STOP, batchWriter);
+
+                        break;
+                    }
+                    case 2: {
+                        Simulator2_Batch s2Batch = new Simulator2_Batch();
+                        s2Batch.RunBatch(r, STOP, batchWriter);
+
+                        break;
+                    }
+                    default:
+                        System.out.print("Inserire un valore significativo!\n\n ");
+                        break;
+
                 }
-                default:
-                    System.out.print("Inserire un valore significativo!\n\n ");
-                    break;
-
             }
-
-            //       r.plantSeeds(r.getSeed());
-            //     }
-            //  }
-
-            assert (writer != null);
-            writer.close();
-
         }
-
     }
 }
+

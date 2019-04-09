@@ -45,7 +45,7 @@ public class Simulator1_Tran extends GeneralSimulator {
     public ArrayList<String> RunSimulation(Rngs r,double STOP, String selected_seed, String algoritmo) {
 
 
-        PrintWriter instant_writer = createFile("instant_writer", algoritmo, selected_seed);
+       // PrintWriter instant_writer = createFile("instantCompleteTime", algoritmo, selected_seed);
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
@@ -93,12 +93,12 @@ public class Simulator1_Tran extends GeneralSimulator {
             cloud.setArea_task2(cloud.getArea_task2() + instant * cloud.getWorking_task2());
 
 
-            Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
+          /*  Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
                     String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()))});
 
-
+           */
             clock.setCurrent(clock.getNext());
 
 
@@ -134,7 +134,6 @@ public class Simulator1_Tran extends GeneralSimulator {
 
 
                     clet_servers.get(cloudlet_server_selected).setTotal_service(clet_servers.get(cloudlet_server_selected).getTotal_service() + service );
-
 
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
@@ -272,14 +271,14 @@ public class Simulator1_Tran extends GeneralSimulator {
         }
         System.out.println("\n\n");
 
-        instant_writer.close();
+        //instant_writer.close();
 
         return allResults;
 
     }
 
     @Override
-    public void RunBatch(Rngs r, double STOP, String selected_seed, String algoritmo) {
+    public void RunBatch(Rngs r, double STOP, PrintWriter writer) {
 
     }
 

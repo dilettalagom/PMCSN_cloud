@@ -50,22 +50,13 @@ public class Simulator1_Batch extends GeneralSimulator {
     }
 
     @Override
-    public void RunBatch(Rngs r, double STOP, String selected_seed, String algoritmo) {
+    public void RunBatch(Rngs r, double STOP, PrintWriter batchWriter) {
 
         int batch = 1;
         DecimalFormat f = new DecimalFormat("###0.000000");
         f.setGroupingUsed(false);
         f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 
-        PrintWriter  batchWriter = null ;
-        try {
-            batchWriter = new PrintWriter(new FileWriter("Matlab/" + "batchFile_Alg1" + selected_seed + ".csv"));
-            Util.print_on_file(batchWriter, new String[]{"seed", "batch", "cloudlet", "cloudlet_task1", "cloudlet_task2",
-                    "cloud", "cloud_task1", "cloud_task2",
-                    "system", "system_task1", "system_task2"});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 
         // primo arrivo
@@ -77,9 +68,10 @@ public class Simulator1_Batch extends GeneralSimulator {
         // e termina quando tutti i server dentro il cloudlet e il cloud hanno type = 0
         while (system_events.get(0).getType() != 0 ) {
 
-            if(clock.getCurrent()>batch * batch_interval){
+            if(clock.getCurrent()> batch * batch_interval){
+                System.out.println(batch);
 
-                ArrayList<String> batchValues = new ArrayList<>(Arrays.asList(selected_seed, Integer.toString(batch),
+                ArrayList<String> batchValues = new ArrayList<>(Arrays.asList( Integer.toString(batch),
                         f.format(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
                         f.format(cloudlet.getArea_task1() / cloudlet.getProcessed_task1()),
                         f.format(cloudlet.getArea_task2() / cloudlet.getProcessed_task2()),
@@ -89,8 +81,8 @@ public class Simulator1_Batch extends GeneralSimulator {
                         f.format(cloud.getArea_task2() / cloud.getProcessed_task2()),
 
                         f.format(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
-                        f.format(global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
-                        f.format(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))
+                        f.format(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
+                        f.format(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))
                 ));
 
 
@@ -246,10 +238,24 @@ public class Simulator1_Batch extends GeneralSimulator {
                     }
                     system_events.get(e).setType(0);
                 }
-
-
             }
         }
+
+        //ultimo batch che svuota le code, bloccando gli arrivi
+        ArrayList<String> batchValues = new ArrayList<>(Arrays.asList(Integer.toString(batch),
+                f.format(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
+                f.format(cloudlet.getArea_task1() / cloudlet.getProcessed_task1()),
+                f.format(cloudlet.getArea_task2() / cloudlet.getProcessed_task2()),
+
+                f.format(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
+                f.format(cloud.getArea_task1() / cloud.getProcessed_task1()),
+                f.format(cloud.getArea_task2() / cloud.getProcessed_task2()),
+
+                f.format(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
+                f.format(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
+                f.format(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))
+        ));
+        Util.print_on_file(batchWriter, Util.convertArrayList(batchValues));
 
         assert (batchWriter!=null);
         batchWriter.close();

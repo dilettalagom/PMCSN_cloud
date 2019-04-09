@@ -73,15 +73,5 @@ public class Cloudlet {
         this.processed_task1 = 0;
         this.processed_task2 = 0;
 
-        this.working_task1 = 0;
-        this.working_task2 = 0;
-
-        for (int i=1; i<SERVERS; i++){
-            if (system_events.get(i).getType() == 1)
-                this.working_task1++;
-            else if (system_events.get(i).getType() == 2)
-                this.working_task2++;
-        }
-
     }
 }

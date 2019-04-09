@@ -70,7 +70,7 @@ public class Cloud {
         this.processed_task1 = 0;
         this.processed_task2 = 0;
 
-        this.working_task1 = 0;
+       /* this.working_task1 = 0;
         this.working_task2 = 0;
 
         for (int i=SERVERS+1; i<system_events.size(); i++){
@@ -78,7 +78,7 @@ public class Cloud {
                 this.working_task1++;
             else if (system_events.get(i).getType() == 2)
                 this.working_task2++;
-        }
+        }*/
 
     }
 }
