@@ -19,7 +19,7 @@ public class StartBatch {
 
         Rngs r = new Rngs();
 
-        Path path = Paths.get("../PMCSN_cloud/Matlab/Batch");
+        Path path = Paths.get("../PMCSN/Matlab/Batch");
         try {
             Files.createDirectories(path);
         } catch (IOException e) {

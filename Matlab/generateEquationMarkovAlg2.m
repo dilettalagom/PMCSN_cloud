@@ -135,6 +135,36 @@ function generateEquationMarkovAlg2()
  Rc = pq*(mAc+mBc)/2
  
  Rtot = Rclet+Rc
+ 
+ %%
+
+Alg2 = importIntervalConfidence('IntervalloConfidenza215487963_Alg2.csv', 3);
+stop = [100.0,200.0,300.0,400.0,500.0,600.0,700.0,800.0,900.0,1000.0,1100.0,1200.0,1300.0,1400.0,1500.0,1600.0];
+
+means = 1:length(stop);
+errors = 1:length(stop);
+
+
+
+for i = 1:length(stop)
+    AlgFiltered=Alg2(Alg2.stop==stop(i),:);
+    %genera intervallo di confidenza ci = [x-intervallo; x+intevallo] 
+    [~,~,ci,~] = ztest(AlgFiltered.system,mean(AlgFiltered.system),std(AlgFiltered.system),0.05,0);
+    
+    means(i) = mean(AlgFiltered.system);
+    errors(i) = abs(ci(1)-ci(2));
+    
+end
+
+%plot degli intervalli di confidenza e della retta == media
+figure;
+xlim([0 1800])
+ylim([1.45 1.85])
+yline(Rtot,'blue'); %plotting della media teorica
+hold on
+errorbar(stop,means,errors,'ro');  %plotting degli intervalli
+
+
 
 end
 

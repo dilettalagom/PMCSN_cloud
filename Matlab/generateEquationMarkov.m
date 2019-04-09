@@ -158,5 +158,29 @@ yline(Rtot,'blue'); %plotting della media teorica
 hold on
 errorbar(stop,means,errors,'ro');  %plotting degli intervalli
 
+%%
+d=dir("./Batch");
+s=size(d);
+means = 1:s(1)-2;
+errors = 1:s(1)-2;
+j=1:s(1)-2;
+j(1)=3;
+for i = 3:s(1)
+    Alg1 = importBatch("./Batch/"+convertCharsToStrings(d(i).name), 3);
 
+    %genera intervallo di confidenza ci = [x-intervallo; x+intevallo] 
+    [~,~,ci,~] = ztest(Alg1.system,mean(Alg1.system),std(Alg1.system),0.05,0);
+    
+    means(i-2) = mean(Alg1.system);
+    errors(i-2) = abs(ci(1)-ci(2));
+  
+    j(i-2)=i;
+end
+%plot degli intervalli di confidenza e della retta == media
+figure;
+xlim([0 10])
+ylim([1.65 1.68])
 
+yline(Rtot,'blue'); %plotting della media teorica
+hold on
+errorbar(j,means,errors,'ro');  %plotting degli intervalli
