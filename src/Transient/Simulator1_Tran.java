@@ -1,6 +1,5 @@
 package Transient;
 
-
 import pmcsn.Rngs;
 import StruttureDiSistema.*;
 
@@ -197,7 +196,6 @@ public class Simulator1_Tran extends GeneralSimulator {
             }
         }
 
-        // TODO: normalizzare il tempo di risposta nel cloudlet ( ovvero moltiplicare per 1-pq)
 
         DecimalFormat f = new DecimalFormat("###0.000000");
         f.setGroupingUsed(false);
@@ -230,24 +228,24 @@ public class Simulator1_Tran extends GeneralSimulator {
         System.out.println("numero medio di task1 del cloud " + f.format(cloud.getArea_task1() / clock.getCurrent()));
         System.out.println("numero medio di task2 del cloud " + f.format(cloud.getArea_task2() / clock.getCurrent()) + "\n");
 
-        System.out.println("tempo di risposta del cloudlet " + f.format(global_node.getComplete_time_cloudlet() / (totalTask) ));
-        System.out.println("tempo di risposta del cloudlet per task1 " + f.format(cloudlet.getArea_task1() / (   cloudlet.getProcessed_task1()+cloud.getProcessed_task1())      ) );
+        System.out.println("tempo di risposta del cloudlet " + f.format(global_node.getComplete_time_cloudlet() / totalTask));
+        System.out.println("tempo di risposta del cloudlet per task1 " + f.format(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+cloud.getProcessed_task1() ) ) );
         System.out.println("tempo di risposta del cloudlet per task2 " + f.format(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2() ) )+ "\n")   ;
-        allResults.addAll(Arrays.asList( f.format( global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
+        allResults.addAll(Arrays.asList( f.format( global_node.getComplete_time_cloudlet() / totalTask ),
                 f.format(cloudlet.getArea_task1() / cloudlet.getProcessed_task1()),
                 f.format(cloudlet.getArea_task2() / cloudlet.getProcessed_task2())));
 
-        System.out.println("tempo di risposta del cloud " + f.format(global_node.getComplete_time_cloud() / (totalTask)) );
+        System.out.println("tempo di risposta del cloud " + f.format(global_node.getComplete_time_cloud() / totalTask ));
         System.out.println("tempo di risposta del cloud per task1 " + f.format(cloud.getArea_task1() / (cloudlet.getProcessed_task1()+cloud.getProcessed_task1())) );
         System.out.println("tempo di risposta del cloud per task2 " +  f.format(cloud.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2()) )+ "\n");
-        allResults.addAll(Arrays.asList( f.format( global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
+        allResults.addAll(Arrays.asList( f.format( global_node.getComplete_time_cloud() / totalTask ),
                 f.format( cloud.getArea_task1() / cloud.getProcessed_task1()),
                 f.format( cloud.getArea_task2() / cloud.getProcessed_task2())));
 
-        System.out.println("tempo medio di risposta del sistema " + f.format(global_node.getComplete_time_system() / totalTask) );
+        System.out.println("tempo medio di risposta del sistema " + f.format(global_node.getComplete_time_system() / totalTask ));
         System.out.println("tempo di risposta sistema per task1 " + f.format(global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())) );
         System.out.println("tempo di risposta sistema per task2 " + f.format(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2())) + "\n");
-        allResults.addAll(Arrays.asList( f.format( global_node.getComplete_time_system() / totalTask),
+        allResults.addAll(Arrays.asList( f.format( global_node.getComplete_time_system() / totalTask ),
                 f.format( global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
                 f.format(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))));
 
@@ -278,9 +276,7 @@ public class Simulator1_Tran extends GeneralSimulator {
     }
 
     @Override
-    public void RunBatch(Rngs r, double STOP, PrintWriter writer) {
-
-    }
+    public void RunBatch(Rngs r, double STOP, PrintWriter writer) {}
 
 
     public static void main(String[] args) {

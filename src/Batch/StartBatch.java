@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 import static pmcsn.Configuration.*;
 
+//TODO: creare utilizzazione sul simulatore2_transiente e simulatore2_batch
 
 public class StartBatch {
 

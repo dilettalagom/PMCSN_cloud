@@ -90,7 +90,6 @@ public class StartTran {
             assert (writer != null);
             writer.close();
 
-
         }
     }
 
