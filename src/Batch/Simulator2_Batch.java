@@ -66,13 +66,13 @@ public class Simulator2_Batch extends GeneralSimulator {
                 System.out.println(batch);
 
                 ArrayList<String> batchValues = new ArrayList<>(Arrays.asList(Integer.toString(batch),
-                        f.format(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
-                        f.format(cloudlet.getArea_task1() / cloudlet.getProcessed_task1()),
-                        f.format(cloudlet.getArea_task2() / cloudlet.getProcessed_task2()),
+                        f.format(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
+                        f.format(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1())),
+                        f.format(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2())),
 
-                        f.format(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
-                        f.format(cloud.getArea_task1() / cloud.getProcessed_task1()),
-                        f.format(cloud.getArea_task2() / cloud.getProcessed_task2()),
+                        f.format(global_node.getComplete_time_cloud() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
+                        f.format(cloud.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1())),
+                        f.format(cloud.getArea_task2() / ( cloudlet.getProcessed_task2()+ cloud.getProcessed_task2())),
 
                         f.format(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
                         f.format(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
@@ -238,13 +238,13 @@ public class Simulator2_Batch extends GeneralSimulator {
 
         //ultimo Batch che svuota le code, bloccando gli arrivi
         ArrayList<String> batchValues = new ArrayList<>(Arrays.asList(Integer.toString(batch),
-                f.format(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
-                f.format(cloudlet.getArea_task1() / cloudlet.getProcessed_task1()),
-                f.format(cloudlet.getArea_task2() / cloudlet.getProcessed_task2()),
+                f.format(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
+                f.format(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1())),
+                f.format(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2())),
 
-                f.format(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
-                f.format(cloud.getArea_task1() / cloud.getProcessed_task1()),
-                f.format(cloud.getArea_task2() / cloud.getProcessed_task2()),
+                f.format(global_node.getComplete_time_cloud() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
+                f.format(cloud.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1())),
+                f.format(cloud.getArea_task2() / ( cloudlet.getProcessed_task2()+ cloud.getProcessed_task2())),
 
                 f.format(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
                 f.format(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
