@@ -1,12 +1,10 @@
 package batch;
 
 import pmcsn.Rngs;
-import trantient.GeneralSimulator;
+import StruttureDiSistema.GeneralSimulator;
 import StruttureDiSistema.*;
 import pmcsn.Util;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -14,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
-import static trantient.Configuration.*;
+import static pmcsn.Configuration.*;
 
 public class Simulator1_Batch extends GeneralSimulator {
 

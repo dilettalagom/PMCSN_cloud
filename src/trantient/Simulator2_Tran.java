@@ -2,7 +2,6 @@ package trantient;
 
 import pmcsn.Rngs;
 import StruttureDiSistema.*;
-import pmcsn.Util;
 
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
-import static trantient.Configuration.*;
+import static pmcsn.Configuration.*;
 
 public class Simulator2_Tran extends GeneralSimulator {
 

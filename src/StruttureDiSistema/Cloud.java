@@ -2,8 +2,6 @@ package StruttureDiSistema;
 
 import java.util.ArrayList;
 
-import static trantient.Configuration.SERVERS;
-
 public class Cloud {
 
     private double area_task1 = 0;

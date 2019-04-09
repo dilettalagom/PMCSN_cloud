@@ -1,15 +1,14 @@
-package trantient;
+package StruttureDiSistema;
 
 import pmcsn.Rngs;
 import pmcsn.Util;
-import StruttureDiSistema.EventNode;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import static trantient.Configuration.*;
+import static pmcsn.Configuration.*;
 
 
 public abstract class GeneralSimulator {

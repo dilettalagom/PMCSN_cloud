@@ -111,7 +111,7 @@ function generateEquationMarkovAlg2()
    %%
    %somma delle probabilità degli stati dell'ultimo layer
    l = length(Y);
-   display(Y(l));
+   disp(Y(l));
    
    %%
     s = 0;

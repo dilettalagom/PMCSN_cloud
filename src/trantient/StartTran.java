@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static trantient.Configuration.*;
+import static pmcsn.Configuration.*;
 
 
 

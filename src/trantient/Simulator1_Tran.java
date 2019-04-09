@@ -2,9 +2,8 @@ package trantient;
 
 import pmcsn.Rngs;
 import StruttureDiSistema.*;
-import pmcsn.Util;
 
-import static trantient.Configuration.*;
+import static pmcsn.Configuration.*;
 
 import java.io.PrintWriter;
 import java.text.DecimalFormat;

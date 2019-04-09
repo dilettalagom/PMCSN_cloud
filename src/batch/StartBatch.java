@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import static trantient.Configuration.*;
+import static pmcsn.Configuration.*;
 
 
 public class StartBatch {
