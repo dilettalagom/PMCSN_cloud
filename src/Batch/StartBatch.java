@@ -1,5 +1,6 @@
 package Batch;
 
+import pmcsn.Estimate;
 import pmcsn.Rngs;
 import pmcsn.Util;
 
@@ -7,11 +8,11 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static pmcsn.Configuration.*;
 
-//TODO: creare utilizzazione sul simulatore2_transiente e simulatore2_batch
 
 public class StartBatch {
 
@@ -19,7 +20,7 @@ public class StartBatch {
 
         Rngs r = new Rngs();
 
-        Path path = Paths.get("../PMCSN_cloud/Matlab/Batch");
+        Path path = Paths.get("../PMCSN_cloud/Matlab/batch");
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
@@ -60,13 +61,19 @@ public class StartBatch {
                 switch (selected) {
                     case 1: {
                         Simulator1_Batch s1Batch = new Simulator1_Batch();
-                        s1Batch.RunBatch(r, STOP, batchWriter);
+
+                        ArrayList<ArrayList<Double>> simulatorDatas = s1Batch.RunBatch(r, STOP, batchWriter);
+                        Estimate e = new Estimate();
+                        e.calcolateConfidenceByArrays(simulatorDatas);
 
                         break;
                     }
                     case 2: {
                         Simulator2_Batch s2Batch = new Simulator2_Batch();
-                        s2Batch.RunBatch(r, STOP, batchWriter);
+
+                        ArrayList<ArrayList<Double>> simulatorDatas = s2Batch.RunBatch(r, STOP, batchWriter);
+                        Estimate e = new Estimate();
+                        e.calcolateConfidenceByArrays(simulatorDatas);
 
                         break;
                     }

@@ -61,22 +61,12 @@ public class Cloud {
         this.processed_task2 = processed_task2;
     }
 
-    public void resetCloud( ArrayList<EventNode> system_events) {
+    public void resetCloud() {
         this.area_task1 = 0.0;
         this.area_task2 = 0.0;
 
         this.processed_task1 = 0;
         this.processed_task2 = 0;
-
-       /* this.working_task1 = 0;
-        this.working_task2 = 0;
-
-        for (int i=SERVERS+1; i<system_events.size(); i++){
-            if (system_events.get(i).getType() == 1)
-                this.working_task1++;
-            else if (system_events.get(i).getType() == 2)
-                this.working_task2++;
-        }*/
 
     }
 }

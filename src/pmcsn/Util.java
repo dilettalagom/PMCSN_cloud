@@ -8,6 +8,10 @@ import java.util.Locale;
 
 public class Util {
 
+    public static ArrayList<String> titles = new ArrayList<>(Arrays.asList("Batch", "cloudlet", "cloudlet_task1", "cloudlet_task2",
+            "cloud", "cloud_task1", "cloud_task2",
+            "system", "system_task1", "system_task2"));
+
     public static void print_on_file(PrintWriter writer, String[] row) {
 
         for (String s : row) {

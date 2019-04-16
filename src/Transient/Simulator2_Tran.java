@@ -108,7 +108,6 @@ public class Simulator2_Tran extends GeneralSimulator {
                         cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
                         service = getServiceCloudlet(mu1_cloudlet, r);
 
-
                     } else {
                         cloudlet.setWorking_task2(cloudlet.getWorking_task2() + 1);
                         service = getServiceCloudlet(mu2_cloudlet, r);
@@ -169,6 +168,7 @@ public class Simulator2_Tran extends GeneralSimulator {
                     system_events.get(0).setType(0);
                 }
             } else { //partenze
+
                 if (e <= SERVERS) { // processo una partenza cloudlet
 
                     if (system_events.get(e).getType() == 1) {
@@ -184,6 +184,10 @@ public class Simulator2_Tran extends GeneralSimulator {
 
                         clet_servers.get(e).setProcessed_task2(clet_servers.get(e).getProcessed_task2() + 1 );
                     }
+
+                    //TODO: controllare
+                    clet_servers.get(e).setTotal_service(clet_servers.get(e).getTotal_service() + (clock.getCurrent()-instant) );
+
                     system_events.get(e).setType(0);
 
 
@@ -257,19 +261,19 @@ public class Simulator2_Tran extends GeneralSimulator {
                 f.format( global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
                 f.format(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))));
 
-        System.out.println("Throughtput simulato per il cloudlet " + f.format((cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / clock.getCurrent()) );
-        System.out.println("Throughtput simulato per il cloud " + f.format(( cloud.getProcessed_task1() + cloud.getProcessed_task2()) / clock.getCurrent()) +"\n");
+        System.out.println("Throughput simulato per il cloudlet " + f.format((cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / clock.getCurrent()) );
+        System.out.println("Throughput simulato per il cloud " + f.format(( cloud.getProcessed_task1() + cloud.getProcessed_task2()) / clock.getCurrent()) +"\n");
 
-        System.out.println("Throughtput Task1 per il cloudlet " + f.format(cloudlet.getProcessed_task1() / clock.getCurrent()) );
-        System.out.println("Throughtput Task2 per il cloudlet " + f.format(cloudlet.getProcessed_task2() / clock.getCurrent()) + "\n");
+        System.out.println("Throughput task1 per il cloudlet " + f.format(cloudlet.getProcessed_task1() / clock.getCurrent()) );
+        System.out.println("Throughput task2 per il cloudlet " + f.format(cloudlet.getProcessed_task2() / clock.getCurrent()) + "\n");
 
-        System.out.println("Throughtput Task1 per il cloud " + f.format(cloud.getProcessed_task1() / clock.getCurrent()) );
-        System.out.println("Throughtput Task2 per il cloud " + f.format(cloud.getProcessed_task2() / clock.getCurrent()) + "\n");
+        System.out.println("Throughput task1 per il cloud " + f.format(cloud.getProcessed_task1() / clock.getCurrent()) );
+        System.out.println("Throughput task2 per il cloud " + f.format(cloud.getProcessed_task2() / clock.getCurrent()) + "\n");
 
-        System.out.println(" pq " + pq +"\n");
+        System.out.println(" pq " + f.format(pq)+ "\n");
 
-        System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
 
+        //TODO: utilizzazione è sempre a 0
         System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
         for (int s = 1; s <= SERVERS; s++) {
             System.out.print(s + "\t\t" +
@@ -302,7 +306,8 @@ public class Simulator2_Tran extends GeneralSimulator {
     }
 
     @Override
-    public void RunBatch(Rngs r, double STOP, PrintWriter writer) {}
+    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter writer) {
+    return null;}
 
     public static void main(String[] args) {
         Rngs r = new Rngs();

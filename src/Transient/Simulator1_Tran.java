@@ -249,16 +249,16 @@ public class Simulator1_Tran extends GeneralSimulator {
                 f.format( global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
                 f.format(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))));
 
-        System.out.println("Throughtput simulato per il cloudlet " + f.format((cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / clock.getCurrent()) );
-        System.out.println("Throughtput simulato per il cloud " + f.format(( cloud.getProcessed_task1() + cloud.getProcessed_task2()) / clock.getCurrent()) +"\n");
+        System.out.println("Throughput simulato per il cloudlet " + f.format((cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / clock.getCurrent()) );
+        System.out.println("Throughput simulato per il cloud " + f.format(( cloud.getProcessed_task1() + cloud.getProcessed_task2()) / clock.getCurrent()) +"\n");
 
-        System.out.println("Throughtput Task1 per il cloudlet " + f.format(cloudlet.getProcessed_task1() / clock.getCurrent()) );
-        System.out.println("Throughtput Task2 per il cloudlet " + f.format(cloudlet.getProcessed_task2() / clock.getCurrent()) + "\n");
+        System.out.println("Throughput task1 per il cloudlet " + f.format(cloudlet.getProcessed_task1() / clock.getCurrent()) );
+        System.out.println("Throughput task2 per il cloudlet " + f.format(cloudlet.getProcessed_task2() / clock.getCurrent()) + "\n");
 
-        System.out.println("Throughtput Task1 per il cloud " + f.format(cloud.getProcessed_task1() / clock.getCurrent()) );
-        System.out.println("Throughtput Task2 per il cloud " + f.format(cloud.getProcessed_task2() / clock.getCurrent()) + "\n");
+        System.out.println("Throughput task1 per il cloud " + f.format(cloud.getProcessed_task1() / clock.getCurrent()) );
+        System.out.println("Throughput task2 per il cloud " + f.format(cloud.getProcessed_task2() / clock.getCurrent()) + "\n");
 
-        System.out.println(" pq " + pq +"\n");
+        System.out.println(" pq " + f.format(pq)+ "\n");
 
         System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
 
@@ -276,7 +276,7 @@ public class Simulator1_Tran extends GeneralSimulator {
     }
 
     @Override
-    public void RunBatch(Rngs r, double STOP, PrintWriter writer) {}
+    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter writer) {return null;}
 
 
     public static void main(String[] args) {

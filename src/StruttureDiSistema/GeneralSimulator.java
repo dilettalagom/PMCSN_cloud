@@ -76,8 +76,8 @@ public abstract class GeneralSimulator {
         int event;
         int i = 0;
 
-        while (list_events.get(i).getType() == 0)       /* find the index of the first 'active' */
-            i++;                                        /* element in the event list            */
+       /* while (list_events.get(i).getType() == 0)       // find the index of the first 'active'
+            i++;*/                                        // element in the event list
         event = i;
         while (i < list_events.size() - 1) {             /* now, check the others to find which  */
             i++;                                         /* event type is most imminent          */
@@ -168,7 +168,7 @@ public abstract class GeneralSimulator {
     }
 
     public abstract ArrayList<String> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo);
-    public abstract void RunBatch(Rngs r, double STOP, PrintWriter batchWriter);
+    public abstract ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter batchWriter);
 
 
 }

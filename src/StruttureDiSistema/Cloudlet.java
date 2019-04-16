@@ -64,7 +64,7 @@ public class Cloudlet {
         this.processed_task2 = processed_task2;
     }
 
-    public void resetCloudlet(ArrayList<EventNode> system_events) {
+    public void resetCloudlet() {
         this.area_task1 = 0.0;
         this.area_task2 = 0.0;
 
