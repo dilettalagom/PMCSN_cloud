@@ -113,6 +113,13 @@ public class Simulator2_Tran extends GeneralSimulator {
                         service = getServiceCloudlet(mu2_cloudlet, r);
                     }
 
+
+                    double temp = clet_servers.get(cloudlet_server_selected).getTotal_service() + service;
+                    clet_servers.get(cloudlet_server_selected).setTotal_service(temp);
+                    //System.out.println(temp);
+
+                    // salvo il tempo di servizio generato per il task in esecuzione sul server
+                    clet_servers.get(cloudlet_server_selected).setLast_service(clock.getCurrent() + service);
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
@@ -128,12 +135,22 @@ public class Simulator2_Tran extends GeneralSimulator {
                     system_events.get(cloud_server_selected).setTemp((clock.getCurrent() + getServiceCloud(mu2_cloud, r)));
                     system_events.get(cloud_server_selected).setType(system_events.get(switched_server).getType());
 
+
                     cloud.setWorking_task2(cloud.getWorking_task2() + 1);
                     cloudlet.setWorking_task2(cloudlet.getWorking_task2() - 1);
 
+
                     //scambio
-                    system_events.get(switched_server).setTemp(getServiceCloudlet(mu1_cloudlet, r) + clock.getCurrent());
+                    double service = getServiceCloudlet(mu1_cloudlet, r);
+                    system_events.get(switched_server).setTemp( service + clock.getCurrent());
                     system_events.get(switched_server).setType(system_events.get(e).getType());
+
+                    double temp =  clet_servers.get(switched_server).getLast_service() - clock.getCurrent() ;
+
+                    //System.out.println(temp);
+                    clet_servers.get(switched_server).setTotal_service(clet_servers.get(switched_server).getTotal_service()
+                           -temp + service);
+
 
                     cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
 
@@ -184,9 +201,6 @@ public class Simulator2_Tran extends GeneralSimulator {
 
                         clet_servers.get(e).setProcessed_task2(clet_servers.get(e).getProcessed_task2() + 1 );
                     }
-
-                    //TODO: controllare
-                    clet_servers.get(e).setTotal_service(clet_servers.get(e).getTotal_service() + (clock.getCurrent()-instant) );
 
                     system_events.get(e).setType(0);
 
@@ -273,9 +287,10 @@ public class Simulator2_Tran extends GeneralSimulator {
         System.out.println(" pq " + f.format(pq)+ "\n");
 
 
-        //TODO: utilizzazione è sempre a 0
+
         System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
         for (int s = 1; s <= SERVERS; s++) {
+            //System.out.println(clet_servers.get(s).getTotal_service());
             System.out.print(s + "\t\t" +
                     f.format(clet_servers.get(s).getTotal_service() / clock.getCurrent())+ "\t\t" +
                     clet_servers.get(s).getProcessed_task1()+ "\t\t" + clet_servers.get(s).getProcessed_task2()+ "\n" );

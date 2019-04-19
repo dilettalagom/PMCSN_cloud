@@ -158,6 +158,13 @@ public class Simulator2_Batch extends GeneralSimulator {
                         service = getServiceCloudlet(mu2_cloudlet, r);
                     }
 
+                    /*double temp = clet_servers.get(cloudlet_server_selected).getTotal_service() + service;
+                    clet_servers.get(cloudlet_server_selected).setTotal_service(temp);
+                    //System.out.println(temp);
+
+                    // salvo il tempo di servizio generato per il task in esecuzione sul server
+                    clet_servers.get(cloudlet_server_selected).setLast_service(clock.getCurrent() + service);
+*/
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
@@ -174,9 +181,16 @@ public class Simulator2_Batch extends GeneralSimulator {
                     cloudlet.setWorking_task2(cloudlet.getWorking_task2() - 1);
 
                     //scambio
-                    system_events.get(switched_server).setTemp(getServiceCloudlet(mu1_cloudlet, r) + clock.getCurrent());
+                    double service = getServiceCloudlet(mu1_cloudlet, r);
+                    system_events.get(switched_server).setTemp( service + clock.getCurrent());
                     system_events.get(switched_server).setType(system_events.get(e).getType());
 
+                    /*double temp =  clet_servers.get(switched_server).getLast_service() - clock.getCurrent() ;
+
+                    //System.out.println(temp);
+                    clet_servers.get(switched_server).setTotal_service(clet_servers.get(switched_server).getTotal_service()
+                            -temp + service);
+*/
                     cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
 
                 } else {
@@ -273,6 +287,7 @@ public class Simulator2_Batch extends GeneralSimulator {
         meansElements.get(6).add(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
         meansElements.get(7).add(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
         meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
+
 
         return meansElements;
     }
