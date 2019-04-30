@@ -18,8 +18,6 @@ public class StartBatch {
 
     public static void main(String[] args) {
 
-        Rngs r = new Rngs();
-
         Path path = Paths.get("../PMCSN_cloud/Matlab/batch");
         try {
             Files.createDirectories(path);
@@ -30,8 +28,11 @@ public class StartBatch {
 
         while (true) {
 
+            Rngs r = new Rngs();
+            r.plantSeeds(Long.parseLong(seed));
+
             int selected = 0;
-            System.out.print("\n\t\t\tBenvenuto nella simulazione Batch.\nQuale dei due simulatori vuoi runnare? [1 or 2] \t (Inserire 0 per terminare): ");
+            System.out.print("\n\t\t\tBenvenuto nella simulazione Batch.\nQuale dei due simulatori vuoi eseguire? [1 or 2] \t (Inserire 0 per terminare): ");
             Scanner reader = new Scanner(new InputStreamReader(System.in));
             try {
                 selected = reader.nextInt();
@@ -49,10 +50,8 @@ public class StartBatch {
 
                 PrintWriter batchWriter = null;
                 try {
-                    batchWriter = new PrintWriter(new FileWriter("Matlab/Batch/" + "batchFile" + seed + "_Alg" + selected + ".csv"));
-                    Util.print_on_file(batchWriter, new String[]{"Batch", "cloudlet", "cloudlet_task1", "cloudlet_task2",
-                            "cloud", "cloud_task1", "cloud_task2",
-                            "system", "system_task1", "system_task2"});
+                    batchWriter = new PrintWriter(new FileWriter("Matlab/Batch/" + "batchFile" + seed + "Alg" + selected + ".csv"));
+                    Util.print_on_file(batchWriter, Util.titles);
                 } catch (IOException e) {
                     System.out.print("C'è stato un errore durante la creazione del file\n");
                     System.exit(1);

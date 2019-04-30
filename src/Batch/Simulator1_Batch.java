@@ -3,7 +3,7 @@ package Batch;
 import pmcsn.Rngs;
 import StruttureDiSistema.GeneralSimulator;
 import StruttureDiSistema.*;
-
+import pmcsn.Util;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -19,16 +19,16 @@ public class Simulator1_Batch extends GeneralSimulator {
     private GlobalNode global_node;
     private Cloudlet cloudlet;
     private Cloud cloud;
-    private ArrayList<Server> clet_servers;
+    //private ArrayList<Server> clet_servers;
 
 
     //init delle strutture caratteristiche del simulatore
     Simulator1_Batch() {
 
-        this.clet_servers = new ArrayList<>();
+        /*this.clet_servers = new ArrayList<>();
         for (int i = 0; i < SERVERS + 1; i++) {
             clet_servers.add(new Server());
-        }
+        }*/
         this.system_events = new ArrayList<>();
         for (int i = 0; i < SERVERS + 1; i++) {
             system_events.add(new EventNode(START, 0));
@@ -47,6 +47,10 @@ public class Simulator1_Batch extends GeneralSimulator {
 
     @Override
     public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter batchWriter) {
+
+        DecimalFormat f = new DecimalFormat("###0.000000");
+        f.setGroupingUsed(false);
+        f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 
         int batch = 1;
 
@@ -165,7 +169,7 @@ public class Simulator1_Batch extends GeneralSimulator {
                         service = getServiceCloudlet(mu2_cloudlet, r);
                     }
 
-                    clet_servers.get(cloudlet_server_selected).setTotal_service(clet_servers.get(cloudlet_server_selected).getTotal_service() + service );
+                    //clet_servers.get(cloudlet_server_selected).setTotal_service(clet_servers.get(cloudlet_server_selected).getTotal_service() + service );
 
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
@@ -205,12 +209,12 @@ public class Simulator1_Batch extends GeneralSimulator {
                     if (system_events.get(e).getType() == 1) {
                         cloudlet.setWorking_task1(cloudlet.getWorking_task1() - 1);
                         cloudlet.setProcessed_task1(cloudlet.getProcessed_task1() + 1);
-                        clet_servers.get(e).setProcessed_task1(clet_servers.get(e).getProcessed_task1() + 1 );
+                        //clet_servers.get(e).setProcessed_task1(clet_servers.get(e).getProcessed_task1() + 1 );
 
                     } else if (system_events.get(e).getType() == 2) {
                         cloudlet.setWorking_task2(cloudlet.getWorking_task2() - 1);
                         cloudlet.setProcessed_task2(cloudlet.getProcessed_task2() + 1);
-                        clet_servers.get(e).setProcessed_task2(clet_servers.get(e).getProcessed_task2() + 1 );
+                        //clet_servers.get(e).setProcessed_task2(clet_servers.get(e).getProcessed_task2() + 1 );
                     }
                     system_events.get(e).setType(0);
 
@@ -256,9 +260,9 @@ public class Simulator1_Batch extends GeneralSimulator {
                 f.format(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))
         ));
         Util.print_on_file(batchWriter, Util.convertArrayList(batchValues));
-
+        */
         assert (batchWriter!=null);
-        batchWriter.close();*/
+        batchWriter.close();
 
         return meansElements;
 

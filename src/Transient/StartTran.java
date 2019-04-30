@@ -20,9 +20,6 @@ public class StartTran {
 
     public static void main(String[] args) {
 
-        Rngs r = new Rngs();
-        r.plantSeeds(Long.parseLong(seed));
-
         Path path = Paths.get("../PMCSN_cloud/Matlab/transient");
         try {
             Files.createDirectories(path);
@@ -34,9 +31,12 @@ public class StartTran {
 
         while (true) {
 
+            Rngs r = new Rngs();
+            r.plantSeeds(Long.parseLong(seed));
+
             int selected = 0;
 
-            System.out.print("\n\t\t\tBenvenuto nella simulazione transiente.\nQuale dei due simulatori vuoi runnare? [1 or 2] \t (Inserire 0 per terminare): ");
+            System.out.print("\n\t\t\tBenvenuto nella simulazione transiente.\nQuale dei due simulatori vuoi eseguire? [1 or 2] \t (Inserire 0 per terminare): ");
             Scanner reader = new Scanner(new InputStreamReader(System.in));
             try {
                 selected = reader.nextInt();
@@ -50,7 +50,7 @@ public class StartTran {
 
             PrintWriter writer = null;
             try {
-                writer = new PrintWriter(new FileWriter("Matlab/transient/" +"IntervalloConfidenza"+ seed + "_Alg" + selected + ".csv"));
+                writer = new PrintWriter(new FileWriter("Matlab/transient/" +"IntervalloConfidenza" + "Alg" + selected + ".csv"));
 
                 Util.print_on_file(writer, new String[]{"seed","stop", "cloudlet", "cloudlet_task1", "cloudlet_task2",
                         "cloud", "cloud_task1", "cloud_task2",

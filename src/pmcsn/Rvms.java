@@ -552,8 +552,8 @@ public class Rvms{
 	 * which is less than 2.0e-10 for all positive values of the parameter a.    
 	 * ======================================================================== 
 	 */
-    { 
-	double s[] = new double[6];
+    {
+		double[] s = new double[6];
 	double sum, temp;
 	int    i;
 
@@ -627,9 +627,9 @@ public class Rvms{
 	 */
     { 
 	double t, sum, term, factor, f, g;
-	double c[] = new double[2];
-	double p[] = new double[3];
-	double q[] = new double[3];
+		double[] c = new double[2];
+		double[] p = new double[3];
+		double[] q = new double[3];
 	long   n;
 
 	if (x > 0.0)
@@ -692,8 +692,8 @@ public class Rvms{
 	 */
     { 
 	double t, factor, f, g, c;
-	double p[] = new double[3];
-	double q[] = new double[3];
+		double[] p = new double[3];
+		double[] q = new double[3];
 	boolean    swap;
 	long   n;
 

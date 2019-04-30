@@ -25,7 +25,7 @@ import static pmcsn.Configuration.LOC;
 
 public class Estimate{
 
-	public Estimate(){};
+	public Estimate(){}
 
 
 	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas) {

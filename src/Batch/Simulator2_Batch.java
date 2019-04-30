@@ -1,6 +1,5 @@
 package Batch;
 
-import pmcsn.Estimate;
 import pmcsn.Rngs;
 import pmcsn.Util;
 import StruttureDiSistema.GeneralSimulator;
@@ -51,11 +50,11 @@ public class Simulator2_Batch extends GeneralSimulator {
     @Override
     public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter batchWriter) {
 
+        DecimalFormat f = new DecimalFormat("###0.000000");
+        f.setGroupingUsed(false);
+        f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 
         int batch = 1;
-        /* DecimalFormat f = new DecimalFormat("###0.000000");
-        f.setGroupingUsed(false);
-        f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));*/
 
         ArrayList<ArrayList<Double>> meansElements = new ArrayList<>();
         for (int i=0; i<9; i++){
@@ -271,10 +270,10 @@ public class Simulator2_Batch extends GeneralSimulator {
                 f.format(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
                 f.format(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))
         ));
-        Util.print_on_file(batchWriter, Util.convertArrayList(batchValues));
+        Util.print_on_file(batchWriter, Util.convertArrayList(batchValues));*/
 
         assert (batchWriter!=null);
-        batchWriter.close();*/
+        batchWriter.close();
 
         meansElements.get(0).add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
         meansElements.get(1).add(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));

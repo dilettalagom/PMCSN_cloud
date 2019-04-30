@@ -1,7 +1,5 @@
 package StruttureDiSistema;
 
-import java.util.ArrayList;
-
 public class Cloud {
 
     private double area_task1 = 0;
