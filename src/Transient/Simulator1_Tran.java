@@ -53,7 +53,7 @@ public class Simulator1_Tran extends GeneralSimulator {
         // simulazione termina quando :
         // se il type del prossimo arrivo è 0 -> vuol dire che gli arrivi sono terminati
         // e termina quando tutti i server dentro il cloudlet e il cloud hanno type = 0
-        while (system_events.get(0).getType() != 0 ) {
+        while (true) {
 
             if (system_events.get(0).getTemp() > STOP ) {
                 //System.out.println(system_events);
@@ -64,7 +64,7 @@ public class Simulator1_Tran extends GeneralSimulator {
 
 
             int e = this.nextEvent(system_events);
-
+            //System.out.println(e);
             clock.setNext(system_events.get(e).getTemp());
             double instant = clock.getNext() - clock.getCurrent();
 
@@ -100,18 +100,7 @@ public class Simulator1_Tran extends GeneralSimulator {
            */
             clock.setCurrent(clock.getNext());
 
-
-            if (e == 0) { // processo un arrivo
-
-                int type = system_events.get(e).getType();
-
-                if (system_events.get(0).getTemp() <= STOP) {
-                    system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
-                    system_events.get(0).setType(getType(r));
-                }
-                else {
-                    system_events.get(0).setType(0);
-                }
+            if (e == 0 && system_events.get(0).getTemp() <= STOP) { // processo un arrivo
 
                 // se ho server disponibili assegno il task
                 if (cloudlet.getWorking_task1() + cloudlet.getWorking_task2() < SERVERS) { // ho dei server liberi -> ( arrivo cloudlet )
@@ -120,12 +109,12 @@ public class Simulator1_Tran extends GeneralSimulator {
                     int cloudlet_server_selected = findOneCloudlet(system_events);
 
                     double service = 0;
-                    if (type == 1) {
+                    if (system_events.get(e).getType() == 1) {
                         cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
                         service = getServiceCloudlet(mu1_cloudlet, r);
 
 
-                    } else if (type == 2) {
+                    } else if (system_events.get(e).getType() == 2) {
                         cloudlet.setWorking_task2(cloudlet.getWorking_task2() + 1);
 
                         service = getServiceCloudlet(mu2_cloudlet, r);
@@ -136,7 +125,10 @@ public class Simulator1_Tran extends GeneralSimulator {
 
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
-                    system_events.get(cloudlet_server_selected).setType(type);
+                    system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
+
+
+
 
 
                 } else { // non ho server liberi -> mando al cloud  ( arrivo cloud)
@@ -165,8 +157,16 @@ public class Simulator1_Tran extends GeneralSimulator {
 
                 }
 
-            } else { // processo una partenza
+                // genero un nuovo arrivo dopo aver assegnato il precedente
+                system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
+                if (system_events.get(0).getTemp() > STOP) {
+                    system_events.get(0).setType(0);
+                }else {
+                    system_events.get(0).setType(getType(r));
+                }
 
+            } else {
+                // processo una partenza
                 if (e <= SERVERS) { // processo una partenza cloudlet
 
                     if (system_events.get(e).getType() == 1) {
@@ -260,9 +260,12 @@ public class Simulator1_Tran extends GeneralSimulator {
 
         System.out.println(" pq " + f.format(pq)+ "\n");
 
+
+
         System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
 
         for (int s = 1; s <= SERVERS; s++) {
+           // System.out.println("servizio  "+ clet_servers.get(s).getTotal_service()+ "\t" + "tempo  "+ clock.getCurrent()+ "\n");
             System.out.print(s + "\t\t" +
                     f.format(clet_servers.get(s).getTotal_service() / clock.getCurrent())+ "\t\t" +
                     clet_servers.get(s).getProcessed_task1()+ "\t\t" + clet_servers.get(s).getProcessed_task2()+ "\n" );
@@ -284,7 +287,7 @@ public class Simulator1_Tran extends GeneralSimulator {
         r.plantSeeds(Long.parseLong(seed));
 
         Simulator1_Tran s_algorith1 = new Simulator1_Tran();
-        ArrayList<String> values = s_algorith1.RunSimulation(r, STOP, Long.toString(r.getSeed()), "Alg1");
+        ArrayList<String> values = s_algorith1.RunSimulation(r, STOP_BATCH, Long.toString(r.getSeed()), "Alg1");
 
     }
 

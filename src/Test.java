@@ -54,12 +54,12 @@ public class Test {
         ArrayList<Double> list = new ArrayList<>();
 
         if ( DistSelected == 1 ) {
-            for (int i = 0; i < STOP; i++) {
+            for (int i = 0; i < STOP_BATCH; i++) {
               list.add(exponential(1 / mu, r));
             }
         }
         else {
-            for (int i = 0; i < STOP; i++) {
+            for (int i = 0; i < STOP_BATCH; i++) {
                 list.add(hyperExponential(mu, r));
             }
         }

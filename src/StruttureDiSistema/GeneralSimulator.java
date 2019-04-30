@@ -73,19 +73,19 @@ public abstract class GeneralSimulator {
     }
 
     public int nextEvent(ArrayList<EventNode> list_events) {
-        int event;
+        int min_event;
         int i = 0;
 
-       /* while (list_events.get(i).getType() == 0)       // find the index of the first 'active'
-            i++;*/                                        // element in the event list
-        event = i;
+        while (list_events.get(i).getType() == 0)       // find the index of the first 'active'
+            i++;                                       // element in the event list
+        min_event = i;
         while (i < list_events.size() - 1) {             /* now, check the others to find which  */
             i++;                                         /* event type is most imminent          */
             if ((list_events.get(i).getType() > 0) &&
-                    (list_events.get(i).getTemp() < list_events.get(event).getTemp()))
-                event = i;
+                    (list_events.get(i).getTemp() < list_events.get(min_event).getTemp()))
+                min_event = i;
         }
-        return (event);
+        return (min_event);
     }
 
 

@@ -329,7 +329,7 @@ public class Simulator2_Tran extends GeneralSimulator {
         r.plantSeeds(Long.parseLong(seed));
 
         Simulator2_Tran s_algorith2 = new Simulator2_Tran();
-        ArrayList<String> values = s_algorith2.RunSimulation(r, STOP, Long.toString(r.getSeed()), "Alg2");
+        ArrayList<String> values = s_algorith2.RunSimulation(r, STOP_BATCH, Long.toString(r.getSeed()), "Alg2");
 
     }
 }

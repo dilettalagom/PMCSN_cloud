@@ -61,7 +61,7 @@ public class StartBatch {
                     case 1: {
                         Simulator1_Batch s1Batch = new Simulator1_Batch();
 
-                        ArrayList<ArrayList<Double>> simulatorDatas = s1Batch.RunBatch(r, STOP, batchWriter);
+                        ArrayList<ArrayList<Double>> simulatorDatas = s1Batch.RunBatch(r, STOP_BATCH, batchWriter);
                         Estimate e = new Estimate();
                         e.calcolateConfidenceByArrays(simulatorDatas);
 
@@ -70,7 +70,7 @@ public class StartBatch {
                     case 2: {
                         Simulator2_Batch s2Batch = new Simulator2_Batch();
 
-                        ArrayList<ArrayList<Double>> simulatorDatas = s2Batch.RunBatch(r, STOP, batchWriter);
+                        ArrayList<ArrayList<Double>> simulatorDatas = s2Batch.RunBatch(r, STOP_BATCH, batchWriter);
                         Estimate e = new Estimate();
                         e.calcolateConfidenceByArrays(simulatorDatas);
 
