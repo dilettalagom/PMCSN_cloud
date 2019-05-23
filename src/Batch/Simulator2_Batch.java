@@ -1,7 +1,6 @@
 package Batch;
 
 import pmcsn.Rngs;
-import pmcsn.Util;
 import StruttureDiSistema.GeneralSimulator;
 import StruttureDiSistema.*;
 
@@ -9,7 +8,6 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
 
 import static pmcsn.Configuration.*;
@@ -64,7 +62,7 @@ public class Simulator2_Batch extends GeneralSimulator {
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
-        system_events.get(0).setType(getType(r));          // devo decidere se il primo arrivo è di tipo A o B
+        system_events.get(0).setType(getTaskType(r));          // devo decidere se il primo arrivo è di tipo A o B
 
         while (system_events.get(0).getType() != 0) {
 
@@ -98,7 +96,7 @@ public class Simulator2_Batch extends GeneralSimulator {
                 clock.setEmpty();
 
                 system_events.get(0).setTemp(getArrival(lambda, r));
-                system_events.get(0).setType(getType(r));
+                system_events.get(0).setType(getTaskType(r));
 
                 batch++;
             }
@@ -217,7 +215,7 @@ public class Simulator2_Batch extends GeneralSimulator {
 
                 if (system_events.get(0).getTemp() <= STOP) {
                     system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
-                    system_events.get(0).setType(getType(r));
+                    system_events.get(0).setType(getTaskType(r));
                 }
                 else {
                     system_events.get(0).setType(0);

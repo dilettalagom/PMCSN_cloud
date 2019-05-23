@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import static pmcsn.Configuration.*;
 
-public class SeedIndipendence {
+public class SeedIndependence {
 
     public static void main(String[] args) {
 

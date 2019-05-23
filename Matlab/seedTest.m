@@ -17,15 +17,22 @@ for j = 1 : nfiles
 end
 disp(dataset);
 
-%Il "Wilcoxon ranksum Test", un test non parametrico che valuta l'indipendenza di due samples
+%Il "Wilcoxon rank sum Test", un test non parametrico che valuta l'indipendenza di due samples
 
 
 for i=1: nfiles-1
-    [p,h,stats] = ranksum(dataset{i,2},dataset{i+1,2});
-    if(h==0)
-        fprintf("I due dataset %s e %s sono indipendenti e identicamente distribuiti con uguale media\n con una accuratezza del %f.\n",dataset{i,1}, dataset{i+1,1}, p);
-    else
-        fprintf("I due dataset %s e %s non sono indipendenti e identicamente distribuiti.\n", dataset{i,1},dataset{i+1,1});
+    for j=1: nfiles
+        [p,h,stats] = ranksum(dataset{i,2},dataset{j,2});
+        if (p==1)
+            fprintf("I due dataset %s e %s sono identici\n infatti hanno una accuratezza del %f.\n\n",dataset{i,1}, dataset{j,1}, p);
+        else
+            if(h==0)
+                fprintf("I due dataset %s e %s sono indipendenti e identicamente distribuiti con uguale media\n con una accuratezza del %f.\n\n",dataset{i,1}, dataset{j,1}, p);
+            else
+                fprintf("I due dataset %s e %s NON sono indipendenti e identicamente distribuiti.\n\n", dataset{i,1},dataset{j,1});
+            end
+        end
     end
 end
+
 end

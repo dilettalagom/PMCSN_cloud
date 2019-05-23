@@ -37,12 +37,15 @@ public abstract class GeneralSimulator {
         }
     }
 
-    public int getType(Rngs r) {
-        double pA = lambda1 / lambda;
+    public int getTaskType(Rngs r) {
+        double p1 = lambda1 / lambda;
         double random = r.random();
-        if (random < pA) {
+        if (random < p1) {         //TODO:< o <= ??? (a test non cambia nulla, i numeri sono uguali)
+            //è stato generato un task1
             return 1;
-        } else return 2;
+        } else
+            //è stato generato un task2
+            return 2;
     }
 
     public double getArrival(double lambda, Rngs r) {

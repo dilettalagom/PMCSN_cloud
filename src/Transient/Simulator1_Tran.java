@@ -48,7 +48,7 @@ public class Simulator1_Tran extends GeneralSimulator {
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
-        system_events.get(0).setType(getType(r));          // devo decidere se il primo arrivo è di tipo A o B
+        system_events.get(0).setType(getTaskType(r));          // devo decidere se il primo arrivo è di tipo A o B
 
         // simulazione termina quando :
         // se il type del prossimo arrivo è 0 -> vuol dire che gli arrivi sono terminati
@@ -162,7 +162,7 @@ public class Simulator1_Tran extends GeneralSimulator {
                 if (system_events.get(0).getTemp() > STOP) {
                     system_events.get(0).setType(0);
                 }else {
-                    system_events.get(0).setType(getType(r));
+                    system_events.get(0).setType(getTaskType(r));
                 }
 
             } else {
