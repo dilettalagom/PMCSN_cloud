@@ -13,12 +13,7 @@ import static pmcsn.Configuration.*;
 
 public abstract class GeneralSimulator {
 
-
     public double exponential(double m, Rngs r) {
-        /* ------------------------------
-         * generate an Exponential random variate, use m > 0.0
-         * ------------------------------
-         */
         return (-m * Math.log(1.0 - r.random()));
     }
 
@@ -40,7 +35,7 @@ public abstract class GeneralSimulator {
     public int getTaskType(Rngs r) {
         double p1 = lambda1 / lambda;
         double random = r.random();
-        if (random < p1) {         //TODO:< o <= ??? (a test non cambia nulla, i numeri sono uguali)
+        if (random <= p1) {
             //è stato generato un task1
             return 1;
         } else
@@ -49,28 +44,16 @@ public abstract class GeneralSimulator {
     }
 
     public double getArrival(double lambda, Rngs r) {
-        /* ------------------------------
-         * generate the next arrival time
-         * ------------------------------
-         */
         r.selectStream(0);
         return exponential(1.0 / lambda, r);
     }
 
     public double getServiceCloudlet(double mu, Rngs r) {
-        /* ------------------------------
-         * generate the next service time
-         * ------------------------------
-         */
         r.selectStream(1);
         return (hyperExponential(mu, r));
     }
 
     public double getServiceCloud(double mu, Rngs r) {
-        /* ------------------------------
-         * generate the next service time
-         * ------------------------------
-         */
         r.selectStream(2);
         return (exponential(mu, r));
     }
@@ -79,11 +62,11 @@ public abstract class GeneralSimulator {
         int min_event;
         int i = 0;
 
-        while (list_events.get(i).getType() == 0)       // find the index of the first 'active'
-            i++;                                       // element in the event list
+        while (list_events.get(i).getType() == 0)
+            i++;
         min_event = i;
-        while (i < list_events.size() - 1) {             /* now, check the others to find which  */
-            i++;                                         /* event type is most imminent          */
+        while (i < list_events.size() - 1) {
+            i++;
             if ((list_events.get(i).getType() > 0) &&
                     (list_events.get(i).getTemp() < list_events.get(min_event).getTemp()))
                 min_event = i;
@@ -128,12 +111,8 @@ public abstract class GeneralSimulator {
     }
 
     public int findOneCloud(ArrayList<EventNode> system_events) {
-        /* -----------------------------------------------------
-         * return the index of the first available server
-         * -----------------------------------------------------
-         */
-        // se non ci sono serventi liberi nel cloud, ne creo uno nuovo
 
+        // se non ci sono serventi liberi nel cloud, ne creo uno nuovo
         int i = SERVERS + 1;
         if (system_events.size() == SERVERS) {
             system_events.add(new EventNode());
@@ -151,10 +130,7 @@ public abstract class GeneralSimulator {
     }
 
     public int findOneCloudlet(ArrayList<EventNode> listNode) {
-        /* -----------------------------------------------------
-         * return the index of the available server with longest idle period
-         * -----------------------------------------------------
-         */
+
         int server;
         int i = 1;
 

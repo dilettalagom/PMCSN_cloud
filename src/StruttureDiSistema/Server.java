@@ -5,11 +5,9 @@ public class Server {
     private double total_service = 0.0;
     private int processed_task1 = 0;
     private int processed_task2 = 0;
-    private double last_service =0.0;
+    private double last_service = 0.0;
 
-    public Server() {
-
-    }
+    public Server() {}
 
     public double getLast_service() {
         return last_service;

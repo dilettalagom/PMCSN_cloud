@@ -7,13 +7,16 @@ public class Cloudlet {
     private double area_task1 = 0;
     private double area_task2 = 0;
 
+    //numero di tasks contenuti attualmente nel cloudlet
     private int working_task1 = 0;
     private int working_task2 = 0;
 
-    // numero di job processati dal cloudlet per tipo
+    //numero di tasks processati in totale dal cloudlet per tipo
     private int processed_task1 = 0;
     private int processed_task2 = 0;
 
+    //lo stato di ogni server del Cloudlet
+    private ArrayList<Server> servers;
 
 
     public double getArea_task1() {
@@ -63,6 +66,15 @@ public class Cloudlet {
     public void setProcessed_task2(int processed_task2) {
         this.processed_task2 = processed_task2;
     }
+
+    public ArrayList<Server> getServers() {
+        return servers;
+    }
+
+    public void setServers(ArrayList<Server> servers) {
+        this.servers = servers;
+    }
+
 
     public void resetCloudlet() {
         this.area_task1 = 0.0;
