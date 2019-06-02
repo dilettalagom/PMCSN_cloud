@@ -159,14 +159,14 @@ hold on
 errorbar(stop,means,errors,'ro');  %plotting degli intervalli
 
 %%
-d=dir("./Batch");
+d=dir("./batch");
 s=size(d);
 means = 1:s(1)-2;
 errors = 1:s(1)-2;
 j=1:s(1)-2;
 j(1)=3;
 for i = 3:s(1)
-    Alg1 = importBatch("./Batch/"+convertCharsToStrings(d(i).name), 3);
+    Alg1 = importBatch("./batch/"+convertCharsToStrings(d(i).name), 3);
 
     %genera intervallo di confidenza ci = [x-intervallo; x+intevallo] 
     [~,~,ci,~] = ztest(Alg1.system,mean(Alg1.system),std(Alg1.system),0.05,0);

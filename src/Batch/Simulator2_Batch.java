@@ -3,6 +3,7 @@ package Batch;
 import pmcsn.Rngs;
 import StruttureDiSistema.GeneralSimulator;
 import StruttureDiSistema.*;
+import pmcsn.Util;
 
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -59,7 +60,6 @@ public class Simulator2_Batch extends GeneralSimulator {
             meansElements.add(new ArrayList<>());
         }
 
-
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
         system_events.get(0).setType(getTaskType(r));          // devo decidere se il primo arrivo è di tipo A o B
@@ -67,7 +67,6 @@ public class Simulator2_Batch extends GeneralSimulator {
         while (system_events.get(0).getType() != 0) {
 
             if(clock.getCurrent()> batch * batch_interval && batch*batch_interval < STOP) {
-
 
                 meansElements.get(0).add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
                 meansElements.get(1).add(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
@@ -81,7 +80,7 @@ public class Simulator2_Batch extends GeneralSimulator {
                 meansElements.get(7).add(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
                 meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
 
-               // Util.print_on_file(batchWriter, Util.convertArrayList(batchValues));
+                Util.print_on_file(batchWriter, Util.convertMatrixList(meansElements));
 
                 //riporto la struttura EventNode a clock.Current = 0
                 for (EventNode event : system_events) {
@@ -268,7 +267,9 @@ public class Simulator2_Batch extends GeneralSimulator {
                 f.format(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
                 f.format(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))
         ));
-        Util.print_on_file(batchWriter, Util.convertArrayList(batchValues));*/
+       */
+
+        Util.print_on_file(batchWriter, Util.convertMatrixList(meansElements));
 
         assert (batchWriter!=null);
         batchWriter.close();

@@ -49,9 +49,14 @@ public class StartBatch {
                 r.plantSeeds(Long.parseLong(seed));
 
                 PrintWriter batchWriter = null;
+                PrintWriter estimateWriter = null;
                 try {
                     batchWriter = new PrintWriter(new FileWriter("Matlab/Batch/" + "batchFile" + seed + "Alg" + selected + ".csv"));
                     Util.print_on_file(batchWriter, Util.titles);
+
+                    estimateWriter = new PrintWriter(new FileWriter("Matlab/Batch/" + "estimateFile" + seed + "Alg" + selected + ".csv"));
+                    Util.print_on_file(estimateWriter, Util.titlesEstimate);
+
                 } catch (IOException e) {
                     System.out.print("C'è stato un errore durante la creazione del file\n");
                     System.exit(1);
@@ -63,7 +68,7 @@ public class StartBatch {
 
                         ArrayList<ArrayList<Double>> simulatorDatas = s1Batch.RunBatch(r, STOP_BATCH, batchWriter);
                         Estimate e = new Estimate();
-                        e.calcolateConfidenceByArrays(simulatorDatas);
+                        e.calcolateConfidenceByArrays(simulatorDatas, estimateWriter);
 
                         break;
                     }
@@ -72,7 +77,7 @@ public class StartBatch {
 
                         ArrayList<ArrayList<Double>> simulatorDatas = s2Batch.RunBatch(r, STOP_BATCH, batchWriter);
                         Estimate e = new Estimate();
-                        e.calcolateConfidenceByArrays(simulatorDatas);
+                        e.calcolateConfidenceByArrays(simulatorDatas, estimateWriter);
 
                         break;
                     }

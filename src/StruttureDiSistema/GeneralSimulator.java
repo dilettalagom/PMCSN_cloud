@@ -86,30 +86,6 @@ public abstract class GeneralSimulator {
 
     }
 
-    public PrintWriter createFile(String filename, String algoritmo, String selected_seed){
-
-        PrintWriter writer = null;
-        try {
-            switch (filename) {
-                case "instantCompleteTime":
-                    //Tempi di Completamento istantanei per : Cloudlet, Cloud, Sistema
-                    writer = new PrintWriter(new FileWriter("Matlab/" + filename + algoritmo + selected_seed + ".csv"));
-                    Util.print_on_file(writer, new String[]{"istante", "cloudlet", "cloud", "sistema"});
-                    break;
-                case "meanResponseTime":
-                    //Tempi di Risposta medi per : Cloudlet, Cloud, Sistema
-                    writer = new PrintWriter(new FileWriter("Matlab/" + filename + algoritmo + selected_seed + ".csv"));
-                    Util.print_on_file(writer, new String[]{"seed", "cloudlet", "cloudlet_task1", "cloudlet_task2",
-                                                                "cloud", "cloud_task1", "cloud_task2",
-                                                                "system", "system_task1", "system_task2"});
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return writer;
-    }
-
     public int findOneCloud(ArrayList<EventNode> system_events) {
 
         // se non ci sono serventi liberi nel cloud, ne creo uno nuovo
@@ -147,7 +123,7 @@ public abstract class GeneralSimulator {
     }
 
     public abstract ArrayList<String> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo);
-    public abstract ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter batchWriter);
+    public abstract ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter writer);
 
 
 }

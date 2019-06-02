@@ -3,6 +3,7 @@ package Batch;
 import pmcsn.Rngs;
 import StruttureDiSistema.GeneralSimulator;
 import StruttureDiSistema.*;
+import pmcsn.Util;
 
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -82,7 +83,7 @@ public class Simulator1_Batch extends GeneralSimulator {
                 meansElements.get(7).add(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
                 meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
 
-                // Util.print_on_file(batchWriter, Util.convertArrayList(batchValues));
+                Util.print_on_file(batchWriter, Util.convertMatrixList(meansElements));
 
                 //riporto la struttura EventNode a clock.Current = 0
                 for (EventNode event: system_events){
@@ -258,9 +259,10 @@ public class Simulator1_Batch extends GeneralSimulator {
                 f.format(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
                 f.format(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
                 f.format(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))
-        ));
-        Util.print_on_file(batchWriter, Util.convertArrayList(batchValues));
-        */
+        ));*/
+
+        Util.print_on_file(batchWriter, Util.convertMatrixList(meansElements));
+
         assert (batchWriter!=null);
         batchWriter.close();
 

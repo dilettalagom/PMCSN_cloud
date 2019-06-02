@@ -1,4 +1,4 @@
-function Alg2 = importIntervalConfidence(filename, startRow, endRow)
+function intervalDatas = importIntervalConfidence(filename, startRow, endRow)
 %IMPORTFILE Import numeric data from a text file as a matrix.
 %   ALG2 = IMPORTFILE(FILENAME) Reads data from text file FILENAME for the
 %   default selection.
@@ -61,5 +61,5 @@ fclose(fileID);
 % script.
 
 %% Create output variable
-Alg2 = table(dataArray{1:end-1}, 'VariableNames', {'seed','stop','cloudlet','cloudlet_task1','cloudlet_task2','cloud','cloud_task1','cloud_task2','system','system_task1','system_task2'});
+intervalDatas = table(dataArray{1:end-1}, 'VariableNames', {'seed','stop','cloudlet','cloudlet_task1','cloudlet_task2','cloud','cloud_task1','cloud_task2','system','system_task1','system_task2'});
 

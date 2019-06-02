@@ -18,17 +18,18 @@ import java.lang.Math;
 import java.io.*;
 import java.text.*;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.Arrays;
 import static pmcsn.Configuration.LOC;
 
 
 
-public class Estimate{
+public class Estimate {
 
-	public Estimate(){}
+	public Estimate() {
+	}
 
 
-	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas) {
+	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas, PrintWriter estimateWriter) {
 
 		Rvms rvms = new Rvms();
 		ArrayList<Double> confidences = new ArrayList<>();
@@ -36,7 +37,7 @@ public class Estimate{
 
 		for (ArrayList<Double> line : simulatorDatas) {
 
-			long n = 0;                     /* counts data points */
+			long n = 0;                        /* counts data points */
 			double sum = 0.0;
 			double mean = 0.0;
 			double stdev;
@@ -45,8 +46,7 @@ public class Estimate{
 
 
 			for (Double elem : line) {         /* use Welford's one-pass method */
-
-				n++;            			   /* and standard deviation        */
+				n++;                           /* and standard deviation        */
 				diff = elem - mean;
 				sum += diff * diff * (n - 1.0) / n;
 				mean += diff / n;
@@ -67,6 +67,24 @@ public class Estimate{
 
 		}
 
+		/*ArrayList<ArrayList<Double>> temp = new ArrayList<>();
+		for (int i=0; i<2; i++)
+			temp.add(new ArrayList<>());
+		temp.get(0).addAll(confidences);
+		temp.get(1).addAll(width);
+
+		Util.print_on_file(estimateWriter, Util.convertMatrixList(temp));*/
+
+		ArrayList<String> temp = new ArrayList<>();
+		for (int i=0; i<9; i++){
+			temp.add(String.valueOf(confidences.get(i)));
+			temp.add(String.valueOf(width.get(i)));
+		}
+		Util.print_on_file(estimateWriter, Util.convertArrayList(temp));
+
+		assert (estimateWriter!=null);
+		estimateWriter.close();
+
 		System.out.print("\nUsando il campione di elementi e un " + (int) (100.0 * LOC + 0.5) + "% di confidenza " +
 				"i valori degli intervalli di confidenza sono:\n");
 
@@ -84,60 +102,4 @@ public class Estimate{
 
 	}
 
-	public void calcolateConfidence(File filename){
-		long   n    = 0;                     /* counts data points */
-		double sum  = 0.0;
-		double mean = 0.0;
-		double data;
-		double stdev;
-		double u, t, w;
-		double diff;
-
-		String line = "";
-
-		Rvms rvms = new Rvms();
-
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		try{
-			line = br.readLine();
-
-			while (line!=null) {         /* use Welford's one-pass method */
-				StringTokenizer tokenizer = new StringTokenizer(line);
-				if(tokenizer.hasMoreTokens()){
-					data = Double.parseDouble(tokenizer.nextToken());
-
-					n++;                 /* and standard deviation        */
-					diff  = data - mean;
-					sum  += diff * diff * (n - 1.0) / n;
-					mean += diff / n;
-				}
-
-				line = br.readLine();
-
-			}
-
-		}catch(IOException e){
-			e.printStackTrace();
-			System.out.println("Errore durante il calcolo dell'intervallo di confidenza");
-			System.exit(1);
-		}
-
-		stdev  = Math.sqrt(sum / n);
-
-		DecimalFormat df = new DecimalFormat("###0.000000");
-
-		if (n > 1) {
-			u = 1.0 - 0.5 * (1.0 - LOC);                  /* interval parameter  */
-			t = rvms.idfStudent(n - 1, u);            /* critical value of t */
-			w = t * stdev / Math.sqrt(n - 1);             /* interval half width */
-
-			System.out.print("\nbased upon " + n + " data points");
-			System.out.print(" and with " + (int) (100.0 * LOC + 0.5) +
-					"% confidence\n");
-			System.out.print("the expected value is in the interval ");
-			System.out.print(df.format(mean) + " +/- " + df.format(w) + "\n");
-		}else
-			System.out.print("ERROR - insufficient data\n");
-
-	}
 }
