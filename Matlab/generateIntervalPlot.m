@@ -1,5 +1,28 @@
 function generateIntervalPlot()
 
+%Algoritmo1
+%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 1.5517
+%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 1.1578
+%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 1.9297
+%E[T]_CLOUD generato analiticamente dalla catena di Markov: 0.11256
+%E[T1]_CLOUD generato analiticamente dalla catena di Markov: 0.11974
+%E[T2]_CLOUD generato analiticamente dalla catena di Markov: 0.10537
+%E[T]_SISTEMA generato analiticamente dalla catena di Markov: 1.6642
+%E[T1]_SISTEMA generato analiticamente dalla catena di Markov: 1.2776
+%E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 2.0351
+
+
+%Algoritmo2
+%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 1.5711
+%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 0.21261
+%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 2.8752
+%E[T]_CLOUD generato analiticamente dalla catena di Markov: 0.068514
+%E[T1]_CLOUD generato analiticamente dalla catena di Markov: 0.072887
+%E[T2]_CLOUD generato analiticamente dalla catena di Markov: 0.064141
+%E[T]_SISTEMA generato analiticamente dalla catena di Markov: 1.6396
+%E[T1]_SISTEMA generato analiticamente dalla catena di Markov: 0.28549
+%E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 2.9394
+
 nva = 7; %NUMERO ATTESO DI FILES
 
 %apro la cartella seed
@@ -77,10 +100,11 @@ yline(1.5517, 'Color', 'red', 'LineStyle','-'); %media
 
 figure('Name','Cloudlet_task1');
 errorbar(X, cloudlet_task1(:,1), cloudlet_task1(:,2), 'blackx');xlim([0,nva+1]);
+yline(1.1578, 'Color', 'red', 'LineStyle','-');
 
 figure('Name','Cloudlet_task2');
 errorbar(X, cloudlet_task2(:,1), cloudlet_task2(:,2), 'blackx');xlim([0,nva+1]);
-
+yline(1.9297, 'Color', 'red', 'LineStyle','-');
 
 %%PLOT CLOUD
 figure('Name','Cloud');
@@ -89,9 +113,12 @@ yline(0.11256, 'Color', 'red', 'LineStyle','-'); %media
 
 figure('Name','Cloud_task1');
 errorbar(X, cloud_task1(:,1), cloud_task1(:,2), 'blackx');xlim([0,nva+1]);
+yline(0.11974, 'Color', 'red', 'LineStyle','-'); %media
 
 figure('Name','Cloud_task2');
 errorbar(X, cloud_task2(:,1), cloud_task2(:,2), 'blackx');xlim([0,nva+1]);
+yline(0.10537, 'Color', 'red', 'LineStyle','-'); %media
+
 
 %%PLOT SYSTEM
 figure('Name','System');
@@ -100,9 +127,12 @@ yline(1.6642, 'Color', 'red', 'LineStyle','-'); %media
 
 figure('Name','System_task1');
 errorbar(X, system_task1(:,1), system_task1(:,2), 'blackx');xlim([0,nva+1]);
+yline(1.2776, 'Color', 'red', 'LineStyle','-'); %media
 
 figure('Name','System_task2');
 errorbar(X, system_task2(:,1), system_task2(:,2), 'blackx');xlim([0,nva+1]);
+yline(2.0351, 'Color', 'red', 'LineStyle','-'); %media
+
 
 
 

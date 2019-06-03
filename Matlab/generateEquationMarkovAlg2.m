@@ -7,8 +7,12 @@ function generateEquationMarkovAlg2()
     ma = 0.45;
     mb = 0.27;
     
+    mAc= 0.25;
+    mBc = 0.22;
+    
     dim = zeros(1,(n)*(n+1)/2);
     states = string(dim);
+    variable = zeros(length(dim),2);
     equations = sym(dim);
     count= 1;
     
@@ -40,6 +44,8 @@ function generateEquationMarkovAlg2()
 
             
             str = 'p'+string(i)+'o'+string(j);
+            variable(count,1) = i;
+            variable(count,2) = j;
             str = sym(str);
             if ( a ~= 0 )
                 str1 = 'p'+string(i+1)+'o'+string(j);
@@ -111,59 +117,57 @@ function generateEquationMarkovAlg2()
    %%
    %somma delle probabilità degli stati dell'ultimo layer
    l = length(Y);
+   pq = Y(l);
    disp(Y(l));
    
    %%
     s = 0;
+    s1 = 0;
+    s2 = 0;
     count= 2;
     for layers = 2:n
-        display("layer: " + layers);
         for k = 1:layers
-            s = s + (layers-1)*Y(count+k-1);
+            i = variable(count+k-1,1);
+            j = variable(count+k-1,2);
+            s = s + (i+j)*Y(count+k-1);  % somma( n*p(i,j))
+            s1 = s1 + i *Y(count+k-1);
+            s2 = s2 + j *Y(count+k-1);
             
         end
         count=count+k;
     end
 
+    % E[T]_CLOUDLET = sum(n(i,j)*p(i,j)) per ogni i, per ogni j
+    % E[T]_CLOUDLET_type1 = sum(n1(i,j)*p(i,j) per ogni i, per ogni j
+    % E[T]_CLOUDLET_type2 = sum(n2(i,j)*p(i,j) per ogni i, per ogni j
 
- %%
- Rclet = s / 12.25 % cloudlet
- 
- mAc= 0.25
- mBc = 0.22
- 
- Rc = pq*(mAc+mBc)/2
- 
- Rtot = Rclet+Rc
- 
- %%
+    Rclet = s / 12.25; % cloudlet
+    disp("E[T]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet);
 
-Alg2 = importIntervalConfidence('IntervalloConfidenza215487963_Alg2.csv', 3);
-stop = [100.0,200.0,300.0,400.0,500.0,600.0,700.0,800.0,900.0,1000.0,1100.0,1200.0,1300.0,1400.0,1500.0,1600.0];
+    Rclet_t1 = s1 / 6.00; % cloudlet
+    disp("E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t1);
 
-means = 1:length(stop);
-errors = 1:length(stop);
+    Rclet_t2 = s2 / 6.25; % cloudlet
+    disp("E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t2);
 
 
+    Rc = pq*(mAc+mBc)/2; % cloud
+    disp("E[T]_CLOUD generato analiticamente dalla catena di Markov: " + Rc);
 
-for i = 1:length(stop)
-    AlgFiltered=Alg2(Alg2.stop==stop(i),:);
-    %genera intervallo di confidenza ci = [x-intervallo; x+intevallo] 
-    [~,~,ci,~] = ztest(AlgFiltered.system,mean(AlgFiltered.system),std(AlgFiltered.system),0.05,0);
-    
-    means(i) = mean(AlgFiltered.system);
-    errors(i) = abs(ci(1)-ci(2));
-    
-end
+    Rc_task1 = pq*mAc; % cloud
+    disp("E[T1]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task1);
 
-%plot degli intervalli di confidenza e della retta == media
-figure;
-xlim([0 1800])
-ylim([1.45 1.85])
-yline(Rtot,'blue'); %plotting della media teorica
-hold on
-errorbar(stop,means,errors,'ro');  %plotting degli intervalli
+    Rc_task2 = pq*mBc; % cloud
+    disp("E[T2]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task2);
 
+    Rtot = Rclet+Rc; %sistema
+    disp("E[T]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot);
+
+    Rtot_task1 = Rclet_t1+Rc_task1; %sistema
+    disp("E[T1]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task1);
+
+    Rtot_task2 = Rclet_t2+Rc_task2; %sistema
+    disp("E[T2]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task2);
 
 
 end
