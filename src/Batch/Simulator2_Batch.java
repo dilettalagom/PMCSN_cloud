@@ -3,9 +3,7 @@ package Batch;
 import pmcsn.Rngs;
 import StruttureDiSistema.GeneralSimulator;
 import StruttureDiSistema.*;
-import pmcsn.Util;
 
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -20,16 +18,11 @@ public class Simulator2_Batch extends GeneralSimulator {
     private GlobalNode global_node;
     private Cloudlet cloudlet;
     private Cloud cloud;
-    //private ArrayList<Server> clet_servers;
 
 
     //init delle strutture caratteristiche del simulatore
     Simulator2_Batch() {
 
-        /*this.clet_servers = new ArrayList<>();
-        for (int i = 0; i < SERVERS + 1; i++) {
-            clet_servers.add(new Server());
-        }*/
         this.system_events = new ArrayList<>();
         for (int i = 0; i < SERVERS + 1; i++) {
             system_events.add(new EventNode(START, 0));
@@ -42,12 +35,7 @@ public class Simulator2_Batch extends GeneralSimulator {
     }
 
     @Override
-    public ArrayList<String> RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo) {
-        return null;
-    }
-
-    @Override
-    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter batchWriter) {
+    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP) {
 
         DecimalFormat f = new DecimalFormat("###0.000000");
         f.setGroupingUsed(false);
@@ -80,7 +68,6 @@ public class Simulator2_Batch extends GeneralSimulator {
                 meansElements.get(7).add(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
                 meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
 
-                Util.print_on_file(batchWriter, Util.convertMatrixList(meansElements));
 
                 //riporto la struttura EventNode a clock.Current = 0
                 for (EventNode event : system_events) {
@@ -154,13 +141,6 @@ public class Simulator2_Batch extends GeneralSimulator {
                         service = getServiceCloudlet(mu2_cloudlet, r);
                     }
 
-                    /*double temp = clet_servers.get(cloudlet_server_selected).getTotal_service() + service;
-                    clet_servers.get(cloudlet_server_selected).setTotal_service(temp);
-                    //System.out.println(temp);
-
-                    // salvo il tempo di servizio generato per il task in esecuzione sul server
-                    clet_servers.get(cloudlet_server_selected).setLast_service(clock.getCurrent() + service);
-*/
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
@@ -181,12 +161,6 @@ public class Simulator2_Batch extends GeneralSimulator {
                     system_events.get(switched_server).setTemp( service + clock.getCurrent());
                     system_events.get(switched_server).setType(system_events.get(e).getType());
 
-                    /*double temp =  clet_servers.get(switched_server).getLast_service() - clock.getCurrent() ;
-
-                    //System.out.println(temp);
-                    clet_servers.get(switched_server).setTotal_service(clet_servers.get(switched_server).getTotal_service()
-                            -temp + service);
-*/
                     cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
 
                 } else {
@@ -225,13 +199,11 @@ public class Simulator2_Batch extends GeneralSimulator {
                     if (system_events.get(e).getType() == 1) {
                         cloudlet.setWorking_task1(cloudlet.getWorking_task1() - 1);
                         cloudlet.setProcessed_task1(cloudlet.getProcessed_task1() + 1);
-                        //clet_servers.get(e).setProcessed_task1(clet_servers.get(e).getProcessed_task1() + 1 );
-
 
                     } else if (system_events.get(e).getType() == 2) {
                         cloudlet.setWorking_task2(cloudlet.getWorking_task2() - 1);
                         cloudlet.setProcessed_task2(cloudlet.getProcessed_task2() + 1);
-                        //clet_servers.get(e).setProcessed_task2(clet_servers.get(e).getProcessed_task2() + 1 );
+
                     }
                     system_events.get(e).setType(0);
 
@@ -251,28 +223,6 @@ public class Simulator2_Batch extends GeneralSimulator {
 
             }
         }
-
-        //ultimo Batch che svuota le code, bloccando gli arrivi
-
-        /*ArrayList<String> batchValues = new ArrayList<>(Arrays.asList(Integer.toString(batch),
-                f.format(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
-                f.format(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1())),
-                f.format(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2())),
-
-                f.format(global_node.getComplete_time_cloud() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
-                f.format(cloud.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1())),
-                f.format(cloud.getArea_task2() / ( cloudlet.getProcessed_task2()+ cloud.getProcessed_task2())),
-
-                f.format(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2())),
-                f.format(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
-                f.format(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))
-        ));
-       */
-
-        Util.print_on_file(batchWriter, Util.convertMatrixList(meansElements));
-
-        assert (batchWriter!=null);
-        batchWriter.close();
 
         meansElements.get(0).add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
         meansElements.get(1).add(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
@@ -306,6 +256,11 @@ public class Simulator2_Batch extends GeneralSimulator {
                 event = i;
         }
         return (event);
+    }
+
+    @Override
+    public ArrayList<String> RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo) {
+        return null;
     }
 
 }

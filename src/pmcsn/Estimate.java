@@ -29,7 +29,7 @@ public class Estimate {
 	}
 
 
-	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas, PrintWriter estimateWriter) {
+	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas, String seed, PrintWriter estimateWriter) {
 
 		Rvms rvms = new Rvms();
 		ArrayList<Double> confidences = new ArrayList<>();
@@ -85,7 +85,9 @@ public class Estimate {
 		assert (estimateWriter!=null);
 		estimateWriter.close();
 
-		System.out.print("\nUsando il campione di elementi e un " + (int) (100.0 * LOC + 0.5) + "% di confidenza " +
+		System.out.println("\n\n------------------------Risultati prodotti dal seed: " + seed + " ------------------------");
+
+		System.out.println("\nUsando il campione di elementi e un " + (int) (100.0 * LOC + 0.5) + "% di confidenza " +
 				"i valori degli intervalli di confidenza sono:\n");
 
 		System.out.printf("tempo di risposta del cloudlet %.6f +/- %.6f\n", confidences.get(0), width.get(0));

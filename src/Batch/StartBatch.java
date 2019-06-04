@@ -48,13 +48,9 @@ public class StartBatch {
 
                 r.plantSeeds(Long.parseLong(seed));
 
-                PrintWriter batchWriter = null;
                 PrintWriter estimateWriter = null;
                 try {
-                    batchWriter = new PrintWriter(new FileWriter("Matlab/Batch/" + "batchFile" + seed + "Alg" + selected + ".csv"));
-                    Util.print_on_file(batchWriter, Util.titles);
-
-                    estimateWriter = new PrintWriter(new FileWriter("Matlab/Batch/" + "estimateFile" + seed + "Alg" + selected + ".csv"));
+                   estimateWriter = new PrintWriter(new FileWriter("Matlab/Batch/" + "estimateFile" + seed + "Alg" + selected + ".csv"));
                     Util.print_on_file(estimateWriter, Util.titlesEstimate);
 
                 } catch (IOException e) {
@@ -66,10 +62,9 @@ public class StartBatch {
                     case 1: {
                         Simulator1_Batch s1Batch = new Simulator1_Batch();
 
-                        ArrayList<ArrayList<Double>> simulatorDatas = s1Batch.RunBatch(r, STOP_BATCH, batchWriter);
-                        batchWriter.flush();
+                        ArrayList<ArrayList<Double>> simulatorDatas = s1Batch.RunBatch(r, STOP_BATCH);
                         Estimate e = new Estimate();
-                        e.calcolateConfidenceByArrays(simulatorDatas, estimateWriter);
+                        e.calcolateConfidenceByArrays(simulatorDatas, seed, estimateWriter);
                         estimateWriter.flush();
 
                         break;
@@ -77,12 +72,10 @@ public class StartBatch {
                     case 2: {
                         Simulator2_Batch s2Batch = new Simulator2_Batch();
 
-                        ArrayList<ArrayList<Double>> simulatorDatas = s2Batch.RunBatch(r, STOP_BATCH, batchWriter);
-                        batchWriter.flush();
+                        ArrayList<ArrayList<Double>> simulatorDatas = s2Batch.RunBatch(r, STOP_BATCH);
                         Estimate e = new Estimate();
-                        e.calcolateConfidenceByArrays(simulatorDatas, estimateWriter);
+                        e.calcolateConfidenceByArrays(simulatorDatas, seed, estimateWriter);
                         estimateWriter.flush();
-
                         break;
                     }
                     default:

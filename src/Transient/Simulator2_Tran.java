@@ -19,7 +19,6 @@ public class Simulator2_Tran extends GeneralSimulator {
     private GlobalNode global_node;
     private Cloudlet cloudlet;
     private Cloud cloud;
-    //private ArrayList<Server> clet_servers;
 
 
     //init delle strutture caratteristiche del simulatore
@@ -117,7 +116,6 @@ public class Simulator2_Tran extends GeneralSimulator {
 
                     double temp = cloudlet.getServers().get(cloudlet_server_selected).getTotal_service() + service;
                     cloudlet.getServers().get(cloudlet_server_selected).setTotal_service(temp);
-                    //System.out.println(temp);
 
                     // salvo il tempo di servizio generato per il task in esecuzione sul server
                     cloudlet.getServers().get(cloudlet_server_selected).setLast_service(clock.getCurrent() + service);
@@ -228,7 +226,7 @@ public class Simulator2_Tran extends GeneralSimulator {
         f.setGroupingUsed(false);
         f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 
-        System.out.println("\n\n------------------------Risultati prodotti dal seed: " + selected_seed+ " ------------------------\n");
+        System.out.println("\n\n------------------------Risultati prodotti dal valore di stop: " + STOP + " ------------------------\n");
         ArrayList<String> allResults = new ArrayList<>(Arrays.asList(selected_seed, Double.toString(STOP)));
 
         System.out.println("n1_cloudlet: " + cloudlet.getProcessed_task1()
@@ -322,7 +320,7 @@ public class Simulator2_Tran extends GeneralSimulator {
     }
 
     @Override
-    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter writer) {
+    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP) {
     return null;}
 
     public static void main(String[] args) {

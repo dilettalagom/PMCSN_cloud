@@ -281,7 +281,7 @@ public class Simulator1_Tran extends GeneralSimulator {
     }
 
     @Override
-    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter writer) {return null;}
+    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP) {return null;}
 
 
     public static void main(String[] args) {

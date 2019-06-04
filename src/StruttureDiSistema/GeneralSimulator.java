@@ -123,7 +123,7 @@ public abstract class GeneralSimulator {
     }
 
     public abstract ArrayList<String> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo);
-    public abstract ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP, PrintWriter writer);
+    public abstract ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP);
 
 
 }

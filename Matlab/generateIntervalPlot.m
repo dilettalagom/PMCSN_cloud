@@ -23,12 +23,10 @@ function generateIntervalPlot()
 %E[T1]_SISTEMA generato analiticamente dalla catena di Markov: 0.28549
 %E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 2.9394
 
-nva = 7;
-
 %apro la cartella seed
 dinfo = dir(fullfile('batch'));
 dinfo([dinfo.isdir]) = [];     %get rid of all directories including . and ..
-nfiles = length(dinfo);
+nva = length(dinfo); %numero di file attesi
 
 
 cloudlet = zeros(nva,2);
@@ -44,26 +42,15 @@ system_task1 = zeros(nva,2);
 system_task2 = zeros(nva,2);
 
 
-%label = erase(label,'estimateFile');
-%label = erase(label,'.csv');
+elaborateFile(dinfo,nva,'Alg1',cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
 
-elaborateFile(dinfo,nfiles,'Alg1',cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
-
-%elaborateFile(nfiles,'Alg2',cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
-
-
-
-
-
+%elaborateFile(dinfo,nva,'Alg2',cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
 end
 
-function elaborateFile(dinfo,nfiles,type,cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
-
-nva = 7; %NUMERO ATTESO DI FILES
-
+function elaborateFile(dinfo,nva,type,cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
 
 j=1;
-for i=1: nfiles
+for i=1: nva
     %seleziono i files per il calcolo dell'intervallo di confidenza
     if( strfind(dinfo(i).name, 'estimate')==true )
         if ( contains(dinfo(i).name,type) )
@@ -107,36 +94,29 @@ for i=1: nfiles
 end
 
 X=1:nva;
+
 %%PLOT CLOUDLET
-
-
-
 figure('Name','Cloudlet');
 errorbar(X, cloudlet(:,1), cloudlet(:,2), 'blackx');xlim([0,nva+1]); 
 if ( strcmp( type,'Alg1') )
     yline(1.5517, 'Color', 'red', 'LineStyle','-'); %media
-end
-if ( strcmp( type,'Alg2') )
+elseif ( strcmp( type,'Alg2') )
     yline(1.5711, 'Color', 'red', 'LineStyle','-'); %media
 end
-
 
 figure('Name','Cloudlet_task1');
 errorbar(X, cloudlet_task1(:,1), cloudlet_task1(:,2), 'blackx');xlim([0,nva+1]);
 if ( strcmp( type,'Alg1') )
     yline(1.1578, 'Color', 'red', 'LineStyle','-');
-end
-if ( strcmp( type,'Alg2') )
+elseif ( strcmp( type,'Alg2') )
     yline(1.1578, 'Color', 'red', 'LineStyle','-');
 end
-
 
 figure('Name','Cloudlet_task2');
 errorbar(X, cloudlet_task2(:,1), cloudlet_task2(:,2), 'blackx');xlim([0,nva+1]);
 if ( strcmp( type,'Alg1') )
     yline(1.9297, 'Color', 'red', 'LineStyle','-');
-end
-if ( strcmp( type,'Alg2') )
+elseif ( strcmp( type,'Alg2') )
     yline(1.9297, 'Color', 'red', 'LineStyle','-');
 end
 
@@ -146,8 +126,7 @@ figure('Name','Cloud');
 errorbar(X, cloud(:,1), cloud(:,2), 'blackx');xlim([0,nva+1]);
 if ( strcmp( type,'Alg1') )
     yline(0.11256, 'Color', 'red', 'LineStyle','-'); %media
-end
-if ( strcmp( type,'Alg2') )
+elseif( strcmp( type,'Alg2') )
     yline(0.11256, 'Color', 'red', 'LineStyle','-'); %media
 end
 
@@ -155,21 +134,17 @@ figure('Name','Cloud_task1');
 errorbar(X, cloud_task1(:,1), cloud_task1(:,2), 'blackx');xlim([0,nva+1]);
 if ( strcmp( type,'Alg1') )
     yline(0.11974, 'Color', 'red', 'LineStyle','-'); %media
-end
-if ( strcmp( type,'Alg2') )
+elseif ( strcmp( type,'Alg2') )
     yline(0.11974, 'Color', 'red', 'LineStyle','-'); %media
 end
-
 
 figure('Name','Cloud_task2');
 errorbar(X, cloud_task2(:,1), cloud_task2(:,2), 'blackx');xlim([0,nva+1]);
 if ( strcmp( type,'Alg1') )
     yline(0.10537, 'Color', 'red', 'LineStyle','-'); %media
-end
-if ( strcmp( type,'Alg2') )
+elseif ( strcmp( type,'Alg2') )
     yline(0.10537, 'Color', 'red', 'LineStyle','-'); %media
 end
-
 
 
 %%PLOT SYSTEM
@@ -177,8 +152,7 @@ figure('Name','System');
 errorbar(X, system(:,1), system(:,2), 'blackx');xlim([0,nva+1]);
 if ( strcmp( type,'Alg1') )
     yline(1.6642, 'Color', 'red', 'LineStyle','-'); %media
-end
-if ( strcmp( type,'Alg2') )
+elseif ( strcmp( type,'Alg2') )
     yline(1.6642, 'Color', 'red', 'LineStyle','-'); %media
 end
 
@@ -187,8 +161,7 @@ figure('Name','System_task1');
 errorbar(X, system_task1(:,1), system_task1(:,2), 'blackx');xlim([0,nva+1]);
 if ( strcmp( type,'Alg1') )
     yline(1.2776, 'Color', 'red', 'LineStyle','-'); %media
-end
-if ( strcmp( type,'Alg2') )
+elseif( strcmp( type,'Alg2') )
     yline(1.2776, 'Color', 'red', 'LineStyle','-'); %media
 end
 
@@ -197,12 +170,9 @@ figure('Name','System_task2');
 errorbar(X, system_task2(:,1), system_task2(:,2), 'blackx');xlim([0,nva+1]);
 if ( strcmp( type,'Alg1') )
     yline(2.0351, 'Color', 'red', 'LineStyle','-'); %media
-end
-if ( strcmp( type,'Alg2') )
+elseif( strcmp( type,'Alg2') )
     yline(2.0351, 'Color', 'red', 'LineStyle','-'); %media
 end
-
-
 
 end
 
