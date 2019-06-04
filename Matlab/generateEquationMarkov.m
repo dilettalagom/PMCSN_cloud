@@ -120,7 +120,7 @@ for layers = 2:n
     for k = 1:layers
         i = variable(count+k-1,1);
         j = variable(count+k-1,2);
-        s = s + (layers-1)*Y(count+k-1);  % somma( n*p(i,j))
+        s = s + (i+j)*Y(count+k-1);  % somma( n*p(i,j))
         s1 = s1 + i *Y(count+k-1);
         s2 = s2 + j *Y(count+k-1);
     end
@@ -130,6 +130,8 @@ end
 % E[T]_CLOUDLET = sum(n(i,j)*p(i,j)) per ogni i, per ogni j
 % E[T]_CLOUDLET_type1 = sum(n1(i,j)*p(i,j) per ogni i, per ogni j
 % E[T]_CLOUDLET_type2 = sum(n2(i,j)*p(i,j) per ogni i, per ogni j
+
+disp('Probabilità di blocco:' + pq);
 
 Rclet = s / 12.25; % cloudlet
 disp("E[T]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet);
@@ -158,6 +160,10 @@ disp("E[T1]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_tas
 
 Rtot_task2 = Rclet_t2+Rc_task2; %sistema
 disp("E[T2]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task2);
+
+
+equations(count) = sym (str*(a*la + a*lb + i*ma + j*mb) - a*str1*(i + 1)*ma - a*str2*(j + 1)*mb - b1*str3*la - b2*str4*lb == 0);
+equations(count) = sym (str*(a*la + a*lb + i*ma + j*mb) + str5*( (~a)*b2 * la ) - a*str1*(i + 1)*ma - a*str2*(j + 1)*mb - b1*str3*la - b2*str4*lb  == 0);
 
 
 end

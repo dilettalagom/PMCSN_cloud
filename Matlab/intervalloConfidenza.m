@@ -2,7 +2,7 @@ function [] = intervalloConfidenza()
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
-Alg1 = importIntervalConfidence('./transient/IntervalloCOnfidenza215487963_Alg1.csv', 2);
+Alg1 = importIntervalConfidence('./transient/IntervalloCOnfidenza215487963_Alg2.csv', 2);
 stop= [2.0,4.0,6.0,8.0,10.0,20.0,40.0,60.0,80.0,100.0];
 
 means= 1:length(stop);
@@ -20,9 +20,9 @@ for i = 1:length(stop)
 end
 xlim([-50 150])
 ylim([0.5 6.0])
-yline(1.66404);
+yline(1.48);
 hold on
-errorbar(stop,means,errors,'ro');
+errorbar(stop,means,errors,'r');
 
 
 %%
