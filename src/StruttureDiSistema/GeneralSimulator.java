@@ -85,7 +85,7 @@ public abstract class GeneralSimulator {
 
         // se non ci sono serventi liberi nel cloud, ne creo uno nuovo
         int i = SERVERS + 1;
-        if (system_events.size() == SERVERS) {
+        if (system_events.size() == SERVERS+1) {
             system_events.add(new EventNode());
             return i;
 
