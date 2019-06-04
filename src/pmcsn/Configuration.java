@@ -21,7 +21,6 @@ public class Configuration {
     public static double[] STOP_T = { 10000.00};
     public static int    SERVERS = 20;                         /* number of servers */
     public static int    LIMIT = 10;                         /* number of servers */
-    public static double S = 15;
 
     public static double LOC = 0.95;                           /* level of confidence, use 0.95 for 95% confidence */
 

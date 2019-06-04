@@ -107,7 +107,7 @@ public class Simulator2_Tran_V2 extends GeneralSimulator {
             if (e == 0) { // processo un arrivo
 
                 int temp_task =cloudlet.getWorking_task1() + cloudlet.getWorking_task2();
-                if ( (temp_task < SERVERS) && (( temp_task < LIMIT ) || (system_events.get(e).getType() == 1) )) {
+                if ( (temp_task < SERVERS) && (( temp_task <= LIMIT ) || (system_events.get(e).getType() == 1) )) {
 
                     //trovo il server libero da più tempo inattivo
                     int cloudlet_server_selected = findOneCloudlet(system_events);
