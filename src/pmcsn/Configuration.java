@@ -17,7 +17,8 @@ public class Configuration {
 
     public static double START   = 0.0;                        /* initial (open the door)        */
     public static double STOP_BATCH = 100000;                  /* terminal (close the door) time */
-    public static double[] STOP_T = {2.0,4.0,6.0,8.0,10.0,20.0,40.0,60.0,80.0,100.0};
+   // public static double[] STOP_T = {2.0,4.0,6.0,8.0,10.0,20.0,40.0,60.0,80.0,100.0};
+    public static double[] STOP_T = { 1000.00};
     public static int    SERVERS = 20;                         /* number of servers */
     public static double S = 15;
 

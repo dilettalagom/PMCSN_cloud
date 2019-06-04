@@ -16,17 +16,14 @@ package pmcsn;/* ---------------------------------------------------------------
 
 import java.lang.Math;
 import java.io.*;
-import java.text.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import static pmcsn.Configuration.LOC;
 
 
 
 public class Estimate {
 
-	public Estimate() {
-	}
+	public Estimate() {}
 
 
 	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas, String seed, PrintWriter estimateWriter) {
@@ -67,13 +64,6 @@ public class Estimate {
 
 		}
 
-		/*ArrayList<ArrayList<Double>> temp = new ArrayList<>();
-		for (int i=0; i<2; i++)
-			temp.add(new ArrayList<>());
-		temp.get(0).addAll(confidences);
-		temp.get(1).addAll(width);
-
-		Util.print_on_file(estimateWriter, Util.convertMatrixList(temp));*/
 
 		ArrayList<String> temp = new ArrayList<>();
 		for (int i=0; i<9; i++){

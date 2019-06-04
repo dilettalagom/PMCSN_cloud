@@ -2,7 +2,10 @@ package Transient;
 
 import pmcsn.Rngs;
 import StruttureDiSistema.*;
+import pmcsn.Util;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -44,8 +47,13 @@ public class Simulator2_Tran extends GeneralSimulator {
     @Override
     public ArrayList<String> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo) {
 
-        //PrintWriter instant_writer = createFile("instantCompleteTime", algoritmo, selected_seed);
-
+        PrintWriter instant_writer = null;
+        try {
+            instant_writer=new PrintWriter(new FileWriter("Matlab/transient/" + "Alg2_"+ selected_seed + ".csv"));
+            Util.print_on_file(instant_writer, new String[]{"current", "cloudlet", "cloud", "system"});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
         system_events.get(0).setType(getTaskType(r));          // devo decidere se il primo arrivo è di tipo A o B
@@ -87,12 +95,12 @@ public class Simulator2_Tran extends GeneralSimulator {
             cloud.setArea_task2(cloud.getArea_task2() + instant * cloud.getWorking_task2());
 
 
-           /* Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
+            Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
                     String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()))});
 
-            */
+
 
             clock.setCurrent(clock.getNext());
 
@@ -146,7 +154,6 @@ public class Simulator2_Tran extends GeneralSimulator {
 
                     double temp =  cloudlet.getServers().get(switched_server).getLast_service() - clock.getCurrent() ;
 
-                    //System.out.println(temp);
                     cloudlet.getServers().get(switched_server).setTotal_service(cloudlet.getServers().get(switched_server).getTotal_service()
                            -temp + service);
 
@@ -289,7 +296,6 @@ public class Simulator2_Tran extends GeneralSimulator {
 
         System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
         for (int s = 1; s <= SERVERS; s++) {
-            //System.out.println(clet_servers.get(s).getTotal_service());
             System.out.print(s + "\t\t" +
                     f.format(cloudlet.getServers().get(s).getTotal_service() / clock.getCurrent())+ "\t\t" +
                     cloudlet.getServers().get(s).getProcessed_task1()+ "\t\t" + cloudlet.getServers().get(s).getProcessed_task2()+ "\n" );
@@ -297,7 +303,8 @@ public class Simulator2_Tran extends GeneralSimulator {
 
         System.out.println("\n\n");
 
-        //instant_writer.close();
+        assert (instant_writer!=null);
+        instant_writer.close();
 
         return allResults;
     }

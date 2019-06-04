@@ -2,15 +2,17 @@ package Transient;
 
 import pmcsn.Rngs;
 import StruttureDiSistema.*;
+import pmcsn.Util;
 
-import static pmcsn.Configuration.*;
-
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import static pmcsn.Configuration.*;
 
 public class Simulator1_Tran extends GeneralSimulator {
 
@@ -19,7 +21,6 @@ public class Simulator1_Tran extends GeneralSimulator {
     private GlobalNode global_node;
     private Cloudlet cloudlet;
     private Cloud cloud;
-    //private  clet_servers;
 
 
     //init delle strutture caratteristiche del simulatore
@@ -45,8 +46,13 @@ public class Simulator1_Tran extends GeneralSimulator {
     @Override
     public ArrayList<String> RunSimulation(Rngs r,double STOP, String selected_seed, String algoritmo) {
 
-
-       // PrintWriter instant_writer = createFile("instantCompleteTime", algoritmo, selected_seed);
+        PrintWriter instant_writer = null;
+        try {
+            instant_writer=new PrintWriter(new FileWriter("Matlab/transient/" + "Alg1_"+ selected_seed + ".csv"));
+            Util.print_on_file(instant_writer, new String[]{"current", "cloudlet", "cloud", "system"});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
@@ -58,7 +64,6 @@ public class Simulator1_Tran extends GeneralSimulator {
         while (true) {
 
             if (system_events.get(0).getTemp() > STOP ) {
-                //System.out.println(system_events);
                 if ( check_system_servers(this.system_events) ){
                     break;
                 }
@@ -66,7 +71,6 @@ public class Simulator1_Tran extends GeneralSimulator {
 
 
             int e = this.nextEvent(system_events);
-            //System.out.println(e);
             clock.setNext(system_events.get(e).getTemp());
             double instant = clock.getNext() - clock.getCurrent();
 
@@ -94,12 +98,12 @@ public class Simulator1_Tran extends GeneralSimulator {
             cloud.setArea_task2(cloud.getArea_task2() + instant * cloud.getWorking_task2());
 
 
-          /*  Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
+            Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
                     String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
                     String.valueOf(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()))});
 
-           */
+
             clock.setCurrent(clock.getNext());
 
             if (e == 0 && system_events.get(0).getTemp() <= STOP) { // processo un arrivo
@@ -262,19 +266,17 @@ public class Simulator1_Tran extends GeneralSimulator {
 
         System.out.println(" pq " + f.format(pq)+ "\n");
 
-
-
         System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
 
         for (int s = 1; s <= SERVERS; s++) {
-           // System.out.println("servizio  "+ clet_servers.get(s).getTotal_service()+ "\t" + "tempo  "+ clock.getCurrent()+ "\n");
-            System.out.print(s + "\t\t" +
+             System.out.print(s + "\t\t" +
                     f.format(cloudlet.getServers().get(s).getTotal_service() / clock.getCurrent())+ "\t\t" +
                     cloudlet.getServers().get(s).getProcessed_task1()+ "\t\t" + cloudlet.getServers().get(s).getProcessed_task2()+ "\n" );
         }
         System.out.println("\n\n");
 
-        //instant_writer.close();
+        assert (instant_writer!=null);
+        instant_writer.close();
 
         return allResults;
 
