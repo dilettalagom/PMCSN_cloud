@@ -50,7 +50,7 @@ public abstract class GeneralSimulator {
 
     public double getServiceCloud(double mu, Rngs r) {
         r.selectStream(2);
-        return (exponential(mu, r));
+        return (exponential(1/mu, r));
     }
 
     public int nextEvent(ArrayList<EventNode> list_events) {

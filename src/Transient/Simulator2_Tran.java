@@ -219,7 +219,17 @@ public class Simulator2_Tran extends GeneralSimulator {
         double lambda1 = (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()) / clock.getCurrent();
         double lambda2 = (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()) / clock.getCurrent();
 
-        double pq = (cloud.getProcessed_task1() + cloud.getProcessed_task2()) / totalTask;
+        double lambdaClet = (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / clock.getCurrent();
+        double lambdaClet_task1=cloudlet.getProcessed_task1() / clock.getCurrent();
+        double lambdaClet_task2 = cloudlet.getProcessed_task2() / clock.getCurrent();
+
+        double lambdaCloud = (cloud.getProcessed_task1() + cloud.getProcessed_task2() )/ clock.getCurrent();
+        double lambdaCloud_task1 = cloud.getProcessed_task1() / clock.getCurrent();
+        double lambdaCloud_task2 = cloud.getProcessed_task2() / clock.getCurrent();
+
+        double pq = lambdaCloud/lambdaToT;
+        double pq_1 = lambdaCloud_task1/lambda1;
+        double pq_2 = lambdaCloud_task2/lambda2;
 
         System.out.println("lambda stimato " + f.format(lambdaToT));
         System.out.println("lambda task 1 stimato " + f.format(lambda1));
@@ -254,16 +264,18 @@ public class Simulator2_Tran extends GeneralSimulator {
                 f.format( global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1())),
                 f.format(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()))));
 
-        System.out.println("Throughput simulato per il cloudlet " + f.format((cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / clock.getCurrent()) );
-        System.out.println("Throughput simulato per il cloud " + f.format(( cloud.getProcessed_task1() + cloud.getProcessed_task2()) / clock.getCurrent()) +"\n");
+        System.out.println("Throughput per il cloudlet " + f.format(lambdaClet) );
+        System.out.println("Throughput per il cloud " + f.format(lambdaCloud) +"\n");
 
-        System.out.println("Throughput task1 per il cloudlet " + f.format(cloudlet.getProcessed_task1() / clock.getCurrent()) );
-        System.out.println("Throughput task2 per il cloudlet " + f.format(cloudlet.getProcessed_task2() / clock.getCurrent()) + "\n");
+        System.out.println("Throughput task1 per il cloudlet " + f.format(lambdaClet_task1 ) );
+        System.out.println("Throughput task2 per il cloudlet " + f.format(lambdaClet_task2 ) + "\n");
 
-        System.out.println("Throughput task1 per il cloud " + f.format(cloud.getProcessed_task1() / clock.getCurrent()) );
-        System.out.println("Throughput task2 per il cloud " + f.format(cloud.getProcessed_task2() / clock.getCurrent()) + "\n");
+        System.out.println("Throughput task1 per il cloud " + f.format(lambdaCloud_task1) );
+        System.out.println("Throughput task2 per il cloud " + f.format(lambdaCloud_task2) + "\n");
 
         System.out.println(" pq " + f.format(pq)+ "\n");
+        System.out.println(" pq_1 " + f.format(pq_1)+ "\n");
+        System.out.println(" pq_2 " + f.format(pq_2)+ "\n");
 
 
 
@@ -280,23 +292,6 @@ public class Simulator2_Tran extends GeneralSimulator {
         instant_writer.close();
 
         return allResults;
-    }
-
-
-    private int findType2ToSwitch(ArrayList<EventNode> system_events) {
-        int event;
-        int i = 1;
-
-        while (system_events.get(i).getType() == 1)
-            i++;
-        event = i;
-        while (i < SERVERS) {
-            i++;
-            if ((system_events.get(i).getType() == 2) &&
-                    (system_events.get(i).getTemp() > system_events.get(event).getTemp()))
-                event = i;
-        }
-        return (event);
     }
 
     @Override

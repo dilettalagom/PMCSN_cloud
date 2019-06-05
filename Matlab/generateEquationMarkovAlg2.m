@@ -12,6 +12,9 @@ limit = 11;
 mAc= 0.25;
 mBc = 0.22;
 
+tAc = 1/mAc;
+tBc = 1/mBc;
+
 dim2 = zeros(1, ( (limit)*(limit+1)/2 )+ limit*(n-limit) );
 states = string(dim2);
 variable = zeros(length(dim2),2);
@@ -220,6 +223,8 @@ Y = double(X);
 %%
 %somma delle probabilit√† degli stati dell'ultimo layer
 pq =0;
+pq_1 =0;
+pq_2 =0;
 count= (limit*(limit-1) /2)+1;
 %names = cell(11*(n-limit),2);
 l=1;
@@ -230,9 +235,12 @@ for layers = limit:n
         %names{l,1} = 'p'+string(i)+'o'+string(j);
         if layers == n
             %names{l,2} = 'la+lb';
+            pq_1 = pq_1 + Y(count+k-1); 
+            pq_2 = pq_2 + Y(count+k-1);
             pq = pq + (la+lb)*Y(count+k-1);           
         else
             %names{l,2} = 'lb';
+            pq_2 = pq_2 + Y(count+k-1);
             pq = pq + lb*Y(count+k-1);
         end
         l=l+1;
@@ -240,7 +248,10 @@ for layers = limit:n
     count=count+k;
 end
 pq = pq / (la+lb) ;
-fprintf('probabilit‡ di blocco %f\n',pq);
+%fprintf('probabilit‡ di blocco %f\n',pq);
+%fprintf('probabilit‡ di blocco pq_1 %f\n',pq_1);
+%fprintf('probabilit‡ di blocco pq_2 %f\n',pq_2);
+
 %%
 s = 0;
 s1 = 0;
@@ -270,7 +281,13 @@ end
 % E[T]_CLOUDLET = sum(n(i,j)*p(i,j)) per ogni i, per ogni j
 % E[T]_CLOUDLET_type1 = sum(n1(i,j)*p(i,j) per ogni i, per ogni j
 % E[T]_CLOUDLET_type2 = sum(n2(i,j)*p(i,j) per ogni i, per ogni j
+clc
+p1 = (la*pq_1)/ (pq*(la+lb));
+p2 = 1-p1;
 
+disp("pq: "+pq);
+disp("pq_1: "+pq_1);
+disp("pq_2: "+pq_2);
 
 Rclet = s / (la+lb); % cloudlet
 disp("E[T]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet);
@@ -281,13 +298,13 @@ disp("E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t
 Rclet_t2 = s2 / lb; % cloudlet
 disp("E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t2);
 
-Rc = pq*(mAc+mBc)/2; % cloud
+Rc = (p1*tAc + p2*tBc) ; % cloud
 disp("E[T]_CLOUD generato analiticamente dalla catena di Markov: " + Rc);
 
-Rc_task1 = pq*mAc; % cloud
+Rc_task1 = (pq_1)*tAc; % cloud
 disp("E[T1]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task1);
 
-Rc_task2 =pq*mBc; % cloud
+Rc_task2 = pq_2*tBc; % cloud
 disp("E[T2]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task2);
 
 Rtot = Rclet+Rc; %sistema

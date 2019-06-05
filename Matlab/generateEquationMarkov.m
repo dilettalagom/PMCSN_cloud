@@ -10,6 +10,9 @@ mb = 0.27;
 mAc= 0.25;
 mBc = 0.22;
 
+tAc = 1/mAc;
+tBc = 1/mBc;
+
 dim = zeros(1,(n)*(n+1)/2);
 states = string(dim);
 variable = zeros(length(dim),2);
@@ -108,7 +111,9 @@ Y = double(X);
 l= length(Y);
 u= l-20;
 pq = sum( Y( u:l ) );
-disp("pq generato analiticamente: "+pq);
+pq_2 = pq;
+pq_1 = pq;
+
 
 %%
 s = 0;
@@ -129,26 +134,29 @@ end
 % E[T]_CLOUDLET = sum(n(i,j)*p(i,j)) per ogni i, per ogni j
 % E[T]_CLOUDLET_type1 = sum(n1(i,j)*p(i,j) per ogni i, per ogni j
 % E[T]_CLOUDLET_type2 = sum(n2(i,j)*p(i,j) per ogni i, per ogni j
+clc
+p1 = (la*pq_1)/ (pq*(la+lb));
+p2 = 1-p1;
+disp("pq: "+pq);
+disp("pq_1: "+pq_1);
+disp("pq_2: "+pq_2);
 
-disp('Probabilità di blocco:' + pq);
-
-Rclet = s / 12.25; % cloudlet
+Rclet = s / (la+lb); % cloudlet
 disp("E[T]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet);
 
-Rclet_t1 = s1 / 6.00; % cloudlet
+Rclet_t1 = s1 / la; % cloudlet
 disp("E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t1);
 
-Rclet_t2 = s2 / 6.25; % cloudlet
+Rclet_t2 = s2 / lb; % cloudlet
 disp("E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t2);
 
-
-Rc = pq*(mAc+mBc)/2; % cloud
+Rc = pq*(p1*tAc + p2*tBc) ; % cloud
 disp("E[T]_CLOUD generato analiticamente dalla catena di Markov: " + Rc);
 
-Rc_task1 = pq*mAc; % cloud
+Rc_task1 = (pq_1)*tAc; % cloud
 disp("E[T1]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task1);
 
-Rc_task2 = pq*mBc; % cloud
+Rc_task2 = pq_2*tBc; % cloud
 disp("E[T2]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task2);
 
 Rtot = Rclet+Rc; %sistema
@@ -159,6 +167,4 @@ disp("E[T1]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_tas
 
 Rtot_task2 = Rclet_t2+Rc_task2; %sistema
 disp("E[T2]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task2);
-
-
 end
