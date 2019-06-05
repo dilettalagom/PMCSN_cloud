@@ -2,15 +2,15 @@ function [] = intervalloConfidenza()
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
-Alg1 = importIntervalConfidence('./transient/IntervalloCOnfidenza215487963_Alg2.csv', 2);
+Alg1 = importIntervalConfidence('./transient/IntervalloConfidenzaAlg2.csv', 2);
 stop= [2.0,4.0,6.0,8.0,10.0,20.0,40.0,60.0,80.0,100.0];
 
 means= 1:length(stop);
 errors= 1:length(stop);
 
 for i = 1:length(stop)
+    %cloudlet
     AlgFiltered=Alg1(Alg1.stop==stop(i),:);
-    
     SEM = std(AlgFiltered.system)/sqrt(length(AlgFiltered.cloudlet));               % Standard Error
     ts = tinv([0.025  0.975],length(AlgFiltered.cloudlet)-1);      % T-Score
     ci = mean(AlgFiltered.cloudlet) + ts*SEM;                      % Confidence Intervals
@@ -18,11 +18,11 @@ for i = 1:length(stop)
     means(i)=mean(AlgFiltered.cloudlet);
     errors(i)=abs(ci(1)-ci(2));
 end
-xlim([-50 150])
+xlim([0 110])
 ylim([0.5 6.0])
-yline(1.48);
+yline(1.138);
 hold on
-errorbar(stop,means,errors,'r');
+errorbar(stop,means,errors,'rx');
 
 
 %%

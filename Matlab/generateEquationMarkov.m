@@ -80,7 +80,6 @@ end
 states = sym(states);
 
 
-%%
 
 %Sostituzione dell' equazione degli stati che sommano a 1 all'ultima
 %equazione
@@ -120,7 +119,7 @@ for layers = 2:n
     for k = 1:layers
         i = variable(count+k-1,1);
         j = variable(count+k-1,2);
-        s = s + (i+j)*Y(count+k-1);  % somma( n*p(i,j))
+        s = s +(i+j)*Y(count+k-1);  % somma( n*p(i,j))
         s1 = s1 + i *Y(count+k-1);
         s2 = s2 + j *Y(count+k-1);
     end
@@ -160,10 +159,6 @@ disp("E[T1]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_tas
 
 Rtot_task2 = Rclet_t2+Rc_task2; %sistema
 disp("E[T2]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task2);
-
-
-equations(count) = sym (str*(a*la + a*lb + i*ma + j*mb) - a*str1*(i + 1)*ma - a*str2*(j + 1)*mb - b1*str3*la - b2*str4*lb == 0);
-equations(count) = sym (str*(a*la + a*lb + i*ma + j*mb) + str5*( (~a)*b2 * la ) - a*str1*(i + 1)*ma - a*str2*(j + 1)*mb - b1*str3*la - b2*str4*lb  == 0);
 
 
 end

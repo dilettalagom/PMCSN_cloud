@@ -13,15 +13,9 @@ function generateIntervalPlot()
 
 
 %Algoritmo2
-%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 1.5711
-%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 0.21261
-%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 2.8752
-%E[T]_CLOUD generato analiticamente dalla catena di Markov: 0.068514
-%E[T1]_CLOUD generato analiticamente dalla catena di Markov: 0.072887
-%E[T2]_CLOUD generato analiticamente dalla catena di Markov: 0.064141
-%E[T]_SISTEMA generato analiticamente dalla catena di Markov: 1.6396
-%E[T1]_SISTEMA generato analiticamente dalla catena di Markov: 0.28549
-%E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 2.9394
+%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 1.138
+%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 2.1614
+%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 0.14906
 
 %apro la cartella seed
 dinfo = dir(fullfile('batch'));

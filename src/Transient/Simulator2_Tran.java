@@ -94,11 +94,12 @@ public class Simulator2_Tran extends GeneralSimulator {
             //calcola il tempo di attraversamento nel cloud per un task di tipo 2
             cloud.setArea_task2(cloud.getArea_task2() + instant * cloud.getWorking_task2());
 
+            int totalTask = cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2();
 
             Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
-                    String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
-                    String.valueOf(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
-                    String.valueOf(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()))});
+                    String.valueOf(global_node.getComplete_time_cloudlet() / totalTask),
+                    String.valueOf(global_node.getComplete_time_cloud() / totalTask),
+                    String.valueOf(global_node.getComplete_time_system() / totalTask) });
 
 
 
@@ -106,7 +107,8 @@ public class Simulator2_Tran extends GeneralSimulator {
 
             if (e == 0) { // processo un arrivo
 
-                if (cloudlet.getWorking_task1() + cloudlet.getWorking_task2() < SERVERS) {
+                int temp_task =cloudlet.getWorking_task1() + cloudlet.getWorking_task2();
+                if ( (temp_task < SERVERS) && (( temp_task < LIMIT ) || (system_events.get(e).getType() == 1) )) {
 
                     //trovo il server libero da più tempo inattivo
                     int cloudlet_server_selected = findOneCloudlet(system_events);
@@ -130,35 +132,6 @@ public class Simulator2_Tran extends GeneralSimulator {
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
-
-
-
-                } else if (system_events.get(e).getType() == 1 && cloudlet.getWorking_task2() > 0) {
-                    // caso in cui mi arriva un task di tipo 1 ed ho dei task di tipo 2 nel cloudelt -> cambio
-                    int cloud_server_selected = findOneCloud(system_events);
-                    int switched_server = findType2ToSwitch(system_events);
-
-
-                    system_events.get(cloud_server_selected).setTemp((clock.getCurrent() + getServiceCloud(mu2_cloud, r)));
-                    system_events.get(cloud_server_selected).setType(system_events.get(switched_server).getType());
-
-
-                    cloud.setWorking_task2(cloud.getWorking_task2() + 1);
-                    cloudlet.setWorking_task2(cloudlet.getWorking_task2() - 1);
-
-
-                    //scambio
-                    double service = getServiceCloudlet(mu1_cloudlet, r);
-                    system_events.get(switched_server).setTemp( service + clock.getCurrent());
-                    system_events.get(switched_server).setType(system_events.get(e).getType());
-
-                    double temp =  cloudlet.getServers().get(switched_server).getLast_service() - clock.getCurrent() ;
-
-                    cloudlet.getServers().get(switched_server).setTotal_service(cloudlet.getServers().get(switched_server).getTotal_service()
-                           -temp + service);
-
-
-                    cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
 
 
                 } else {
@@ -260,9 +233,9 @@ public class Simulator2_Tran extends GeneralSimulator {
         System.out.println("numero medio di task1 del cloud " + f.format(cloud.getArea_task1() / clock.getCurrent()));
         System.out.println("numero medio di task2 del cloud " + f.format(cloud.getArea_task2() / clock.getCurrent()) + "\n");
 
-        System.out.println("tempo di risposta del cloudlet " + f.format(global_node.getComplete_time_cloudlet() /  totalTask ));
-        System.out.println("tempo di risposta del cloudlet per task1 " + f.format(cloudlet.getArea_task1() / (  cloudlet.getProcessed_task1() +cloud.getProcessed_task1()  )) );
-        System.out.println("tempo di risposta del cloudlet per task2 " + f.format(cloudlet.getArea_task2() / (  cloudlet.getProcessed_task2()+cloud.getProcessed_task2()) )    + "\n");
+        System.out.println("tempo di risposta del cloudlet " + f.format(global_node.getComplete_time_cloudlet() / totalTask));
+        System.out.println("tempo di risposta del cloudlet per task1 " + f.format(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+cloud.getProcessed_task1() ) ) );
+        System.out.println("tempo di risposta del cloudlet per task2 " + f.format(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2() ) )+ "\n")   ;
         allResults.addAll(Arrays.asList( f.format( global_node.getComplete_time_cloudlet() / totalTask),
                 f.format(cloudlet.getArea_task1() / cloudlet.getProcessed_task1()),
                 f.format(cloudlet.getArea_task2() / cloudlet.getProcessed_task2())));
@@ -328,7 +301,7 @@ public class Simulator2_Tran extends GeneralSimulator {
 
     @Override
     public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP) {
-    return null;}
+        return null;}
 
     public static void main(String[] args) {
         Rngs r = new Rngs();

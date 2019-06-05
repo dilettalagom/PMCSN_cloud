@@ -7,88 +7,192 @@ lb = 6.25;
 ma = 0.45;
 mb = 0.27;
 
+limit = 11;
+
 mAc= 0.25;
 mBc = 0.22;
 
-dim = zeros(1,(n)*(n+1)/2);
-states = string(dim);
-variable = zeros(length(dim),2);
-equations = sym(dim);
+dim2 = zeros(1, ( (limit)*(limit+1)/2 )+ limit*(n-limit) );
+states = string(dim2);
+variable = zeros(length(dim2),2);
+equations = sym(dim2);
 count= 1;
 
 %Costruzione delle equazioni
 for layers = 1:n
+    
     i = layers - 1;
     j = 0;
-    for k = 1:layers
-        
-        if i == 0
-            b1 = 0;
-        else
-            b1 = 1;
-        end
-        if j == 0
-            b2 = 0;
-        else
-            b2 = 1;
-        end
-        if layers == n
-            a = 0;
-        else
-            a = 1;
-        end
-        
-        
-        
-        
-        
-        
-        str = 'p'+string(i)+'o'+string(j);
-        variable(count,1) = i;
-        variable(count,2) = j;
-        str = sym(str);
-        if ( a ~= 0 )
-            str1 = 'p'+string(i+1)+'o'+string(j);
-            str2 = 'p'+string(i)+'o'+string(j+1);
-            str1 = sym(str1);
-            str2 = sym(str2);
-            str5 = sym('init');
-            
-        else
-            str1 = sym('init');
-            str2 = sym('init');
-            if (b2==1)
-                str5 ='p'+string(i+1)+'o'+string(j-1);
-                str5 = sym(str5);
-                
+    if ( layers<limit )
+        for k = 1:layers
+            if i == 0
+                b1 = 0;
+            else
+                b1 = 1;
+            end
+            if j == 0
+                b2 = 0;
+            else
+                b2 = 1;
+            end
+            if layers == n
+                a = 0;
+            else
+                a = 1;
             end
             
+            str = 'p'+string(i)+'o'+string(j);
+            variable(count,1) = i;
+            variable(count,2) = j;
+            str = sym(str);
+            if ( a ~= 0 )
+                str1 = 'p'+string(i+1)+'o'+string(j);
+                str2 = 'p'+string(i)+'o'+string(j+1);
+                str1 = sym(str1);
+                str2 = sym(str2);
+            else
+                str1 = sym('init');
+                str2 = sym('init');
+                
+            end
+            if ( b1 ~= 0 )
+                str3 = 'p'+string(i-1)+'o'+string(j);
+                str3 = sym(str3);
+            else
+                str3 = sym('init');
+            end
+            if ( b2 ~= 0 )
+                str4 = 'p'+string(i)+'o'+string(j-1);
+                str4 = sym(str4);
+            else
+                str4 = sym('init');
+            end
+            %eq = sym (str* (c *(la + lb) +(~c)*(la) + i*ma + j*mb ) - a*str1*(i + 1)*ma - c*a*str2*(j + 1)*mb - b1*str3*la - c*b2*str4*lb  == 0)
+            equations(count) = sym (str* (a *(la + lb) + i*ma + j*mb ) - a*str1*(i + 1)*ma - a*str2*(j + 1)*mb - b1*str3*la - b2*str4*lb  == 0);
+            states(count)= str;
+            
+            
+            count=count+1;
+            i=i-1;
+            j=j+1;
         end
-        if ( b1 ~= 0 )
-            str3 = 'p'+string(i-1)+'o'+string(j);
-            str3 = sym(str3);
-        else
-            str3 = sym('init');
+    elseif (layers>limit)
+        for k = 1:limit
+            if i == 0
+                b1 = 0;
+            else
+                b1 = 1;
+            end
+            if j == 0
+                b2 = 0;
+            else
+                b2 = 1;
+            end
+            if (i+j+1) == n
+                a = 0;
+            else
+                a = 1;
+            end
+            if j == limit-1
+                c = 0;
+            else
+                c = 1;
+            end
+            str = 'p'+string(i)+'o'+string(j);
+            variable(count,1) = i;
+            variable(count,2) = j;
+            str = sym(str);
+            if ( a ~= 0 )
+                str1 = 'p'+string(i+1)+'o'+string(j);
+                str2 = 'p'+string(i)+'o'+string(j+1);
+                str1 = sym(str1);
+                str2 = sym(str2);
+            else
+                str1 = sym('init');
+                str2 = sym('init');
+                
+            end
+            if ( b1 ~= 0 )
+                str3 = 'p'+string(i-1)+'o'+string(j);
+                str3 = sym(str3);
+            else
+                str3 = sym('init');
+            end
+            if ( b2 ~= 0 )
+                str4 = 'p'+string(i)+'o'+string(j-1);
+                str4 = sym(str4);
+            else
+                str4 = sym('init');
+            end
+            %eq = sym (str* (c *(la + lb) +(~c)*(la) + i*ma + j*mb ) - a*str1*(i + 1)*ma - c*a*str2*(j + 1)*mb - b1*str3*la - c*b2*str4*lb  == 0)
+            equations(count) = sym ( str*(a *la + i*ma + j*mb ) - a*str1*(i + 1)*ma - c*a*str2*(j + 1)*mb - b1*str3*la == 0);
+            states(count)= str;
+            
+            
+            count=count+1;
+            i=i-1;
+            j=j+1;
         end
-        if ( b2 ~= 0 )
-            str4 = 'p'+string(i)+'o'+string(j-1);
-            str4 = sym(str4);
-        else
-            str4 = sym('init');
+    else
+        for k = 1:limit
+            if i == 0
+                b1 = 0;
+            else
+                b1 = 1;
+            end
+            if j == 0
+                b2 = 0;
+            else
+                b2 = 1;
+            end
+            if (i+j+1) == n
+                a = 0;
+            else
+                a = 1;
+            end
+            if j == limit-1
+                c = 0;
+            else
+                c = 1;
+            end
+            str = 'p'+string(i)+'o'+string(j);
+            variable(count,1) = i;
+            variable(count,2) = j;
+            str = sym(str);
+            if ( a ~= 0 )
+                str1 = 'p'+string(i+1)+'o'+string(j);
+                str2 = 'p'+string(i)+'o'+string(j+1);
+                str1 = sym(str1);
+                str2 = sym(str2);
+            else
+                str1 = sym('init');
+                str2 = sym('init');
+                
+            end
+            if ( b1 ~= 0 )
+                str3 = 'p'+string(i-1)+'o'+string(j);
+                str3 = sym(str3);
+            else
+                str3 = sym('init');
+            end
+            if ( b2 ~= 0 )
+                str4 = 'p'+string(i)+'o'+string(j-1);
+                str4 = sym(str4);
+            else
+                str4 = sym('init');
+            end
+            %eq = sym (str* (c *(la + lb) +(~c)*(la) + i*ma + j*mb ) - a*str1*(i + 1)*ma - c*a*str2*(j + 1)*mb - b1*str3*la - c*b2*str4*lb  == 0)
+            equations(count) = sym ( str*(a *la + i*ma + j*mb ) - a*str1*(i + 1)*ma - c*a*str2*(j + 1)*mb - b1*str3*la - b2*str4*lb == 0);
+            states(count)= str;
+            
+            
+            count=count+1;
+            i=i-1;
+            j=j+1;
         end
-        
-        %equations(count) = sym (str*(a*la + a*lb + i*ma + j*mb) + str5*( (~a)*b2 * la ) - a*str1*(i + 1)*ma - a*str2*(j + 1)*mb - b1*str3*la - b2*str4*lb  == 0);
-        equations(count) = sym (str*(a*la + a*lb + i*ma + j*mb) + str5*( (~a)*b2*mb*la ) - a*str1*(i + 1)*ma - a*str2*(j + 1)*mb - b1*str3*la - b2*str4*lb  == 0);
-        states(count)= str;
-        
-        
-        count=count+1;
-        i=i-1;
-        j=j+1;
     end
 end
 states = sym(states);
-
 
 
 
@@ -105,7 +209,7 @@ equations(count) = equations(count) - 1== 0;
 %disp(x);
 
 
-
+%%
 %Risoluzione delle equazioni
 format long g;
 [A,b] = equationsToMatrix(equations,states);
@@ -116,18 +220,26 @@ Y = double(X);
 %%
 %somma delle probabilitÃ  degli stati dell'ultimo layer
 pq =0;
-l = length(Y);
-count = l-20;
-for k = 1:n
-    if k == n
-        pq = pq + (la+lb)*Y(count+k-1);
-    else
-        pq = pq + lb*Y(count+k-1);  
+count= (limit*(limit-1) /2)+1;
+%names = cell(11*(n-limit),2);
+l=1;
+for layers = limit:n
+    for k = 1:limit
+        %i = variable(count+k-1,1);
+        %j = variable(count+k-1,2);
+        %names{l,1} = 'p'+string(i)+'o'+string(j);
+        if layers == n
+            %names{l,2} = 'la+lb';
+            pq = pq + (la+lb)*Y(count+k-1);           
+        else
+            %names{l,2} = 'lb';
+            pq = pq + lb*Y(count+k-1);
+        end
+        l=l+1;
     end
-    %fprintf('i:%d, j:%d \n', variable(count+k-1,1), variable(count+k-1,2) );
+    count=count+k;
 end
-
-pq = pq / (la+1.2*lb) ;
+pq = pq / (la+lb) ;
 fprintf('probabilità di blocco %f\n',pq);
 %%
 s = 0;
@@ -135,13 +247,22 @@ s1 = 0;
 s2 = 0;
 count= 2;
 for layers = 2:n
-    for k = 1:layers
-        i = variable(count+k-1,1);
-        j = variable(count+k-1,2);
-        s = s +(i+j)*Y(count+k-1);  % somma( n*p(i,j))
-        s1 = s1 + i *Y(count+k-1);
-        s2 = s2 + j *Y(count+k-1);
-        
+    if (layers < limit)
+        for k = 1:layers
+            i = variable(count+k-1,1);
+            j = variable(count+k-1,2);
+            s = s +(layers)*Y(count+k-1);  % somma( n*p(i,j))
+            s1 = s1 + i *Y(count+k-1);
+            s2 = s2 + j *Y(count+k-1);
+        end
+    else
+        for k = 1:limit
+            i = variable(count+k-1,1);
+            j = variable(count+k-1,2);
+            s = s +(i+j)*Y(count+k-1);  % somma( n*p(i,j))
+            s1 = s1 + i *Y(count+k-1);
+            s2 = s2 + j *Y(count+k-1);
+        end
     end
     count=count+k;
 end
@@ -151,33 +272,34 @@ end
 % E[T]_CLOUDLET_type2 = sum(n2(i,j)*p(i,j) per ogni i, per ogni j
 
 
-Rclet = s / (la+1.2*lb); % cloudlet
+Rclet = s / (la+lb); % cloudlet
 disp("E[T]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet);
 
 Rclet_t1 = s1 / la; % cloudlet
 disp("E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t1);
 
-Rclet_t2 = s2 / (1.2*lb); % cloudlet
+Rclet_t2 = s2 / lb; % cloudlet
 disp("E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t2);
-
 
 Rc = pq*(mAc+mBc)/2; % cloud
 disp("E[T]_CLOUD generato analiticamente dalla catena di Markov: " + Rc);
 
-%Rc_task1 = pq*mAc; % cloud
-%disp("E[T1]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task1);
+Rc_task1 = pq*mAc; % cloud
+disp("E[T1]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task1);
 
-%Rc_task2 = pq*mBc; % cloud
-%disp("E[T2]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task2);
+Rc_task2 =pq*mBc; % cloud
+disp("E[T2]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task2);
 
 Rtot = Rclet+Rc; %sistema
 disp("E[T]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot);
 
-%Rtot_task1 = Rclet_t1+Rc_task1; %sistema
-%disp("E[T1]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task1);
+Rtot_task1 = Rclet_t1+Rc_task1; %sistema
+disp("E[T1]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task1);
 
-%Rtot_task2 = Rclet_t2+Rc_task2; %sistema
-%disp("E[T2]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task2);
+Rtot_task2 = Rclet_t2+Rc_task2; %sistema
+disp("E[T2]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task2);
+
+
 
 
 end
