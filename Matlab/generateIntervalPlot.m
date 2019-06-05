@@ -4,7 +4,7 @@ function generateIntervalPlot()
 %E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 1.5517
 %E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 1.1578
 %E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 1.9297
-%E[T]_CLOUD generato analiticamente dalla catena di Markov: 0.11256
+%E[T]_CtotalTask
 %E[T1]_CLOUD generato analiticamente dalla catena di Markov: 0.11974
 %E[T2]_CLOUD generato analiticamente dalla catena di Markov: 0.10537
 %E[T]_SISTEMA generato analiticamente dalla catena di Markov: 1.6642

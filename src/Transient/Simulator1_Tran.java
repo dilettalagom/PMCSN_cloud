@@ -98,10 +98,12 @@ public class Simulator1_Tran extends GeneralSimulator {
             cloud.setArea_task2(cloud.getArea_task2() + instant * cloud.getWorking_task2());
 
 
+            int totalTask = cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2();
+
             Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
-                    String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2())),
-                    String.valueOf(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2())),
-                    String.valueOf(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()))});
+                    String.valueOf(global_node.getComplete_time_cloudlet() / totalTask),
+                    String.valueOf(global_node.getComplete_time_cloud() / totalTask),
+                    String.valueOf(global_node.getComplete_time_system() / totalTask) });
 
 
             clock.setCurrent(clock.getNext());
@@ -132,9 +134,6 @@ public class Simulator1_Tran extends GeneralSimulator {
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
-
-
-
 
 
                 } else { // non ho server liberi -> mando al cloud  ( arrivo cloud)
@@ -269,7 +268,7 @@ public class Simulator1_Tran extends GeneralSimulator {
         System.out.println("server"+ "\t"+"utilization"+ "\t"+"Task1Processed"+ "\t"+"Task2Processed" + "\n");
 
         for (int s = 1; s <= SERVERS; s++) {
-             System.out.print(s + "\t\t" +
+            System.out.print(s + "\t\t" +
                     f.format(cloudlet.getServers().get(s).getTotal_service() / clock.getCurrent())+ "\t\t" +
                     cloudlet.getServers().get(s).getProcessed_task1()+ "\t\t" + cloudlet.getServers().get(s).getProcessed_task2()+ "\n" );
         }

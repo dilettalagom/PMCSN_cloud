@@ -1,6 +1,6 @@
 function transientCompletePlot()
 
-nva = 10; %numero di file attesi
+nva = 5; %numero di file attesi
 
 %apro la cartella seed
 dinfo = dir(fullfile('transient'));
@@ -32,19 +32,50 @@ while (j<= nva && i<nfile)
         figure(1), plot(temp.current, temp.cloudlet, '-')
         lgd=legend(labels);
         lgd.Title.String = "CLOUDLET";
+        xlabel ('Pacchetti');
+        ylabel ('Tempo(unitàDiTempo)');
+        
+        
+        %media
+        if (request == 1)
+            n=1.5517;
+        elseif(request == 2)
+            n=0;
+        end
+            h=yline(n, 'Color', 'red', 'LineStyle','-');
+           % str = sprintf('   n = %.2f',n);
+            %text(h(end),h(end),str);
         hold on
         
-       
+        
         %CLOUD
         figure(2), plot(temp.current, temp.cloud, '-')
         lgd=legend(labels);
         lgd.Title.String = "CLOUD";
+        xlabel ('Pacchetti');
+        ylabel ('Tempo(unitàDiTempo)');
+        
+        %media
+        if (request == 1)
+            yline(0.11256, 'Color', 'red', 'LineStyle','-');
+        elseif(request == 2)
+            yline(0, 'Color', 'red', 'LineStyle','-');
+        end
         hold on
         
         %SYSTEM
         figure(3), plot(temp.current, temp.system, '-')
         lgd=legend(labels);
         lgd.Title.String = "SYSTEM";
+        xlabel ('Pacchetti');
+        ylabel ('Tempo(unitàDiTempo)');
+        
+        %media
+        if (request == 1)
+            yline(1.6642, 'Color', 'red', 'LineStyle','-');
+        elseif(request == 2)
+            yline(0, 'Color', 'red', 'LineStyle','-');
+        end
         hold on
         
         j=j+1;
@@ -53,6 +84,7 @@ while (j<= nva && i<nfile)
     
     
 end
+
 hold off
 hold off
 hold off
