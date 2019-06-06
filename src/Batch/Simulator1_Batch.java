@@ -45,9 +45,7 @@ public class Simulator1_Batch extends GeneralSimulator {
         int batch = 1;
 
         ArrayList<ArrayList<Double>> meansElements = new ArrayList<>();
-        for (int i=0; i<9; i++){
-            meansElements.add(new ArrayList<>());
-        }
+
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
@@ -60,17 +58,20 @@ public class Simulator1_Batch extends GeneralSimulator {
 
             if(clock.getCurrent()> batch_interval && batch*batch_interval < STOP ){
 
-                meansElements.get(0).add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
+               /*meansElements.get(0).add(global_node.getComplete_time_cloudlet() / global_node.getTotalTask());
                 meansElements.get(1).add(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
                 meansElements.get(2).add(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2()));
 
-                meansElements.get(3).add(global_node.getComplete_time_cloud() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
+                meansElements.get(3).add(global_node.getComplete_time_cloud() /  global_node.getTotalTask());
                 meansElements.get(4).add(cloud.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
                 meansElements.get(5).add(cloud.getArea_task2() / ( cloudlet.getProcessed_task2()+ cloud.getProcessed_task2()));
 
-                meansElements.get(6).add(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
+                meansElements.get(6).add(global_node.getComplete_time_system() /  global_node.getTotalTask());
                 meansElements.get(7).add(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
                 meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
+*/
+                global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
+                meansElements.add(statisticTimesValues(global_node, cloudlet, cloud));
 
                 //riporto la struttura EventNode a clock.Current = 0
                 for (EventNode event: system_events){
@@ -219,25 +220,16 @@ public class Simulator1_Batch extends GeneralSimulator {
             }
         }
 
+        global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
+
         //ultimo Batch che svuota le code, bloccando gli arrivi
-        meansElements.get(0).add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
-        meansElements.get(1).add(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
-        meansElements.get(2).add(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2()));
-
-        meansElements.get(3).add(global_node.getComplete_time_cloud() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
-        meansElements.get(4).add(cloud.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
-        meansElements.get(5).add(cloud.getArea_task2() / ( cloudlet.getProcessed_task2()+ cloud.getProcessed_task2()));
-
-        meansElements.get(6).add(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
-        meansElements.get(7).add(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
-        meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
-
+        meansElements.add(statisticTimesValues(global_node, cloudlet, cloud));
         return meansElements;
 
     }
 
     @Override
-    public ArrayList<String> RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo) {
+    public ArrayList<Double> RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo) {
         return null;
     }
 

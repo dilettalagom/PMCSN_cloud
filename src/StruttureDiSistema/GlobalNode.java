@@ -9,10 +9,13 @@ public class GlobalNode {
     private double complete_time_task1 = 0;
     private double complete_time_task2 = 0;
 
+    private int totalTask;
+
     public GlobalNode(double time_cloudlet, double time_cloud) {
         this.complete_time_cloudlet = time_cloudlet;
         this.complete_time_cloud = time_cloud;
         this.complete_time_system = time_cloudlet + time_cloud;
+        this.totalTask = 0;
     }
 
     public double getComplete_time_task1() {
@@ -55,6 +58,14 @@ public class GlobalNode {
         this.complete_time_cloud = complete_time_cloud;
     }
 
+    public int getTotalTask() {
+        return totalTask;
+    }
+
+    public void setTotalTask(int totalTask) {
+        this.totalTask = totalTask;
+    }
+
     public void setEmpty() {
 
         this.complete_time_cloud = 0.0;
@@ -63,6 +74,8 @@ public class GlobalNode {
 
         this.complete_time_task1 = 0.0;
         this.complete_time_task2 = 0.0;
+
+        this.totalTask = 0;
 
     }
 }

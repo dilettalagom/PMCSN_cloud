@@ -32,6 +32,9 @@ public class Estimate {
 		ArrayList<Double> confidences = new ArrayList<>();
 		ArrayList<Double> width = new ArrayList<>();
 
+		ArrayList<Double> variable = new ArrayList<>();
+
+
 		for (ArrayList<Double> line : simulatorDatas) {
 
 			long n = 0;                        /* counts data points */
@@ -75,7 +78,7 @@ public class Estimate {
 		assert (estimateWriter!=null);
 		estimateWriter.close();
 
-		System.out.println("\n\n------------------------Risultati prodotti dal seed: " + seed + " ------------------------");
+		System.out.println("\n\n------------------------Intervalli di confidenza prodotti da: " + seed + " ------------------------");
 
 		System.out.println("\nUsando il campione di elementi e un " + (int) (100.0 * LOC + 0.5) + "% di confidenza " +
 				"i valori degli intervalli di confidenza sono:\n");
