@@ -289,35 +289,32 @@ disp("pq: "+pq);
 disp("pq_1: "+pq_1);
 disp("pq_2: "+pq_2);
 
-Rclet = s / (la+lb); % cloudlet
+Rclet = s / ((1-pq)*(la+lb)); % cloudlet
 disp("E[T]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet);
 
-Rclet_t1 = s1 / la; % cloudlet
+Rclet_t1 = s1 / ((1-pq_1)*la); % cloudlet
 disp("E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t1);
 
-Rclet_t2 = s2 / lb; % cloudlet
+Rclet_t2 = s2 / ((1-pq_2)*lb); % cloudlet
 disp("E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t2);
 
 Rc = (p1*tAc + p2*tBc) ; % cloud
 disp("E[T]_CLOUD generato analiticamente dalla catena di Markov: " + Rc);
 
-Rc_task1 = (pq_1)*tAc; % cloud
+Rc_task1 = tAc; % cloud
 disp("E[T1]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task1);
 
-Rc_task2 = pq_2*tBc; % cloud
+Rc_task2 = tBc; % cloud
 disp("E[T2]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task2);
 
-Rtot = Rclet+Rc; %sistema
+Rtot = (1-pq)*Rclet+ pq*Rc; %sistema
 disp("E[T]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot);
 
-Rtot_task1 = Rclet_t1+Rc_task1; %sistema
+Rtot_task1 = (1-pq_1)*Rclet_t1+(pq_1)*Rc_task1; %sistema
 disp("E[T1]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task1);
 
-Rtot_task2 = Rclet_t2+Rc_task2; %sistema
+Rtot_task2 =(1-pq_2)*Rclet_t2+(pq_2)*Rc_task2; %sistema
 disp("E[T2]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task2);
-
-
-
 
 end
 
