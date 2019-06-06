@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class Util {
 
-    public static String[] titles = new String[]{"cloudlet", "cloudlet_task1", "cloudlet_task2",
+    public static String[] titlesTran = new String[]{"seed","stop","cloudlet", "cloudlet_task1", "cloudlet_task2",
             "cloud", "cloud_task1", "cloud_task2",
             "system", "system_task1", "system_task2"};
 

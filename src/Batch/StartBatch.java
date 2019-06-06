@@ -50,7 +50,7 @@ public class StartBatch {
 
                 PrintWriter estimateWriter = null;
                 try {
-                   estimateWriter = new PrintWriter(new FileWriter("Matlab/Batch/" + "estimateFile" + seed + "Alg" + selected + ".csv"));
+                    estimateWriter = new PrintWriter(new FileWriter("Matlab/batch/" + "estimateFile" + seed + "Alg" + selected + ".csv"));
                     Util.print_on_file(estimateWriter, Util.titlesEstimate);
 
                 } catch (IOException e) {

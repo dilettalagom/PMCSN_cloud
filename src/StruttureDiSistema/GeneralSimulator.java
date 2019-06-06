@@ -1,7 +1,12 @@
 package StruttureDiSistema;
 
 import pmcsn.Rngs;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static pmcsn.Configuration.*;
 
@@ -50,7 +55,7 @@ public abstract class GeneralSimulator {
 
     public double getServiceCloud(double mu, Rngs r) {
         r.selectStream(2);
-        return (exponential(1/mu, r));
+        return (exponential(1 / mu, r));
     }
 
     public int nextEvent(ArrayList<EventNode> list_events) {
@@ -73,7 +78,7 @@ public abstract class GeneralSimulator {
     public boolean check_system_servers(ArrayList<EventNode> system_events) {
 
         for (EventNode e : system_events) {
-            if (e.getType() != 0){
+            if (e.getType() != 0) {
                 return false;
             }
         }
@@ -117,7 +122,120 @@ public abstract class GeneralSimulator {
         return (server);
     }
 
-    public abstract ArrayList<String> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo);
+
+    public ArrayList<Double> statisticTimesValues(GlobalNode global_node, Cloudlet cloudlet, Cloud cloud) {
+        ArrayList<Double> allResults = new ArrayList<>();
+
+        allResults.add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) );
+        allResults.add(cloudlet.getArea_task1() / cloudlet.getProcessed_task1());
+        allResults.add(cloudlet.getArea_task2() / cloudlet.getProcessed_task2());
+
+        allResults.add(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2()) );
+        allResults.add(cloud.getArea_task1() / cloud.getProcessed_task1());
+        allResults.add(cloud.getArea_task2() / cloud.getProcessed_task2());
+
+        allResults.add(global_node.getComplete_time_system() / global_node.getTotalTask());
+        allResults.add(global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
+        allResults.add(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
+
+        return allResults;
+    }
+
+    public void printTranResults(GlobalNode global_node, Cloudlet cloudlet, Cloud cloud, SystemClock clock, double STOP){
+        DecimalFormat f = new DecimalFormat("###0.000000");
+        f.setGroupingUsed(false);
+        f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
+
+        //stampo i risultati sul terminale
+        System.out.println("\n\n------------------------Risultati prodotti dal valore di stop: "+ STOP +" ------------------------\n");
+
+        System.out.println("n1_cloudlet: "+cloudlet.getProcessed_task1()
+                +"\t\tn2_cloudlet: "+cloudlet.getProcessed_task2()+"\n"
+                +"n1_cloud: "+cloud.getProcessed_task1()
+                +"\t\tn2_cloud "+cloud.getProcessed_task2()+"\n");
+
+        double lambdaToT = global_node.getTotalTask() / clock.getCurrent();
+        double lambda1 = (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()) / clock.getCurrent();
+        double lambda2 = (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()) / clock.getCurrent();
+
+        double lambdaClet = (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) / clock.getCurrent();
+        double lambdaClet_task1 = cloudlet.getProcessed_task1() / clock.getCurrent();
+        double lambdaClet_task2 = cloudlet.getProcessed_task2() / clock.getCurrent();
+
+        double lambdaCloud = (cloud.getProcessed_task1() + cloud.getProcessed_task2()) / clock.getCurrent();
+        double lambdaCloud_task1 = cloud.getProcessed_task1() / clock.getCurrent();
+        double lambdaCloud_task2 = cloud.getProcessed_task2() / clock.getCurrent();
+
+        double pq = lambdaCloud / lambdaToT;
+        double pq_1 = lambdaCloud_task1 / lambda1;
+        double pq_2 = lambdaCloud_task2 / lambda2;
+
+        System.out.println("lambda stimato "+f.format(lambdaToT));
+        System.out.println("lambda task1 stimato "+f.format(lambda1));
+        System.out.println("lambda task2 stimato "+f.format(lambda2)+"\n");
+
+        System.out.println("numero medio di task  del cloudlet "+f.format(global_node.getComplete_time_cloudlet()/clock.getCurrent()));
+        System.out.println("numero medio di task1 del cloudlet "+f.format(cloudlet.getArea_task1()/clock.getCurrent()));
+        System.out.println("numero medio di task2 del cloudlet "+f.format(cloudlet.getArea_task2()/clock.getCurrent())+"\n");
+
+        System.out.println("numero medio di task  del cloud "+f.format(global_node.getComplete_time_cloud()/clock.getCurrent()));
+        System.out.println("numero medio di task1 del cloud "+f.format(cloud.getArea_task1()/clock.getCurrent()));
+        System.out.println("numero medio di task2 del cloud "+f.format(cloud.getArea_task2()/clock.getCurrent())+"\n");
+
+        System.out.println("Throughput per il cloudlet "+f.format(lambdaClet));
+        System.out.println("Throughput task1 per il cloudlet "+f.format(lambdaClet_task1 ));
+        System.out.println("Throughput task2 per il cloudlet "+f.format(lambdaClet_task2 )+"\n");
+
+        System.out.println("Throughput per il cloud "+f.format(lambdaCloud) );
+        System.out.println("Throughput task1 per il cloud "+f.format(lambdaCloud_task1));
+        System.out.println("Throughput task2 per il cloud "+f.format(lambdaCloud_task2)+"\n");
+
+        System.out.println("pq "+f.format(pq) );
+        System.out.println("pq_1 "+f.format(pq_1) );
+        System.out.println("pq_2 "+f.format(pq_2)+ "\n" );
+
+        double clet = global_node.getComplete_time_cloudlet()/(cloudlet.getProcessed_task1()+cloudlet.getProcessed_task2());
+        double cl = global_node.getComplete_time_cloud()/(cloud.getProcessed_task1()+cloud.getProcessed_task2());
+
+        System.out.println("tempo di risposta del cloudlet "+f.format(clet));
+        System.out.println("tempo di risposta del cloudlet per task1 "+f.format(cloudlet.getArea_task1()/(cloudlet.getProcessed_task1() )));
+        System.out.println("tempo di risposta del cloudlet per task2 "+f.format(cloudlet.getArea_task2()/(cloudlet.getProcessed_task2() ))+"\n");
+
+        System.out.println("tempo di risposta del cloud "+f.format(cl));
+        System.out.println("tempo di risposta del cloud per task1 "+f.format(cloud.getArea_task1()/ (cloud.getProcessed_task1())));
+        System.out.println("tempo di risposta del cloud per task2 "+f.format(cloud.getArea_task2()/ (cloud.getProcessed_task2()))+"\n");
+
+        System.out.println("PRIMO METODO");
+        System.out.println("tempo medio di risposta del sistema "+f.format((1-pq)*clet + pq*cl));
+        System.out.println("tempo di risposta sistema per task1 "+f.format(
+                (1-pq_1)*(global_node.getComplete_time_task1()/(cloudlet.getProcessed_task1()+cloudlet.getProcessed_task2()))  +
+                pq_1*(global_node.getComplete_time_task1()/ (cloud.getProcessed_task1()+ cloud.getProcessed_task2()) ) ));
+
+        System.out.println("tempo di risposta sistema per task2 "+f.format(
+                (1-pq_2)*(global_node.getComplete_time_task2()/(cloudlet.getProcessed_task1()+cloudlet.getProcessed_task2() ))  +
+                pq_2*(global_node.getComplete_time_task2()/ (cloud.getProcessed_task1()+ cloud.getProcessed_task2()) ) )+"\n");
+
+        System.out.println("SECONDO METODO");
+        System.out.println("tempo medio di risposta del sistema_2 "+f.format(global_node.getComplete_time_system()/global_node.getTotalTask()));
+        System.out.println("tempo di risposta sistema per task1_2 "+f.format(global_node.getComplete_time_task1()/(cloudlet.getProcessed_task1()+cloud.getProcessed_task1())));
+        System.out.println("tempo di risposta sistema per task2_2 "+f.format(global_node.getComplete_time_task2()/(cloudlet.getProcessed_task2()+cloud.getProcessed_task2()))+"\n");
+
+
+
+        System.out.println("server"+"\t"+"utilization"+"\t"+"Task1Processed"+"\t"+"Task2Processed"+"\n");
+        for(
+                int s = 1;
+                s <=SERVERS;s++)
+
+        {
+            System.out.print(s + "\t\t" +
+                    f.format(cloudlet.getServers().get(s).getTotal_service() / clock.getCurrent()) + "\t\t" +
+                    cloudlet.getServers().get(s).getProcessed_task1() + "\t\t" + cloudlet.getServers().get(s).getProcessed_task2() + "\n");
+        }
+        System.out.println("\n\n");
+    }
+
+    public abstract ArrayList<Double> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo);
     public abstract ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP);
 
 

@@ -1,4 +1,5 @@
 package Transient;
+import pmcsn.Estimate;
 import pmcsn.Rngs;
 import pmcsn.Util;
 
@@ -48,34 +49,44 @@ public class StartTran {
                 System.exit(0);
             }
 
-            PrintWriter writer = null;
+           /* PrintWriter writer = null;
             try {
                 writer = new PrintWriter(new FileWriter("Matlab/transient/" +"IntervalloConfidenza" + "Alg" + selected + ".csv"));
+                Util.print_on_file(writer, Util.titlesTran);
 
-                Util.print_on_file(writer, new String[]{"seed","stop", "cloudlet", "cloudlet_task1", "cloudlet_task2",
-                        "cloud", "cloud_task1", "cloud_task2",
-                        "system", "system_task1", "system_task2"});
+
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
 
             for (double stop_i : STOP_T) {
+
+                PrintWriter writerConfidenzaPlot = null;
+                try {
+                    writerConfidenzaPlot = new PrintWriter(new FileWriter("Matlab/transient/" + "estimateFile" + stop_i + "Alg" + selected + ".csv"));
+                    Util.print_on_file(writerConfidenzaPlot, Util.titlesEstimate);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                //store per i risultati
+                ArrayList<ArrayList<Double>> values = new ArrayList<>();
 
                 for (int i = 0; i < tran_replications; i++) {
 
                     switch (selected) {
+
                         case 1: {
                             Simulator1_Tran s_algorith1 = new Simulator1_Tran();
-                            ArrayList<String> values = s_algorith1.RunSimulation(r, stop_i, Long.toString(r.getSeed()), "Alg1");
+                            values.add( s_algorith1.RunSimulation(r, stop_i, Long.toString(r.getSeed()), "Alg1"));
 
-                            Util.print_on_file(writer, Util.convertArrayList(values));
                             break;
                         }
                         case 2: {
                             Simulator2_Tran s_algorith2 = new Simulator2_Tran();
-                            ArrayList<String> values = s_algorith2.RunSimulation(r, stop_i, Long.toString(r.getSeed()), "Alg2");
+                            values.add( s_algorith2.RunSimulation(r, stop_i, Long.toString(r.getSeed()), "Alg2" ));
 
-                            Util.print_on_file(writer, Util.convertArrayList(values));
                             break;
                         }
                         default:
@@ -85,10 +96,17 @@ public class StartTran {
                     }
                     r.plantSeeds(r.getSeed());
                 }
+                Estimate e = new Estimate();
+                e.calcolateConfidenceByArrays(values, Double.toString(stop_i), writerConfidenzaPlot);
+
+                System.out.flush();
+
+                assert (writerConfidenzaPlot != null);
+                writerConfidenzaPlot.close();
             }
 
-            assert (writer != null);
-            writer.close();
+            /*assert (writer != null);
+            writer.close();*/
 
         }
     }

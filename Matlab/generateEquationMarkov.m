@@ -141,6 +141,9 @@ disp("pq: "+pq);
 disp("pq_1: "+pq_1);
 disp("pq_2: "+pq_2);
 
+disp("p1 cloud: "+p1);
+disp("p2 cloud: "+p2);
+
 Rclet = s / (la+lb); % cloudlet
 disp("E[T]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet);
 
