@@ -1,6 +1,5 @@
 package pmcsn;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,10 +27,10 @@ public class Util {
                 Path alg = Paths.get("../PMCSN_cloud/Matlab/"+dir+"/"+dir+i);
                 Files.createDirectories(alg);
                 Path pathEstimateTempi = Paths.get("../PMCSN_cloud/Matlab/"+dir+"/"+dir+i+"/estimateTempi");
-                Path pathEstimatePacchetti = Paths.get("../PMCSN_cloud/Matlab/"+dir+"/"+dir+i+"/estimatePacchetti");
+                Path pathEstimateTask = Paths.get("../PMCSN_cloud/Matlab/"+dir+"/"+dir+i+"/estimateTask");
                 Path pathEstimateThroughput = Paths.get("../PMCSN_cloud/Matlab/"+dir+"/"+dir+i+"/estimateThroughput");
                 Files.createDirectories(pathEstimateTempi);
-                Files.createDirectories(pathEstimatePacchetti);
+                Files.createDirectories(pathEstimateTask);
                 Files.createDirectories(pathEstimateThroughput);
             }
         } catch (IOException e) {
@@ -99,5 +98,10 @@ public class Util {
         return temp;
     }
 
+    public static void closeFile(PrintWriter writer){
+        assert (writer!= null);
+        writer.close();
+
+    }
 
 }

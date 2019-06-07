@@ -3,6 +3,7 @@ package Batch;
 import pmcsn.Rngs;
 import StruttureDiSistema.GeneralSimulator;
 import StruttureDiSistema.*;
+import pmcsn.Statistics;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -34,20 +35,17 @@ public class Simulator2_Batch extends GeneralSimulator {
 
     }
 
-    @Override
-    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP) {
+
+    public Statistics RunBatch(Rngs r, double STOP) {
 
         DecimalFormat f = new DecimalFormat("###0.000000");
         f.setGroupingUsed(false);
         f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 
+        Statistics statistics = new Statistics();
         int batch = 1;
 
-        ArrayList<ArrayList<Double>> meansElements = new ArrayList<>();
-        for(int i=0;i<9;i++)
-            meansElements.add(new ArrayList<Double>());
-
-        // primo arrivo
+        //primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
         system_events.get(0).setType(getTaskType(r));          // devo decidere se il primo arrivo è di tipo A o B
 
@@ -56,7 +54,10 @@ public class Simulator2_Batch extends GeneralSimulator {
             if(clock.getCurrent()> batch * batch_interval && batch*batch_interval < STOP) {
 
                 global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
-                statisticTimesValues(meansElements, global_node, cloudlet, cloud);
+                //salvo le statistiche nella struttura
+                statistics.saveTempiValues(global_node, cloudlet, cloud);
+                statistics.savePacchettiValues(global_node, cloudlet, cloud, clock);
+                statistics.saveThroughput(global_node, cloudlet, cloud, clock);
 
                 //riporto la struttura EventNode a clock.Current = 0
                 for (EventNode event : system_events) {
@@ -200,11 +201,12 @@ public class Simulator2_Batch extends GeneralSimulator {
 
         //ultimo Batch che svuota le code, bloccando gli arrivi
         global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
-        statisticTimesValues(meansElements, global_node, cloudlet, cloud);
+        statistics.saveTempiValues(global_node, cloudlet, cloud);
+        statistics.savePacchettiValues(global_node, cloudlet, cloud, clock);
+        statistics.saveThroughput(global_node, cloudlet, cloud, clock);
 
-        return meansElements;
+        return statistics;
     }
-
 
 
     private int findType2ToSwitch(ArrayList<EventNode> system_events) {
@@ -222,9 +224,5 @@ public class Simulator2_Batch extends GeneralSimulator {
         }
         return (event);
     }
-
-    @Override
-    public void RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo, ArrayList<ArrayList<Double>> array) {}
-
 
 }

@@ -4,7 +4,6 @@ import pmcsn.Rngs;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -121,7 +120,7 @@ public abstract class GeneralSimulator {
         return (server);
     }
 
-    public void statisticTimesValues(ArrayList<ArrayList<Double>> allResults, GlobalNode global_node, Cloudlet cloudlet, Cloud cloud) {
+   /* public void statisticTimesValues(ArrayList<ArrayList<Double>> allResults, GlobalNode global_node, Cloudlet cloudlet, Cloud cloud) {
 
         allResults.get(0).add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) );
         allResults.get(1).add(cloudlet.getArea_task1() / cloudlet.getProcessed_task1());
@@ -135,22 +134,7 @@ public abstract class GeneralSimulator {
         allResults.get(7).add(global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
         allResults.get(8).add(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
 
-
-        /*
-
-        meansElements.get(0).add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
-        meansElements.get(1).add(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
-        meansElements.get(2).add(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2()));
-
-        meansElements.get(3).add(global_node.getComplete_time_cloud() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
-        meansElements.get(4).add(cloud.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
-        meansElements.get(5).add(cloud.getArea_task2() / ( cloudlet.getProcessed_task2()+ cloud.getProcessed_task2()));
-
-        meansElements.get(6).add(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
-        meansElements.get(7).add(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
-        meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
-*/
-    }
+    }*/
 
     public void printTranResults(GlobalNode global_node, Cloudlet cloudlet, Cloud cloud, SystemClock clock, double STOP){
         DecimalFormat f = new DecimalFormat("###0.000000");
@@ -193,6 +177,12 @@ public abstract class GeneralSimulator {
         System.out.println("numero medio di task1 del cloud "+f.format(cloud.getArea_task1()/clock.getCurrent()));
         System.out.println("numero medio di task2 del cloud "+f.format(cloud.getArea_task2()/clock.getCurrent())+"\n");
 
+        //TODO:CONTROLLA
+        System.out.println("numero medio di task  del sistema "+f.format(global_node.getComplete_time_system()/clock.getCurrent()));
+        System.out.println("numero medio di task1 del sistema "+f.format(global_node.getComplete_time_task1()/clock.getCurrent()));
+        System.out.println("numero medio di task2 del sistema "+f.format(global_node.getComplete_time_task2()/clock.getCurrent())+"\n");
+        //TODO:CONTROLLA
+
         System.out.println("Throughput per il cloudlet "+f.format(lambdaClet));
         System.out.println("Throughput task1 per il cloudlet "+f.format(lambdaClet_task1 ));
         System.out.println("Throughput task2 per il cloudlet "+f.format(lambdaClet_task2 )+"\n");
@@ -200,6 +190,10 @@ public abstract class GeneralSimulator {
         System.out.println("Throughput per il cloud "+f.format(lambdaCloud) );
         System.out.println("Throughput task1 per il cloud "+f.format(lambdaCloud_task1));
         System.out.println("Throughput task2 per il cloud "+f.format(lambdaCloud_task2)+"\n");
+
+        System.out.println("Throughput per il sistema" + global_node.getTotalTask() / clock.getCurrent() );
+        System.out.println("Throughput task1 per il sistema" + cloudlet.getProcessed_task1() + cloud.getProcessed_task1() / clock.getCurrent() );
+        System.out.println("Throughput task2 per il sistema" + cloudlet.getProcessed_task2() + cloud.getProcessed_task2() / clock.getCurrent() );
 
         System.out.println("pq "+f.format(pq) );
         System.out.println("pq_1 "+f.format(pq_1) );
@@ -245,9 +239,6 @@ public abstract class GeneralSimulator {
         }
         System.out.println("\n\n");
     }
-
-    public abstract void RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo, ArrayList<ArrayList<Double>> estimateTempi);
-    public abstract ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP);
 
 
 }

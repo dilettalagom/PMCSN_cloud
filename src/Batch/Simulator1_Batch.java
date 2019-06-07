@@ -3,6 +3,7 @@ package Batch;
 import pmcsn.Rngs;
 import StruttureDiSistema.GeneralSimulator;
 import StruttureDiSistema.*;
+import pmcsn.Statistics;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -35,19 +36,14 @@ public class Simulator1_Batch extends GeneralSimulator {
     }
 
 
-    @Override
-    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP) {
+    public Statistics RunBatch(Rngs r, double STOP) {
 
         DecimalFormat f = new DecimalFormat("###0.000000");
         f.setGroupingUsed(false);
         f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 
+        Statistics statistics = new Statistics();
         int batch = 1;
-
-        ArrayList<ArrayList<Double>> meansElements = new ArrayList<>();
-        for (int i=0; i<9; i++){
-            meansElements.add(new ArrayList<>());
-        }
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
@@ -60,20 +56,12 @@ public class Simulator1_Batch extends GeneralSimulator {
 
             if(clock.getCurrent()> batch_interval && batch*batch_interval < STOP ){
 
-               /*meansElements.get(0).add(global_node.getComplete_time_cloudlet() / global_node.getTotalTask());
-                meansElements.get(1).add(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
-                meansElements.get(2).add(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2()));
 
-                meansElements.get(3).add(global_node.getComplete_time_cloud() /  global_node.getTotalTask());
-                meansElements.get(4).add(cloud.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
-                meansElements.get(5).add(cloud.getArea_task2() / ( cloudlet.getProcessed_task2()+ cloud.getProcessed_task2()));
-
-                meansElements.get(6).add(global_node.getComplete_time_system() /  global_node.getTotalTask());
-                meansElements.get(7).add(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
-                meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
-*/
                 global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
-                statisticTimesValues(meansElements, global_node, cloudlet, cloud);
+                //salvo le statistiche nella struttura
+                statistics.saveTempiValues(global_node, cloudlet, cloud);
+                statistics.savePacchettiValues(global_node, cloudlet, cloud, clock);
+                statistics.saveThroughput(global_node, cloudlet, cloud, clock);
 
                 //riporto la struttura EventNode a clock.Current = 0
                 for (EventNode event: system_events){
@@ -126,7 +114,6 @@ public class Simulator1_Batch extends GeneralSimulator {
             cloud.setArea_task1(cloud.getArea_task1() + instant * cloud.getWorking_task1());
             //calcola il tempo di attraversamento nel cloud per un task di tipo 2
             cloud.setArea_task2(cloud.getArea_task2() + instant * cloud.getWorking_task2());
-
 
             clock.setCurrent(clock.getNext());
 
@@ -224,13 +211,11 @@ public class Simulator1_Batch extends GeneralSimulator {
 
         //ultimo Batch che svuota le code, bloccando gli arrivi
         global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
-        statisticTimesValues(meansElements, global_node, cloudlet, cloud);
+        statistics.saveTempiValues(global_node, cloudlet, cloud);
+        statistics.savePacchettiValues(global_node, cloudlet, cloud, clock);
+        statistics.saveThroughput(global_node, cloudlet, cloud, clock);
 
-        return meansElements;
-
+        return statistics;
     }
-
-    @Override
-    public void RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo, ArrayList<ArrayList<Double>> array) {}
 
 }

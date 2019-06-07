@@ -26,7 +26,7 @@ public class Estimate {
 	public Estimate() {}
 
 
-	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas, String titolo, PrintWriter estimateWriter) {
+	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas, String tipo, String titolo, PrintWriter estimateWriter) {
 
 		Rvms rvms = new Rvms();
 		ArrayList<Double> confidences = new ArrayList<>();
@@ -79,17 +79,17 @@ public class Estimate {
 		System.out.println("\nUsando il campione di elementi e un " + (int) (100.0 * LOC + 0.5) + "% di confidenza " +
 				"i valori degli intervalli di confidenza sono:\n");
 
-		System.out.printf("tempo di risposta del cloudlet %.6f +/- %.6f\n", confidences.get(0), width.get(0));
-		System.out.printf("tempo di risposta del cloudlet per task1 %.6f +/- %.6f\n", confidences.get(1), width.get(1));
-		System.out.printf("tempo di risposta del cloudlet per task2 %.6f +/- %.6f\n\n", confidences.get(2), width.get(2));
+		System.out.printf(tipo + " del cloudlet %.6f +/- %.6f\n", confidences.get(0), width.get(0));
+		System.out.printf(tipo + " del cloudlet per task1 %.6f +/- %.6f\n", confidences.get(1), width.get(1));
+		System.out.printf(tipo + " del cloudlet per task2 %.6f +/- %.6f\n\n", confidences.get(2), width.get(2));
 
-		System.out.printf("tempo di risposta del cloud %.6f +/- %.6f\n", confidences.get(3), width.get(3));
-		System.out.printf("tempo di risposta del cloud per task1 %.6f +/- %.6f\n", confidences.get(4), width.get(4));
-		System.out.printf("tempo di risposta del cloud per task2 %.6f +/- %.6f\n\n", confidences.get(5), width.get(5));
+		System.out.printf(tipo + " del cloud %.6f +/- %.6f\n", confidences.get(3), width.get(3));
+		System.out.printf(tipo + " del cloud per task1 %.6f +/- %.6f\n", confidences.get(4), width.get(4));
+		System.out.printf(tipo + " del cloud per task2 %.6f +/- %.6f\n\n", confidences.get(5), width.get(5));
 
-		System.out.printf("tempo medio di risposta del sistema %.6f +/- %.6f\n", confidences.get(6), width.get(6));
-		System.out.printf("tempo di risposta sistema per task1 %.6f +/- %.6f\n", confidences.get(7), width.get(7));
-		System.out.printf("tempo di risposta sistema per task2 %.6f +/- %.6f\n\n", confidences.get(8), width.get(8));
+		System.out.printf(tipo + " del sistema %.6f +/- %.6f\n", confidences.get(6), width.get(6));
+		System.out.printf(tipo + " del sistema per task1 %.6f +/- %.6f\n", confidences.get(7), width.get(7));
+		System.out.printf(tipo + " del sistema per task2 %.6f +/- %.6f\n\n", confidences.get(8), width.get(8));
 
 	}
 
