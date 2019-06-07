@@ -1,5 +1,5 @@
 function seedTest()
-
+clc;
 %%Apro la cartella seed
 dinfo = dir(fullfile('seeds'));
 dinfo([dinfo.isdir]) = [];     %get rid of all directories including . and ..
@@ -17,15 +17,15 @@ for j = 1 : nfiles
     dataset{j,2} = importfileSeed(filename); %concatena i valori del file
 end
 disp(dataset);
-%%
+
 
 %%Il "test del ChiQuadro" è un test parametrico che valuta l'uguaglianza
 %di varie categorie ed è implementato come test di ipotesi in crosstab
-name = dataset{1,1};
-figure('Name',name);
-histogram(dataset{1,2});
 for h=1:nfiles
     
+    name = dataset{h,1};
+    figure('Name',name);
+    histogram(dataset{h,2});
     [N,edges] = histcounts(dataset{h,2});
     bins = length(N);
     %%TEST ONLINE
@@ -34,17 +34,17 @@ for h=1:nfiles
 end
 
     fprintf('\n\n');
-
+%%
 for h=1:nfiles
     
     %%TEST TONY
     [N,edges] = histcounts(dataset{h,2});
-    p = 100000/length(N); 
+    p = length(dataset{h,2})/length(N); 
     chi_test = 0;
     for i = 1:length(N)
         chi_test = chi_test +( ( ( N(i)-p)^2 ) /p);
     end
-    x = chi2inv(0.95,length(N)-1);
+    x = chi2inv(0.90,length(N)-1);
     string = erase( dataset{h,1}, "Stream");
     string = erase( string, ".csv");
     labels(h,1) = string;
@@ -53,7 +53,7 @@ for h=1:nfiles
     
 end
 
-
+%%
 %%Il "Wilcoxon rank sum Test" è un test non parametrico che valuta l'indipendenza di due samples
 results_h = zeros(nfiles, nfiles);
 results_p = zeros(nfiles, nfiles);
@@ -86,6 +86,7 @@ end
     T_p = addvars(T_p, temp','Before', labels(1), 'NewVariableNames', 'Seeds');
    
     disp(T_p);
+    disp(T_h);
     filename = 'Seedranksum.xlsx';
     writetable(T_h, filename,'Sheet',1)
     writetable(T_p,filename,'Sheet',2)
