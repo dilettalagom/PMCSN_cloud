@@ -34,7 +34,7 @@ public class SeedIndependence {
                 streamValues.add(Double.toString(r.random()));
             }
             assert writer!=null;
-            Util.print_on_file(writer, Util.convertArrayList(streamValues));
+            Util.print_on_file_column(writer, Util.convertArrayList(streamValues));
             writer.close();
         }
 

@@ -26,6 +26,15 @@ public class Util {
         writer.write(System.getProperty("line.separator"));
     }
 
+    public static void print_on_file_column(PrintWriter writer, String[] row) {
+
+        for (String s : row) {
+            writer.write(s);
+            writer.write(';');
+            writer.write(System.getProperty("line.separator"));
+        }
+    }
+
     public static String[] convertArrayList(ArrayList<String>arrayList) {
         Object[] temp = arrayList.toArray();
         return Arrays.copyOf(temp,
