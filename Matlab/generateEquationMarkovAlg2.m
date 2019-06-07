@@ -285,6 +285,18 @@ clc
 p1 = (la*pq_1)/ (pq*(la+lb));
 p2 = 1-p1;
 
+L_clet = (1-pq)*(la+lb);
+L1_clet = (1-pq_1)*(la);
+L2_clet = (1-pq_2)*(lb);
+
+L_cloud = (pq)*(la+lb);
+L1_cloud = (pq_1)*(la);
+L2_cloud = (pq_2)*(lb);
+
+L_s = L_clet + L_cloud ;
+L1_s = L1_clet + L1_cloud;
+L2_s = L2_clet + L2_cloud;
+
 
 disp("pq: "+pq);
 disp("pq_1: "+pq_1);
@@ -293,13 +305,31 @@ disp("pq_2: "+pq_2);
 disp("p1 cloud: "+p1);
 disp("p2 cloud: "+p2);
 
-Rclet = s / ((1-pq)*(la+lb)); % cloudlet
+disp("lambda_cloudlet: "+L_clet);
+disp("lambda1_cloudlet: "+L_clet);
+disp("lambda2_cloudlet: "+L2_clet);
+
+disp("lambda_cloud: "+L_cloud);
+disp("lambda1_cloud: "+L1_cloud);
+disp("lambda2_cloud: "+L2_cloud);
+
+disp("lambda_sistema: "+L_s);
+disp("lambda1_sistema: "+L1_s);
+disp("lambda2_sistema: "+L2_s);
+
+disp("E[N]_cloudlet: "+s);
+disp("E[N1]_cloudlet: "+s1);
+disp("E[N2]_cloudlet: "+s2);
+
+
+
+Rclet = s / L_clet; % cloudlet
 disp("E[T]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet);
 
-Rclet_t1 = s1 / ((1-pq_1)*la); % cloudlet
+Rclet_t1 = s1 / L1_clet; % cloudlet
 disp("E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t1);
 
-Rclet_t2 = s2 / ((1-pq_2)*lb); % cloudlet
+Rclet_t2 = s2 / L2_clet; % cloudlet
 disp("E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t2);
 
 Rc = (p1*tAc + p2*tBc) ; % cloud
@@ -319,6 +349,20 @@ disp("E[T1]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_tas
 
 Rtot_task2 =(1-pq_2)*Rclet_t2+(pq_2)*Rc_task2; %sistema
 disp("E[T2]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task2);
+
+N_cloud = L_cloud*Rc;
+N1_cloud = L1_cloud*Rc_task1;
+N2_cloud = L2_cloud*Rc_task2;
+
+
+disp("E[N]_cloud: "+N_cloud);
+disp("E[N1]_cloud: "+N1_cloud);
+disp("E[N2]_cloud: "+N2_cloud);
+
+disp("E[N]_sistema: "+N_cloud +s);
+disp("E[N1]_sistema: "+N1_cloud +s1);
+disp("E[N2]_sistema: "+N2_cloud +s2);
+
 
 end
 

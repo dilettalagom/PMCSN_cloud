@@ -23,7 +23,7 @@ public class Configuration {
 
 
     public static double START   = 0.0;                        /* initial (open the door)        */
-    public static double STOP_BATCH = 10000;                  /* terminal (close the door) time */
+    public static double STOP_BATCH = 100000;                  /* terminal (close the door) time */
     //public static double[] STOP_T = {2.0,4.0,6.0,8.0,10.0,20.0,40.0,60.0,80.0,100.0};
     //public static double[] STOP_T = { 100.00,200.00, 300.00, 400.00, 500.00, 600.00, 700.00, 800.00, 900.00, 1000.00};
     public static double[] STOP_T = { 10000.00};

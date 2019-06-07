@@ -14,17 +14,20 @@ for j = 1 : nfiles
     filename = fullfile('seeds', dinfo(j).name);
     
     dataset{j,1} = dinfo(j).name; %concatena il nome del file
-    dataset{j,2} = importSeed(filename); %concatena i valori del file
+    dataset{j,2} = importfileSeed(filename); %concatena i valori del file
 end
 disp(dataset);
-
+%%
 
 %%Il "test del ChiQuadro" è un test parametrico che valuta l'uguaglianza
 %di varie categorie ed è implementato come test di ipotesi in crosstab
-bins = 100;
-
+name = dataset{1,1};
+figure('Name',name);
+histogram(dataset{1,2});
 for h=1:nfiles
     
+    [N,edges] = histcounts(dataset{h,2});
+    bins = length(N);
     %%TEST ONLINE
     disp("il seme "+ dataset{h,1} + " ha prodotto i seguenti risulati:");
     chi2test ( dataset{h,2}', bins);
@@ -36,12 +39,12 @@ for h=1:nfiles
     
     %%TEST TONY
     [N,edges] = histcounts(dataset{h,2});
-    p = 1000/10; 
+    p = 100000/length(N); 
     chi_test = 0;
     for i = 1:length(N)
         chi_test = chi_test +( ( ( N(i)-p)^2 ) /p);
     end
-    x = chi2inv(0.95,9);
+    x = chi2inv(0.95,length(N)-1);
     string = erase( dataset{h,1}, "Stream");
     string = erase( string, ".csv");
     labels(h,1) = string;
@@ -62,15 +65,15 @@ for i=1: nfiles
         results_h(i,j) = h;
         results_p(i,j) = p;
         
-        if (p==1)
-            fprintf("I due dataset %s e %s sono identici\n infatti hanno una accuratezza del %f.\n\n",dataset{i,1}, dataset{j,1}, p);
-        else
-            if(h==0)
-                fprintf("I due dataset %s e %s sono indipendenti e identicamente distribuiti con uguale media\n con una accuratezza del %f.\n\n",dataset{i,1}, dataset{j,1}, p);
-            else
-                fprintf("I due dataset %s e %s NON sono indipendenti e identicamente distribuiti.\n\n", dataset{i,1},dataset{j,1});
-            end
-        end
+       % if (p==1)
+        %    fprintf("I due dataset %s e %s sono identici\n infatti hanno una accuratezza del %f.\n\n",dataset{i,1}, dataset{j,1}, p);
+       % else
+       %     if(h==0)
+       %         fprintf("I due dataset %s e %s sono indipendenti e identicamente distribuiti con uguale media\n con una accuratezza del %f.\n\n",dataset{i,1}, dataset{j,1}, p);
+       %     else
+       %         fprintf("I due dataset %s e %s NON sono indipendenti e identicamente distribuiti.\n\n", dataset{i,1},dataset{j,1});
+       %     end
+       % end
     end
 end
 
@@ -82,10 +85,12 @@ end
     T_p = array2table(results_p, 'VariableNames',temp);
     T_p = addvars(T_p, temp','Before', labels(1), 'NewVariableNames', 'Seeds');
    
-    
+    disp(T_p);
     filename = 'Seedranksum.xlsx';
     writetable(T_h, filename,'Sheet',1)
     writetable(T_p,filename,'Sheet',2)
+    
+    
 end
 
 
@@ -128,20 +133,33 @@ end
 end
 
 %Import del file
-function seedArray = importSeed(filename)
-% Import data from text file.
+function SeedStream = importfileSeed(filename, startRow, endRow)
+
+
 % Initialize variables.
 delimiter = ';';
-endRow = 1;
-% Format for each line of text:
-formatSpec = '%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%f%[^\n\r]';
+if nargin<=2
+    startRow = 1;
+    endRow = inf;
+end
+
+formatSpec = '%f%[^\n\r]';
 
 % Open the text file.
 fileID = fopen(filename,'r');
-dataArray = textscan(fileID, formatSpec, endRow, 'Delimiter', delimiter, 'TextType', 'string', 'EmptyValue', NaN, 'ReturnOnError', false, 'EndOfLine', '\r\n');
-fclose(fileID);
-% Create output variable
-seedArray = [dataArray{1:end-1}];
-% Clear temporary variables
-clearvars filename delimiter endRow formatSpec fileID dataArray ans;
+
+dataArray = textscan(fileID, formatSpec, endRow(1)-startRow(1)+1, 'Delimiter', delimiter, 'TextType', 'string', 'EmptyValue', NaN, 'HeaderLines', startRow(1)-1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
+for block=2:length(startRow)
+    frewind(fileID);
+    dataArrayBlock = textscan(fileID, formatSpec, endRow(block)-startRow(block)+1, 'Delimiter', delimiter, 'TextType', 'string', 'EmptyValue', NaN, 'HeaderLines', startRow(block)-1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
+    dataArray{1} = [dataArray{1};dataArrayBlock{1}];
 end
+
+% Close the text file.
+fclose(fileID);
+
+% Create output variable
+SeedStream = [dataArray{1:end-1}];
+end
+
+
