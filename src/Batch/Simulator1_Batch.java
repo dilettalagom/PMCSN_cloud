@@ -45,7 +45,9 @@ public class Simulator1_Batch extends GeneralSimulator {
         int batch = 1;
 
         ArrayList<ArrayList<Double>> meansElements = new ArrayList<>();
-
+        for (int i=0; i<9; i++){
+            meansElements.add(new ArrayList<>());
+        }
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
@@ -71,7 +73,7 @@ public class Simulator1_Batch extends GeneralSimulator {
                 meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
 */
                 global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
-                meansElements.add(statisticTimesValues(global_node, cloudlet, cloud));
+                statisticTimesValues(meansElements, global_node, cloudlet, cloud);
 
                 //riporto la struttura EventNode a clock.Current = 0
                 for (EventNode event: system_events){
@@ -220,10 +222,10 @@ public class Simulator1_Batch extends GeneralSimulator {
             }
         }
 
-        global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
-
         //ultimo Batch che svuota le code, bloccando gli arrivi
-        meansElements.add(statisticTimesValues(global_node, cloudlet, cloud));
+        global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
+        statisticTimesValues(meansElements, global_node, cloudlet, cloud);
+
         return meansElements;
 
     }

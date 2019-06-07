@@ -4,36 +4,40 @@ function generateIntervalPlot()
 %pq: 0.47897
 %pq_1: 0.47897
 %pq_2: 0.47897
-%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 1.5517
-%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 1.1578
-%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 1.9297
-%E[T]_CLOUD generato analiticamente dalla catena di Markov: 2.0492
-%E[T1]_CLOUD generato analiticamente dalla catena di Markov: 1.9159
-%E[T2]_CLOUD generato analiticamente dalla catena di Markov: 2.1771
+%p1 cloud: 0.4898
+%p2 cloud: 0.5102
+%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 2.9781
+%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 2.2222
+%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 3.7037
+%E[T]_CLOUD generato analiticamente dalla catena di Markov: 4.2783
+%E[T1]_CLOUD generato analiticamente dalla catena di Markov: 4
+%E[T2]_CLOUD generato analiticamente dalla catena di Markov: 4.5455
 %E[T]_SISTEMA generato analiticamente dalla catena di Markov: 3.6008
 %E[T1]_SISTEMA generato analiticamente dalla catena di Markov: 3.0737
-%E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 4.1069
+%E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 4.10699
 
 %Algoritmo2
 %pq: 0.50308
 %pq_1: 0.027388
 %pq_2: 0.95975
-%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 1.138
-%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 2.1614
-%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 0.14906
-%E[T]_CLOUD generato analiticamente dalla catena di Markov: 2.2794
-%E[T1]_CLOUD generato analiticamente dalla catena di Markov: 0.10955
-%E[T2]_CLOUD generato analiticamente dalla catena di Markov: 4.3625
+%p1 cloud: 0.026665
+%p2 cloud: 0.97333
+%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 2.2901
+%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 2.2222
+%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 3.7037
+%E[T]_CLOUD generato analiticamente dalla catena di Markov: 4.5309
+%E[T1]_CLOUD generato analiticamente dalla catena di Markov: 4
+%E[T2]_CLOUD generato analiticamente dalla catena di Markov: 4.5455
 %E[T]_SISTEMA generato analiticamente dalla catena di Markov: 3.4174
 %E[T1]_SISTEMA generato analiticamente dalla catena di Markov: 2.2709
 %E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 4.5116
 
-request = input("Quale simulare vuoi elaborare? (1=transiente/ 2=batch):  ");
+request = input('Quale simulare vuoi elaborare? (1=transiente / 2=batch):  ');
 
 if(request == 2)
     directory = 'batch';
 elseif(request == 1)
-    directory = 'transient';
+    directory = 'transient/estimate';
 end
 
 %apro la cartella seed
@@ -54,23 +58,26 @@ system_task1 = zeros(nva,2);
 system_task2 = zeros(nva,2);
 
 request1 = input("Quale algoritmo vuoi plottare? (1/2):  ");
-if(request1== 1)
+if(request1 == 1)
     elaborateFile(dinfo,nva,'Alg1',directory,cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
-elseif(request == 2)
+elseif(request1 == 2)
     elaborateFile(dinfo,nva,'Alg2',directory,cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
 end
 
 end
 
 function elaborateFile(dinfo,nva,type,directory,cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
+labels = strings(nva,1);
 
 j=1;
-for i=1: nva
+for i=1:nva
     %seleziono i files per il calcolo dell'intervallo di confidenza
     if( strfind(dinfo(i).name, 'estimate')==1)
         if ( contains(dinfo(i).name,type) )
             filename = fullfile(directory, dinfo(i).name);
             temp = importIntervalText(filename);
+            
+            labels(j) = dinfo(i).name;
             
             format long
             %cloudlet
@@ -107,88 +114,192 @@ for i=1: nva
     end
 end
 
+labels
 
 X=1:nva;
 
 %%PLOT CLOUDLET
-figure('Name','Cloudlet');
-errorbar(X, cloudlet(:,1), cloudlet(:,2), 'blackx');xlim([0,j+1]);
+figure('Name','Cloudlet');  
+errorbar(X, cloudlet(:,1), cloudlet(:,2), 'blackx');xlim([0,j]);
 if ( strcmp( type,'Alg1') )
-    yline(1.5517, 'Color', 'red', 'LineStyle','-'); %media
+    yline(2.9781, 'Color', 'red', 'LineStyle','-'); %media
 elseif ( strcmp( type,'Alg2') )
-    yline(1.5711, 'Color', 'red', 'LineStyle','-'); %media
+    yline(2.2901, 'Color', 'red', 'LineStyle','-'); %media
 end
-
+if(strcmp( directory,'batch'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "CLOUDLET";
+    ylabel('Tempo medio di risposta');
+    xlabel ('tempi di batch');
+elseif(strcmp( directory,'transient/estimate'))
+    lgd=legend(labels);
+    lgd.Title.String = "CLOUDLET";
+    %ylabel('Tempo medio di risposta');
+    %xlabel ('tempi di batch');
+end
+    
 figure('Name','Cloudlet_task1');
 errorbar(X, cloudlet_task1(:,1), cloudlet_task1(:,2), 'blackx');xlim([0,j+1]);
-if ( strcmp( type,'Alg1') )
-    yline(1.1578, 'Color', 'red', 'LineStyle','-');
+if (strcmp( type,'Alg1') )
+    yline(2.2222, 'Color', 'red', 'LineStyle','-');
 elseif ( strcmp( type,'Alg2') )
-    yline(1.1578, 'Color', 'red', 'LineStyle','-');
+    yline(2.2222, 'Color', 'red', 'LineStyle','-');
 end
+if(strcmp( directory,'batch'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "CLOUDLET TASK1";
+    ylabel('Tempo medio di risposta');
+    xlabel ('tempi di batch');
+elseif(strcmp( directory,'transient/estimate'))
+    lgd=legend(labels);
+    lgd.Title.String = "CLOUDLET TASK1";
+    %ylabel('Tempo medio di risposta');
+    %xlabel ('tempi di batch');
+end
+
+
 
 figure('Name','Cloudlet_task2');
 errorbar(X, cloudlet_task2(:,1), cloudlet_task2(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(1.9297, 'Color', 'red', 'LineStyle','-');
+    yline( 3.7037, 'Color', 'red', 'LineStyle','-');
 elseif ( strcmp( type,'Alg2') )
-    yline(1.9297, 'Color', 'red', 'LineStyle','-');
+    yline( 3.7037, 'Color', 'red', 'LineStyle','-');
 end
+if(strcmp( directory,'batch'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "CLOUDLET TASK2";
+    ylabel('Tempo medio di risposta');
+    xlabel ('tempi di batch');
+elseif(strcmp( directory,'transient/estimate'))
+    lgd=legend(labels);
+    lgd.Title.String = "CLOUDLET TASK2";
+    %ylabel('Tempo medio di risposta');
+    %xlabel ('tempi di batch');
+end
+
 
 
 %%PLOT CLOUD
 figure('Name','Cloud');
-errorbar(X, cloud(:,1), cloud(:,2), 'blackx');xlim([0,j+1]);
+errorbar(X, cloud(:,1), cloud(:,2), 'blackx');xlim([0,j+1]); 
 if ( strcmp( type,'Alg1') )
-    yline(2.0492, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.2783, 'Color', 'red', 'LineStyle','-'); %media
 elseif( strcmp( type,'Alg2') )
-    yline(2.2794, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.5309, 'Color', 'red', 'LineStyle','-'); %media
 end
+if(strcmp( directory,'batch'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "CLOUD";
+    ylabel('Tempo medio di risposta');
+    xlabel ('tempi di batch');
+elseif(strcmp( directory,'transient/estimate'))
+    lgd=legend(labels);
+    lgd.Title.String = "CLOUD";
+    %ylabel('Tempo medio di risposta');
+    %xlabel ('tempi di batch');
+end
+
 
 figure('Name','Cloud_task1');
 errorbar(X, cloud_task1(:,1), cloud_task1(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(0.11974, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4, 'Color', 'red', 'LineStyle','-'); %media
 elseif ( strcmp( type,'Alg2') )
-    yline(0.11974, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4, 'Color', 'red', 'LineStyle','-'); %media
 end
+if(strcmp( directory,'batch'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "CLOUD TASK1";
+    ylabel('Tempo medio di risposta');
+    xlabel ('tempi di batch');
+elseif(strcmp( directory,'transient/estimate'))
+    lgd=legend(labels);
+    lgd.Title.String = "CLOUD TASK1";
+    %ylabel('Tempo medio di risposta');
+    %xlabel ('tempi di batch');
+end
+
 
 figure('Name','Cloud_task2');
 errorbar(X, cloud_task2(:,1), cloud_task2(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(0.10537, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.5455, 'Color', 'red', 'LineStyle','-'); %media
 elseif ( strcmp( type,'Alg2') )
-    yline(0.10537, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.5455, 'Color', 'red', 'LineStyle','-'); %media
 end
+if(strcmp( directory,'batch'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "CLOUD TASK2";
+    ylabel('Tempo medio di risposta');
+    xlabel ('tempi di batch');
+elseif(strcmp( directory,'transient/estimate'))
+    lgd=legend(labels);
+    lgd.Title.String = "CLOUD TASK2";
+    %ylabel('Tempo medio di risposta');
+    %xlabel ('tempi di batch');
+end
+
 
 
 %%PLOT SYSTEM
 figure('Name','System');
 errorbar(X, system(:,1), system(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(1.6642, 'Color', 'red', 'LineStyle','-'); %media
+    yline(3.6008, 'Color', 'red', 'LineStyle','-'); %media
 elseif ( strcmp( type,'Alg2') )
-    yline(1.6642, 'Color', 'red', 'LineStyle','-'); %media
+    yline(3.4174, 'Color', 'red', 'LineStyle','-'); %media
+end
+if(strcmp( directory,'batch'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "SYSTEM";
+    ylabel('Tempo medio di risposta');
+    xlabel ('tempi di batch');
+elseif(strcmp( directory,'transient/estimate'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "SYSTEM";
+    %ylabel('Tempo medio di risposta');
+    %xlabel ('tempi di batch');
 end
 
 
 figure('Name','System_task1');
 errorbar(X, system_task1(:,1), system_task1(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(1.2776, 'Color', 'red', 'LineStyle','-'); %media
+    yline(3.0737, 'Color', 'red', 'LineStyle','-'); %media
 elseif( strcmp( type,'Alg2') )
-    yline(1.2776, 'Color', 'red', 'LineStyle','-'); %media
+    yline(2.2709, 'Color', 'red', 'LineStyle','-'); %media
 end
-
+if(strcmp( directory,'batch'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "SYSTEM TASK1";
+    ylabel('Tempo medio di risposta');
+    xlabel ('tempi di batch');
+elseif(strcmp( directory,'transient/estimate'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "SYSTEM TASK1";
+    %ylabel('Tempo medio di risposta');
+    %xlabel ('tempi di batch');
+end
 
 figure('Name','System_task2');
 errorbar(X, system_task2(:,1), system_task2(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(2.0351, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.10699, 'Color', 'red', 'LineStyle','-'); %media
 elseif( strcmp( type,'Alg2') )
-    yline(2.0351, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.5116, 'Color', 'red', 'LineStyle','-'); %media
 end
-
+if(strcmp( directory,'batch'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "SYSTEM TASK2";
+    ylabel('Tempo medio di risposta');
+    xlabel ('tempi di batch');
+elseif(strcmp( directory,'transient/estimate'))
+    lgd=legend('tempi medi simulati', 'tempo medio teorico');
+    lgd.Title.String = "SYSTEM TASK2";
+    %ylabel('Tempo medio di risposta');
+    %xlabel ('tempi di batch');
+end
 end
 
 %%Import file

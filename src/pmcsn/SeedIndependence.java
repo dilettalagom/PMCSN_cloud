@@ -30,7 +30,7 @@ public class SeedIndependence {
                 e.printStackTrace();
             }
             ArrayList<String> streamValues = new ArrayList<>();
-            for (int i=0; i<STOP_BATCH; i++) {
+            for (int i=0; i<STOP_SEED; i++) {
                 streamValues.add(Double.toString(r.random()));
             }
             assert writer!=null;

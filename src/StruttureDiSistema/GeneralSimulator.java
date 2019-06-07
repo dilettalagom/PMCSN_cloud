@@ -123,22 +123,35 @@ public abstract class GeneralSimulator {
     }
 
 
-    public ArrayList<Double> statisticTimesValues(GlobalNode global_node, Cloudlet cloudlet, Cloud cloud) {
-        ArrayList<Double> allResults = new ArrayList<>();
+    public void statisticTimesValues(ArrayList<ArrayList<Double>> allResults, GlobalNode global_node, Cloudlet cloudlet, Cloud cloud) {
 
-        allResults.add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) );
-        allResults.add(cloudlet.getArea_task1() / cloudlet.getProcessed_task1());
-        allResults.add(cloudlet.getArea_task2() / cloudlet.getProcessed_task2());
+        allResults.get(0).add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2()) );
+        allResults.get(1).add(cloudlet.getArea_task1() / cloudlet.getProcessed_task1());
+        allResults.get(2).add(cloudlet.getArea_task2() / cloudlet.getProcessed_task2());
 
-        allResults.add(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2()) );
-        allResults.add(cloud.getArea_task1() / cloud.getProcessed_task1());
-        allResults.add(cloud.getArea_task2() / cloud.getProcessed_task2());
+        allResults.get(3).add(global_node.getComplete_time_cloud() / (cloud.getProcessed_task1() + cloud.getProcessed_task2()) );
+        allResults.get(4).add(cloud.getArea_task1() / cloud.getProcessed_task1());
+        allResults.get(5).add(cloud.getArea_task2() / cloud.getProcessed_task2());
 
-        allResults.add(global_node.getComplete_time_system() / global_node.getTotalTask());
-        allResults.add(global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
-        allResults.add(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
+        allResults.get(6).add(global_node.getComplete_time_system() / global_node.getTotalTask());
+        allResults.get(7).add(global_node.getComplete_time_task1() / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
+        allResults.get(8).add(global_node.getComplete_time_task2() / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
 
-        return allResults;
+
+        /*
+
+        meansElements.get(0).add(global_node.getComplete_time_cloudlet() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
+        meansElements.get(1).add(cloudlet.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
+        meansElements.get(2).add(cloudlet.getArea_task2() / (cloudlet.getProcessed_task2()+cloud.getProcessed_task2()));
+
+        meansElements.get(3).add(global_node.getComplete_time_cloud() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
+        meansElements.get(4).add(cloud.getArea_task1() / (cloudlet.getProcessed_task1()+ cloud.getProcessed_task1()));
+        meansElements.get(5).add(cloud.getArea_task2() / ( cloudlet.getProcessed_task2()+ cloud.getProcessed_task2()));
+
+        meansElements.get(6).add(global_node.getComplete_time_system() / (cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2()));
+        meansElements.get(7).add(global_node.getComplete_time_task1()  / (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()));
+        meansElements.get(8).add(global_node.getComplete_time_task2()  / (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()));
+*/
     }
 
     public void printTranResults(GlobalNode global_node, Cloudlet cloudlet, Cloud cloud, SystemClock clock, double STOP){

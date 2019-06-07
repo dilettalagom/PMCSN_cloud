@@ -5,22 +5,26 @@ import pmcsn.Rngs;
 import pmcsn.Util;
 
 import java.io.*;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import static pmcsn.Configuration.*;
-import static pmcsn.Util.*;
 
 
-public class StartBatch {
+public class StartBatch2 {
 
     public static void main(String[] args) {
 
-        if(!Util.createDirectoriesTree("batch")){
-            System.out.println("Errore durante la creazione delle cartelle per lo store dei risulatati");
+        Path path = Paths.get("../PMCSN_cloud/Matlab/batch");
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            System.out.print("C'è stato un errore durante la creazione della cartella\n");
             System.exit(1);
-        };
+        }
 
         while (true) {
 
@@ -39,43 +43,40 @@ public class StartBatch {
             if (selected == 0) {
                 System.exit(0);
             }
+            r.plantSeeds(Long.parseLong(seed));
+            for(int i = 0 ; i<8;i++) {
 
-            for(String seed : seeds_collection) {
+                long newSeed= r.getSeed();
+                r.plantSeeds(newSeed);
 
-                r.plantSeeds(Long.parseLong(seed));
+                PrintWriter estimateWriter = null;
+                try {
+                    estimateWriter = new PrintWriter(new FileWriter("Matlab/batch/" + "estimateFile" + Long.toString(newSeed) + "Alg" + selected + ".csv"));
+                    Util.print_on_file(estimateWriter, Util.titlesEstimate);
 
-                PrintWriter estimateTempiWriter = null;
-                PrintWriter estimatePacchettiWriter =  null;
-                PrintWriter estimateThoughtputWriter = null;
+                } catch (IOException e) {
+                    System.out.print("C'è stato un errore durante la creazione del file\n");
+                    System.exit(1);
+                }
 
                 switch (selected) {
                     case 1: {
-                        estimateTempiWriter = Util.createFiles(ROOTBATCH1 , "estimateTempi/estimateTempiFile" + seed + "Alg" + selected + ".csv");
-                        //estimatePacchettiWriter = Util.createFiles(ROOTBATCH1 , "estimatePacchetti/estimatePacchettiFile" + seed + "Alg" + selected + ".csv");
-                        //estimateThoughtputWriter = Util.createFiles(ROOTBATCH1 , "estimateThroughput/estimateThoughtputFile" + seed + "Alg" + selected + ".csv");
-
-
                         Simulator1_Batch s1Batch = new Simulator1_Batch();
 
                         ArrayList<ArrayList<Double>> simulatorDatas = s1Batch.RunBatch(r, STOP_BATCH);
                         Estimate e = new Estimate();
-                        e.calcolateConfidenceByArrays(simulatorDatas, seed, estimateTempiWriter);
-                        estimateTempiWriter.flush();
+                        e.calcolateConfidenceByArrays(simulatorDatas, Long.toString(newSeed), estimateWriter);
+                        estimateWriter.flush();
 
                         break;
                     }
                     case 2: {
-                        estimateTempiWriter = Util.createFiles(ROOTBATCH2 , "estimateTempi/estimateTempiFile" + seed + "Alg" + selected + ".csv");
-                        //estimatePacchettiWriter = Util.createFiles(ROOTBATCH2 , "estimatePacchetti/estimatePacchettiFile" + seed + "Alg" + selected + ".csv");
-                        //estimateThoughtputWriter = Util.createFiles(ROOTBATCH2 , "estimateThroughput/estimateThoughtputFile" + seed + "Alg" + selected + ".csv");
-
-
                         Simulator2_Batch s2Batch = new Simulator2_Batch();
 
                         ArrayList<ArrayList<Double>> simulatorDatas = s2Batch.RunBatch(r, STOP_BATCH);
                         Estimate e = new Estimate();
-                        e.calcolateConfidenceByArrays(simulatorDatas, seed, estimateTempiWriter);
-                        estimateTempiWriter.flush();
+                        e.calcolateConfidenceByArrays(simulatorDatas, Long.toString(newSeed), estimateWriter);
+                        estimateWriter.flush();
 
                         break;
                     }
