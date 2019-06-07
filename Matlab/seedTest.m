@@ -78,7 +78,7 @@ for i=1: nfiles
 end
 
     temp = cellstr( labels');
-    %crea i risultati come tablle e li stampa su file .xlsx
+    %crea i risultati come tabelle e li stampa su file .xlsx
     T_h = array2table(results_h, 'VariableNames',temp);
     T_h = addvars(T_h, temp','Before', labels(1), 'NewVariableNames', 'Seeds');
   

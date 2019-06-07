@@ -21,19 +21,19 @@ public abstract class GeneralSimulator {
         double p = 0.2;
         double m1 = 2 * p * mu;
         double m2 = 2 * (1 - p) * mu;
-        r.selectStream(10);
+        r.selectStream(3);
         double random = r.random();
+        r.selectStream(4);
         if (random < p) {
-            r.selectStream(30);
             return exponential(1 / m1, r);
         } else {
-            r.selectStream(60);
             return exponential(1 / m2, r);
         }
     }
 
     public int getTaskType(Rngs r) {
         double p1 = lambda1 / lambda;
+        r.selectStream(5);
         double random = r.random();
         if (random <= p1) {
             //è stato generato un task1
@@ -49,12 +49,11 @@ public abstract class GeneralSimulator {
     }
 
     public double getServiceCloudlet(double mu, Rngs r) {
-        r.selectStream(1);
         return (hyperExponential(mu, r));
     }
 
     public double getServiceCloud(double mu, Rngs r) {
-        r.selectStream(2);
+        r.selectStream(1);
         return (exponential(1 / mu, r));
     }
 
@@ -121,7 +120,6 @@ public abstract class GeneralSimulator {
         }
         return (server);
     }
-
 
     public void statisticTimesValues(ArrayList<ArrayList<Double>> allResults, GlobalNode global_node, Cloudlet cloudlet, Cloud cloud) {
 

@@ -145,9 +145,9 @@ X=1:nva;
 figure('Name','Cloudlet');
 errorbar(X, cloudlet(:,1), cloudlet(:,2), 'blackx');xlim([0,j]);
 if ( strcmp( type,'Alg1') )
-    yline(2.9781, 'Color', 'red', 'LineStyle','-'); %media
+    yline(2.97808012093726, 'Color', 'red', 'LineStyle','-'); %media
 elseif ( strcmp( type,'Alg2') )
-    yline(2.2901, 'Color', 'red', 'LineStyle','-'); %media
+    yline(2.2829, 'Color', 'red', 'LineStyle','-'); %media
 end
 if(strcmp( directory,'batch'))
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
@@ -164,9 +164,9 @@ end
 figure('Name','Cloudlet_task1');
 errorbar(X, cloudlet_task1(:,1), cloudlet_task1(:,2), 'blackx');xlim([0,j+1]);
 if (strcmp( type,'Alg1') )
-    yline(2.2222, 'Color', 'red', 'LineStyle','-');
+    yline(2.22222222222222, 'Color', 'red', 'LineStyle','-');
 elseif ( strcmp( type,'Alg2') )
-    yline(2.2222, 'Color', 'red', 'LineStyle','-');
+    yline(2.22222222222222, 'Color', 'red', 'LineStyle','-');
 end
 if(strcmp( directory,'batch'))
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
@@ -185,9 +185,9 @@ end
 figure('Name','Cloudlet_task2');
 errorbar(X, cloudlet_task2(:,1), cloudlet_task2(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline( 3.7037, 'Color', 'red', 'LineStyle','-');
+    yline( 3.7037037037037, 'Color', 'red', 'LineStyle','-');
 elseif ( strcmp( type,'Alg2') )
-    yline( 3.7037, 'Color', 'red', 'LineStyle','-');
+    yline( 3.7037037037037, 'Color', 'red', 'LineStyle','-');
 end
 if(strcmp( directory,'batch'))
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
@@ -207,9 +207,9 @@ end
 figure('Name','Cloud');
 errorbar(X, cloud(:,1), cloud(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(4.2783, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.27829313543599, 'Color', 'red', 'LineStyle','-'); %media
 elseif( strcmp( type,'Alg2') )
-    yline(4.5309, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.53090999439737, 'Color', 'red', 'LineStyle','-'); %media
 end
 if(strcmp( directory,'batch'))
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
@@ -247,9 +247,9 @@ end
 figure('Name','Cloud_task2');
 errorbar(X, cloud_task2(:,1), cloud_task2(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(4.5455, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.54545454545455, 'Color', 'red', 'LineStyle','-'); %media
 elseif ( strcmp( type,'Alg2') )
-    yline(4.5455, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.54545454545455, 'Color', 'red', 'LineStyle','-'); %media
 end
 if(strcmp( directory,'batch'))
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
@@ -269,9 +269,9 @@ end
 figure('Name','System');
 errorbar(X, system(:,1), system(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(3.6008, 'Color', 'red', 'LineStyle','-'); %media
+    yline(3.60084403444834, 'Color', 'red', 'LineStyle','-'); %media
 elseif ( strcmp( type,'Alg2') )
-    yline(3.4174, 'Color', 'red', 'LineStyle','-'); %media
+    yline(3.41410882972414, 'Color', 'red', 'LineStyle','-'); %media
 end
 if(strcmp( directory,'batch'))
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
@@ -289,9 +289,9 @@ end
 figure('Name','System_task1');
 errorbar(X, system_task1(:,1), system_task1(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(3.0737, 'Color', 'red', 'LineStyle','-'); %media
+    yline(3.07372565581056, 'Color', 'red', 'LineStyle','-'); %media
 elseif( strcmp( type,'Alg2') )
-    yline(2.2709, 'Color', 'red', 'LineStyle','-'); %media
+    yline(2.27091284611882, 'Color', 'red', 'LineStyle','-'); %media
 end
 if(strcmp( directory,'batch'))
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
@@ -308,9 +308,9 @@ end
 figure('Name','System_task2');
 errorbar(X, system_task2(:,1), system_task2(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
-    yline(4.10699, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.1068776779406, 'Color', 'red', 'LineStyle','-'); %media
 elseif( strcmp( type,'Alg2') )
-    yline(4.5116, 'Color', 'red', 'LineStyle','-'); %media
+    yline(4.51157697398525, 'Color', 'red', 'LineStyle','-'); %media
 end
 if(strcmp( directory,'batch'))
     lgd=legend('tempi medi simulati', 'tempo medio teorico');

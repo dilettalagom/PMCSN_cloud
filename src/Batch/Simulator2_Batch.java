@@ -138,7 +138,8 @@ public class Simulator2_Batch extends GeneralSimulator {
                     system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
 
 
-                } else {
+                }
+                else {
                     int cloud_server_selected = findOneCloud(system_events);
                     int typeCloud = system_events.get(e).getType();
 

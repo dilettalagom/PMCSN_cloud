@@ -7,6 +7,9 @@ lb = 6.25;
 ma = 0.45;
 mb = 0.27;
 
+ta = 1/ma ;
+tb = 1/mb ;
+
 mAc= 0.25;
 mBc = 0.22;
 
@@ -96,7 +99,7 @@ equations(count) = equations(count) - 1== 0;
 
 %disp(x);
 
-%%
+
 
 %Risoluzione delle equazioni
 format long g;
@@ -106,7 +109,7 @@ X = linsolve(A,b);
 Y = double(X);
 
 
-%%
+
 %somma delle probabilità degli stati dell'ultimo layer
 l= length(Y);
 u= l-20;
@@ -115,7 +118,7 @@ pq_2 = pq;
 pq_1 = pq;
 
 
-%%
+
 s = 0;
 s1 = 0;
 s2 = 0;
@@ -135,8 +138,11 @@ end
 % E[T]_CLOUDLET_type1 = sum(n1(i,j)*p(i,j) per ogni i, per ogni j
 % E[T]_CLOUDLET_type2 = sum(n2(i,j)*p(i,j) per ogni i, per ogni j
 clc
-p1 = (la*pq_1)/ (pq*(la+lb));
-p2 = 1-p1;
+p1_cloud = (la*pq_1)/ (pq*(la+lb));
+p2_cloud = 1-p1_cloud;
+
+p1_cloudlet = (la*(1-pq_1))/ ((1-pq)*(la+lb));
+p2_cloudlet = 1-p1_cloudlet;
 
 L_clet = (1-pq)*(la+lb);
 L1_clet = (1-pq_1)*(la);
@@ -155,61 +161,122 @@ disp("pq: "+pq);
 disp("pq_1: "+pq_1);
 disp("pq_2: "+pq_2);
 
-disp("p1 cloud: "+p1);
-disp("p2 cloud: "+p2);
-
-disp("lambda_cloudlet: "+L_clet);
-disp("lambda1_cloudlet: "+L_clet);
-disp("lambda2_cloudlet: "+L2_clet);
-
-disp("lambda_cloud: "+L_cloud);
-disp("lambda1_cloud: "+L1_cloud);
-disp("lambda2_cloud: "+L2_cloud);
-
-disp("lambda_sistema: "+L_s);
-disp("lambda1_sistema: "+L1_s);
-disp("lambda2_sistema: "+L2_s);
-
-disp("E[N]_cloudlet: "+s);
-disp("E[N1]_cloudlet: "+s1);
-disp("E[N2]_cloudlet: "+s2);
+disp("p1 cloudlet: "+p1_cloudlet);
+disp("p2 cloudlet: "+p2_cloudlet);
+disp("p1 cloud: "+p1_cloud);
+disp("p2 cloud: "+p2_cloud);
 
 
+T_CLOUDLET = p1_cloudlet*ta +p2_cloudlet*tb; % cloudlet
+T1_CLOUDLET = ta; % cloudlet
+T2_CLOUDLET = tb; % cloudlet
 
-Rclet = s / L_clet; % cloudlet
-disp("E[T]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet);
+T_CLOUD = (p1_cloud*tAc + p2_cloud*tBc) ; % cloud
+T1_CLOUD = tAc; % cloud
+T2_CLOUD = tBc; % cloud
 
-Rclet_t1 = s1 / L1_clet; % cloudlet
-disp("E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t1);
+T_SISTEMA = (1-pq)*T_CLOUDLET+ pq*T_CLOUD; %sistema
+T1_SISTEMA = (1-pq_1)*T1_CLOUDLET+pq_1*T1_CLOUD; %sistema
+T2_SISTEMA =(1-pq_2)*T2_CLOUDLET+pq_2*T2_CLOUD; %sistema
 
-Rclet_t2 = s2 / L2_clet; % cloudlet
-disp("E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: " + Rclet_t2);
+N_cloud = L_cloud*T_CLOUD;
+N1_cloud = L1_cloud*T1_CLOUD;
+N2_cloud = L2_cloud*T2_CLOUD;
 
-Rc = (p1*tAc + p2*tBc) ; % cloud
-disp("E[T]_CLOUD generato analiticamente dalla catena di Markov: " + Rc);
+N_cloudlet = L_clet*T_CLOUDLET;
+N1_cloudlet = L1_clet*T1_CLOUDLET;
+N2_cloudlet = L2_clet*T2_CLOUDLET;
 
-Rc_task1 = tAc; % cloud
-disp("E[T1]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task1);
+N_sistema = N_cloudlet +N_cloud;
+N1_sistema = N1_cloudlet +N1_cloud;
+N2_sistema = N2_cloudlet +N2_cloud;
 
-Rc_task2 = tBc; % cloud
-disp("E[T2]_CLOUD generato analiticamente dalla catena di Markov: " + Rc_task2);
+cell_time = {};
+cell_num = {};
+cell_throghput = {};
 
-Rtot = (1-pq)*Rclet+ pq*Rc; %sistema
-disp("E[T]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot);
+cell_time{1,1} = "E[T]_CLOUDLET";
+cell_time{1,2} = T_CLOUDLET;
+cell_time{2,1} = "E[T1]_CLOUDLET";
+cell_time{2,2} = T1_CLOUDLET;
+cell_time{3,1} = "E[T2]_CLOUDLET";
+cell_time{3,2} = T2_CLOUDLET;
 
-Rtot_task1 = (1-pq_1)*Rclet_t1+(pq_1)*Rc_task1; %sistema
-disp("E[T1]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task1);
+cell_time{4,1} = "E[T]_CLOUD";
+cell_time{4,2} = T_CLOUD;
+cell_time{5,1} = "E[T1]_CLOUD";
+cell_time{5,2} = T1_CLOUD;
+cell_time{6,1} = "E[T2]_CLOUD";
+cell_time{6,2} = T2_CLOUD;
 
-Rtot_task2 =(1-pq_2)*Rclet_t2+(pq_2)*Rc_task2; %sistema
-disp("E[T2]_SISTEMA generato analiticamente dalla catena di Markov: " + Rtot_task2);
+cell_time{7,1} = "E[T]_SISTEMA";
+cell_time{7,2} = T_SISTEMA;
+cell_time{8,1} = "E[T1]_SISTEMA";
+cell_time{8,2} = T1_SISTEMA;
+cell_time{9,1} = "E[T2]_SISTEMA";
+cell_time{9,2} = T2_SISTEMA;
 
-N_cloud = L_cloud*Rc;
-N1_cloud = L1_cloud*Rc_task1;
-N2_cloud = L2_cloud*Rc_task2;
+cell_num{1,1} = "E[N]_CLOUDLET";
+cell_num{1,2} = N_cloudlet;
+cell_num{2,1} = "E[N1]_CLOUDLET";
+cell_num{2,2} = N1_cloudlet;
+cell_num{3,1} = "E[N2]_CLOUDLET";
+cell_num{3,2} = N2_cloudlet;
 
+cell_num{4,1} = "E[N]_CLOUD";
+cell_num{4,2} = N_cloud;
+cell_num{5,1} = "E[N1]_CLOUD";
+cell_num{5,2} = N1_cloud;
+cell_num{6,1} = "E[N2]_CLOUD";
+cell_num{6,2} = N2_cloud;
 
-disp("E[N]_cloud: "+N_cloud);
-disp("E[N1]_cloud: "+N1_cloud);
-disp("E[N2]_cloud: "+N2_cloud);
+cell_num{7,1} = "E[N]_SISTEMA";
+cell_num{7,2} = N_sistema;
+cell_num{8,1} = "E[N1]_SISTEMA";
+cell_num{8,2} = N1_sistema;
+cell_num{9,1} = "E[N2]_SISTEMA";
+cell_num{9,2} = N2_sistema;
+
+cell_throghput{1,1} = "L_CLOUDLET";
+cell_throghput{1,2} = L_clet;
+cell_throghput{2,1} = "L1_CLOUDLET";
+cell_throghput{2,2} = L1_clet;
+cell_throghput{3,1} = "L2_CLOUDLET";
+cell_throghput{3,2} = L2_clet;
+
+cell_throghput{4,1} = "L_CLOUD";
+cell_throghput{4,2} = L_cloud;
+cell_throghput{5,1} = "L1_CLOUD";
+cell_throghput{5,2} = L1_cloud;
+cell_throghput{6,1} = "L2_CLOUD";
+cell_throghput{6,2} = L2_cloud;
+
+cell_throghput{7,1} = "L_SISTEMA";
+cell_throghput{7,2} = L_s;
+cell_throghput{8,1} = "L1_SISTEMA";
+cell_throghput{8,2} = L1_s;
+cell_throghput{9,1} = "L2_SISTEMA";
+cell_throghput{9,2} = L2_s;
+
+filename = 'result.xlsx';
+sheet = 1;
+tlRange = 'A1:A9';
+t2Range = 'B1:B9';
+
+n1Range = 'A11:A19';
+n2Range = 'B11:B19';
+
+l1Range = 'A21:A29';
+l2Range = 'B21:B29';
+
+xlswrite(filename,[cell_time{:,1}]',sheet,tlRange);
+xlswrite(filename,[cell_time{:,2}]',sheet,t2Range);
+
+xlswrite(filename,[cell_num{:,1}]',sheet,n1Range);
+xlswrite(filename,[cell_num{:,2}]',sheet,n2Range);
+
+xlswrite(filename,[cell_throghput{:,1}]',sheet,l1Range);
+xlswrite(filename,[cell_throghput{:,2}]',sheet,l2Range);
+
 
 end
