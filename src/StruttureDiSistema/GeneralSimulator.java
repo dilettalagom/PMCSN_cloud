@@ -248,7 +248,7 @@ public abstract class GeneralSimulator {
         System.out.println("\n\n");
     }
 
-    public abstract ArrayList<Double> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo);
+    public abstract void RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo, ArrayList<ArrayList<Double>> estimateTempi);
     public abstract ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP);
 
 

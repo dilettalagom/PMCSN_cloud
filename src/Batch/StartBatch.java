@@ -3,12 +3,9 @@ package Batch;
 import pmcsn.Estimate;
 import pmcsn.Rngs;
 import pmcsn.Util;
-
 import java.io.*;
-
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import static pmcsn.Configuration.*;
 import static pmcsn.Util.*;
 

@@ -231,8 +231,6 @@ public class Simulator1_Batch extends GeneralSimulator {
     }
 
     @Override
-    public ArrayList<Double> RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo) {
-        return null;
-    }
+    public void RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo, ArrayList<ArrayList<Double>> array) {}
 
 }

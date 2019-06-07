@@ -7,11 +7,7 @@ import pmcsn.Util;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
 
 import static pmcsn.Configuration.*;
 
@@ -45,7 +41,7 @@ public class Simulator2_Tran extends GeneralSimulator {
     }
 
     @Override
-    public ArrayList<Double> RunSimulation(Rngs r, double STOP,String selected_seed, String algoritmo) {
+    public void RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo,ArrayList<ArrayList<Double>> estimateTempi ) {
 
         PrintWriter instant_writer = null;
         try {
@@ -202,15 +198,13 @@ public class Simulator2_Tran extends GeneralSimulator {
         }
 
         //Salvo tutti i numeri per calcolare l'intervallo di confidenza in Estimate()
-        ArrayList<Double> allResults = statisticTimesValues(global_node, cloudlet, cloud);
+        statisticTimesValues(estimateTempi, global_node, cloudlet, cloud);
 
         //stampo i valori sul terminale
         printTranResults( global_node,  cloudlet,  cloud,  clock, STOP);
 
         assert (instant_writer!=null);
         instant_writer.close();
-
-        return allResults;
     }
 
     @Override
@@ -222,7 +216,7 @@ public class Simulator2_Tran extends GeneralSimulator {
         r.plantSeeds(Long.parseLong(seed));
 
         Simulator2_Tran s_algorith2 = new Simulator2_Tran();
-        ArrayList<Double> values = s_algorith2.RunSimulation(r, STOP_BATCH, Long.toString(r.getSeed()), "Alg2");
+        //s_algorith2.RunSimulation(r, STOP_BATCH, Long.toString(r.getSeed()), "Alg2");
 
     }
 }

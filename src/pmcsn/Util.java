@@ -16,8 +16,8 @@ public class Util {
 
     public static final String ROOTBATCH1 = "Matlab/batch/batch1/";
     public static final String ROOTBATCH2 = "Matlab/batch/batch2/";
-    public static final String ROOTTRA1 = "Matlab/batch/transient1/";
-    public static final String ROOTTRA2 = "Matlab/batch/transient2/";
+    public static final String ROOTTRA1 = "Matlab/transient/transient1/";
+    public static final String ROOTTRA2 = "Matlab/transient/transient2/";
 
 
     public static boolean createDirectoriesTree(String dir){

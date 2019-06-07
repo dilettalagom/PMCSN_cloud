@@ -194,7 +194,6 @@ public class Simulator2_Batch extends GeneralSimulator {
                     }
                     system_events.get(e).setType(0);
                 }
-
             }
         }
 
@@ -224,8 +223,7 @@ public class Simulator2_Batch extends GeneralSimulator {
     }
 
     @Override
-    public ArrayList<Double> RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo) {
-        return null;
-    }
+    public void RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo, ArrayList<ArrayList<Double>> array) {}
+
 
 }

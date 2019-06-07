@@ -7,10 +7,7 @@ import pmcsn.Util;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Locale;
 import static pmcsn.Configuration.*;
 
 public class Simulator1_Tran extends GeneralSimulator {
@@ -44,7 +41,7 @@ public class Simulator1_Tran extends GeneralSimulator {
     }
 
 
-    public ArrayList<Double>  RunSimulation (Rngs r,double STOP, String selected_seed, String algoritmo) {
+    public void RunSimulation (Rngs r,double STOP, String selected_seed, String algoritmo, ArrayList<ArrayList<Double>> estimateTempi) {
 
         PrintWriter instant_writer = null;
         try {
@@ -200,17 +197,22 @@ public class Simulator1_Tran extends GeneralSimulator {
         }
 
         //Salvo tutti i numeri per calcolare l'intervallo di confidenza in Estimate()
-        ArrayList<Double> allResults = statisticTimesValues(global_node, cloudlet, cloud);
+        statisticTimesValues(estimateTempi, global_node, cloudlet, cloud);
+
+        /*
+        ArrayList<Double> allResults1 = new ArrayList<>();
+        //Salvo tutti i numeri per calcolare l'intervallo di confidenza in Estimate()
+        ArrayList<ArrayList<Double>> allResults = null;
+        statisticTimesValues(allResults, global_node, cloudlet, cloud);*/
 
         //stampo i valori sul terminale
-        printTranResults( global_node, cloudlet, cloud, clock, STOP);
+        printTranResults( global_node,  cloudlet,  cloud,  clock, STOP);
 
         assert (instant_writer!=null);
         instant_writer.close();
 
-        return allResults;
-
     }
+
 
     @Override
     public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP) {return null;}
@@ -221,7 +223,7 @@ public class Simulator1_Tran extends GeneralSimulator {
         r.plantSeeds(Long.parseLong(seed));
 
         Simulator1_Tran s_algorith1 = new Simulator1_Tran();
-        ArrayList<Double> values = s_algorith1.RunSimulation(r, STOP_BATCH, Long.toString(r.getSeed()), "Alg1");
+       // s_algorith1.RunSimulation(r, STOP_BATCH, Long.toString(r.getSeed()), "Alg1", estimateTempi);
 
     }
 

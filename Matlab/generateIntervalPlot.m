@@ -32,37 +32,60 @@ function generateIntervalPlot()
 %E[T1]_SISTEMA generato analiticamente dalla catena di Markov: 2.2709
 %E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 4.5116
 
-request = input('Quale simulare vuoi elaborare? (1=transiente / 2=batch):  ');
-
-if(request == 2)
-    directory = 'batch';
-elseif(request == 1)
-    directory = 'transient/estimate';
+request = input('Quale simulare vuoi elaborare? (1=transiente; 2=batch): ');
+if(request == 1)
+    mainDir = 'transient';
+elseif(request == 2)
+    mainDir = 'batch';
 end
 
-%apro la cartella seed
-dinfo = dir(fullfile(directory));
-dinfo([dinfo.isdir]) = [];     %get rid of all directories including . and ..
-nva = length(dinfo); %numero di file attesi
-
-cloudlet = zeros(nva,2);
-cloudlet_task1 = zeros(nva,2);
-cloudlet_task2 = zeros(nva,2);
-
-cloud = zeros(nva,2);
-cloud_task1 = zeros(nva,2);
-cloud_task2 = zeros(nva,2);
-
-system = zeros(nva,2);
-system_task1 = zeros(nva,2);
-system_task2 = zeros(nva,2);
+%apro la cartella principale
+dinfo = dir(fullfile(mainDir));
+subdir = dinfo([dinfo.isdir]);
+subdir(1:2) = [];%get rid of all directories including . and ..
 
 request1 = input("Quale algoritmo vuoi plottare? (1/2):  ");
 if(request1 == 1)
-    elaborateFile(dinfo,nva,'Alg1',directory,cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
-elseif(request1 == 2)
-    elaborateFile(dinfo,nva,'Alg2',directory,cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
+    %apro la sotto cartella per algoritmo
+    newDir = strcat(mainDir ,'/', subdir(1).name);
+else
+    newDir = strcat(mainDir ,'/', subdir(2).name);
 end
+estimateDir = dir(fullfile(newDir));
+estimateDir(1:2) = [];
+numDIR = length(estimateDir);
+
+for b=1:numDIR
+    newDir2 = strcat(newDir, '/', estimateDir(b).name);
+    localDir = dir(newDir2);
+    localDir([localDir.isdir]) = [];
+   
+    if(~isempty(localDir))
+        
+        nva = length(localDir); %numero di file attesi
+        
+        cloudlet = zeros(nva,2);
+        cloudlet_task1 = zeros(nva,2);
+        cloudlet_task2 = zeros(nva,2);
+        
+        cloud = zeros(nva,2);
+        cloud_task1 = zeros(nva,2);
+        cloud_task2 = zeros(nva,2);
+        
+        system = zeros(nva,2);
+        system_task1 = zeros(nva,2);
+        system_task2 = zeros(nva,2);
+        
+        
+        directory = strcat(newDir2,'/');
+        if(request1 == 1)
+            elaborateFile(localDir,nva,'Alg1',directory,cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
+        elseif(request1 == 2)
+            elaborateFile(localDir,nva,'Alg2',directory,cloudlet,cloudlet_task1,cloudlet_task2,cloud,cloud_task1,cloud_task2,system,system_task1,system_task2)
+        end
+    end
+end
+
 
 end
 
@@ -75,8 +98,8 @@ for i=1:nva
     if( strfind(dinfo(i).name, 'estimate')==1)
         if ( contains(dinfo(i).name,type) )
             filename = fullfile(directory, dinfo(i).name);
-            temp = importIntervalText(filename);
             
+            temp = importIntervalText(filename);
             labels(j) = dinfo(i).name;
             
             format long
@@ -119,7 +142,7 @@ labels
 X=1:nva;
 
 %%PLOT CLOUDLET
-figure('Name','Cloudlet');  
+figure('Name','Cloudlet');
 errorbar(X, cloudlet(:,1), cloudlet(:,2), 'blackx');xlim([0,j]);
 if ( strcmp( type,'Alg1') )
     yline(2.9781, 'Color', 'red', 'LineStyle','-'); %media
@@ -137,7 +160,7 @@ elseif(strcmp( directory,'transient/estimate'))
     %ylabel('Tempo medio di risposta');
     %xlabel ('tempi di batch');
 end
-    
+
 figure('Name','Cloudlet_task1');
 errorbar(X, cloudlet_task1(:,1), cloudlet_task1(:,2), 'blackx');xlim([0,j+1]);
 if (strcmp( type,'Alg1') )
@@ -182,7 +205,7 @@ end
 
 %%PLOT CLOUD
 figure('Name','Cloud');
-errorbar(X, cloud(:,1), cloud(:,2), 'blackx');xlim([0,j+1]); 
+errorbar(X, cloud(:,1), cloud(:,2), 'blackx');xlim([0,j+1]);
 if ( strcmp( type,'Alg1') )
     yline(4.2783, 'Color', 'red', 'LineStyle','-'); %media
 elseif( strcmp( type,'Alg2') )
@@ -300,7 +323,9 @@ elseif(strcmp( directory,'transient/estimate'))
     %ylabel('Tempo medio di risposta');
     %xlabel ('tempi di batch');
 end
+
 end
+
 
 %%Import file
 function text = importIntervalText(filename, startRow, endRow)

@@ -26,13 +26,11 @@ public class Estimate {
 	public Estimate() {}
 
 
-	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas, String seed, PrintWriter estimateWriter) {
+	public void calcolateConfidenceByArrays(ArrayList<ArrayList<Double>> simulatorDatas, String titolo, PrintWriter estimateWriter) {
 
 		Rvms rvms = new Rvms();
 		ArrayList<Double> confidences = new ArrayList<>();
 		ArrayList<Double> width = new ArrayList<>();
-
-		ArrayList<Double> variable = new ArrayList<>();
 
 
 		for (ArrayList<Double> line : simulatorDatas) {
@@ -75,10 +73,8 @@ public class Estimate {
 		}
 		Util.print_on_file(estimateWriter, Util.convertArrayList(temp));
 
-		assert (estimateWriter!=null);
-		estimateWriter.close();
 
-		System.out.println("\n\n------------------------Intervalli di confidenza prodotti da: " + seed + " ------------------------");
+		System.out.println("\n\n------------------------Intervalli di confidenza prodotti da: " + titolo + " ------------------------");
 
 		System.out.println("\nUsando il campione di elementi e un " + (int) (100.0 * LOC + 0.5) + "% di confidenza " +
 				"i valori degli intervalli di confidenza sono:\n");
