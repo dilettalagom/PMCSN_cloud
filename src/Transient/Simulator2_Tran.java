@@ -2,6 +2,7 @@ package Transient;
 
 import pmcsn.Rngs;
 import StruttureDiSistema.*;
+import pmcsn.Statistics;
 import pmcsn.Util;
 
 import java.io.FileWriter;
@@ -40,8 +41,10 @@ public class Simulator2_Tran extends GeneralSimulator {
 
     }
 
-    @Override
-    public void RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo,ArrayList<ArrayList<Double>> estimateTempi ) {
+
+    public Statistics RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo, Statistics statistics){
+
+      //  Statistics statistics = new Statistics();
 
         PrintWriter instant_writer = null;
         try {
@@ -198,18 +201,19 @@ public class Simulator2_Tran extends GeneralSimulator {
         }
 
         //Salvo tutti i numeri per calcolare l'intervallo di confidenza in Estimate()
-        statisticTimesValues(estimateTempi, global_node, cloudlet, cloud);
+        statistics.saveTempiValues(global_node, cloudlet, cloud);
+        statistics.savePacchettiValues(global_node, cloudlet, cloud, clock);
+        statistics.saveThroughput(global_node, cloudlet, cloud, clock);
 
         //stampo i valori sul terminale
         printTranResults( global_node,  cloudlet,  cloud,  clock, STOP);
 
         assert (instant_writer!=null);
         instant_writer.close();
+
+        return statistics;
     }
 
-    @Override
-    public ArrayList<ArrayList<Double>> RunBatch(Rngs r, double STOP) {
-        return null;}
 
     public static void main(String[] args) {
         Rngs r = new Rngs();

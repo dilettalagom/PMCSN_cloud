@@ -1,6 +1,7 @@
 package Transient;
 import pmcsn.Estimate;
 import pmcsn.Rngs;
+import pmcsn.Statistics;
 import pmcsn.Util;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -51,28 +52,17 @@ public class StartTran {
                 e.printStackTrace();
             }*/
 
-            // for (double stop_i : STOP_T) {
             for(int j=0; j<STOP_T.length; j++){
 
                 PrintWriter estimateTempiWriter = null;
-                PrintWriter estimatePacchettiWriter = null;
+                PrintWriter estimateTaskWriter = null;
                 PrintWriter estimateThoughtputWriter = null;
 
-
-               /* PrintWriter writerConfidenzaPlot = null;
-                try {
-                    writerConfidenzaPlot = new PrintWriter(new FileWriter("Matlab/transient/estimate/" + "estimateFile" + stop_i + "Alg" + selected + ".csv"));
-                    Util.print_on_file(writerConfidenzaPlot, Util.titlesEstimate);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                */
-
-                //store per i risultati
+                /*store per i risultati
                 ArrayList<ArrayList<Double>> estimateTempi = new ArrayList<>();
                 for(int i=0;i<9;i++)
-                    estimateTempi.add(new ArrayList<Double>());
+                    estimateTempi.add(new ArrayList<Double>());*/
+                Statistics statistics = new Statistics();
 
                 for (int i = 0; i < tran_replications; i++) {
 
@@ -80,24 +70,24 @@ public class StartTran {
 
                         case 1: {
 
-                             estimateTempiWriter = Util.createFiles(ROOTTRA1 , "estimateTempi/estimateTempi" +  String.valueOf(j) + "Alg" + selected + ".csv");
-                            //estimatePacchettiWriter = Util.createFiles(ROOTTRA1 , "estimatePacchetti/estimatePacchettiFile" + stop_i + "Alg" + selected + ".csv");
-                            //estimateThoughtputWriter = Util.createFiles(ROOTTRA1 , "estimateThroughput/estimateThoughtputFile" + stop_i + "Alg" + selected + ".csv");
+                            estimateTempiWriter = Util.createFiles(ROOTTRA1 , "estimateTempi/estimateTempi" +  String.valueOf(j) + "Alg" + selected + ".csv");
+                            estimateTaskWriter = Util.createFiles(ROOTTRA1 , "estimateTask/estimateTaskFile" + String.valueOf(j) + "Alg" + selected + ".csv");
+                            estimateThoughtputWriter = Util.createFiles(ROOTTRA1 , "estimateThroughput/estimateThoughtputFile" + String.valueOf(j) + "Alg" + selected + ".csv");
 
 
                             Simulator1_Tran s_algorith1 = new Simulator1_Tran();
-                            s_algorith1.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), "Alg1", estimateTempi);
+                            s_algorith1.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), "Alg1", statistics);
 
                             break;
                         }
                         case 2: {
 
                             estimateTempiWriter = Util.createFiles(ROOTTRA2 , "estimateTempi/estimateTempiFile" +  String.valueOf(j)  + "Alg" + selected + ".csv");
-                            //estimatePacchettiWriter = Util.createFiles(ROOTTRA2 , "estimatePacchetti/estimatePacchettiFile" + stop_i + "Alg" + selected + ".csv");
-                            //estimateThoughtputWriter = Util.createFiles(ROOTTRA2 , "estimateThroughput/estimateThoughtputFile" + stop_i + "Alg" + selected + ".csv");
+                            estimateTaskWriter = Util.createFiles(ROOTTRA2 , "estimateTask/estimateTaskFile" + String.valueOf(j) + "Alg" + selected + ".csv");
+                            estimateThoughtputWriter = Util.createFiles(ROOTTRA2 , "estimateThroughput/estimateThoughtputFile" + String.valueOf(j) + "Alg" + selected + ".csv");
 
                             Simulator2_Tran s_algorith2 = new Simulator2_Tran();
-                            s_algorith2.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), "Alg2", estimateTempi);
+                            s_algorith2.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), "Alg2", statistics);
 
                             break;
                         }
@@ -109,12 +99,18 @@ public class StartTran {
                     r.plantSeeds(r.getSeed());
                 }
                 Estimate e = new Estimate();
-                e.calcolateConfidenceByArrays(estimateTempi, Double.toString(STOP_T[j]), estimateTempiWriter);
+                //intervallo di confidenza dei tempi
+                e.calcolateConfidenceByArrays(statistics.getEstimateTempi(), "tempo medio di risposta",  String.valueOf(j) , estimateTempiWriter);
+                //intervallo di confidenza dei task
+                e.calcolateConfidenceByArrays(statistics.getEstimatePacchetti(), "numero medio di task",  String.valueOf(j) , estimateTaskWriter);
+                //intervallo di confidenza dei thoughtput
+                e.calcolateConfidenceByArrays(statistics.getEstimateThroughput(),"Throughput ",  String.valueOf(j) , estimateThoughtputWriter);
 
                 System.out.flush();
 
-                assert (estimateTempiWriter != null);
-                estimateTempiWriter.close();
+                closeFile(estimateTempiWriter);
+                closeFile(estimateTaskWriter);
+                closeFile(estimateThoughtputWriter);
             }
 
             /*assert (writer != null);
