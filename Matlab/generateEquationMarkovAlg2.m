@@ -89,11 +89,6 @@ for layers = 1:n
             else
                 b1 = 1;
             end
-            if j == 0
-                b2 = 0;
-            else
-                b2 = 1;
-            end
             if (i+j+1) == n
                 a = 0;
             else
@@ -123,12 +118,6 @@ for layers = 1:n
                 str3 = sym(str3);
             else
                 str3 = sym('init');
-            end
-            if ( b2 ~= 0 )
-                str4 = 'p'+string(i)+'o'+string(j-1);
-                str4 = sym(str4);
-            else
-                str4 = sym('init');
             end
             %eq = sym (str* (c *(la + lb) +(~c)*(la) + i*ma + j*mb ) - a*str1*(i + 1)*ma - c*a*str2*(j + 1)*mb - b1*str3*la - c*b2*str4*lb  == 0)
             equations(count) = sym ( str*(a *la + i*ma + j*mb ) - a*str1*(i + 1)*ma - c*a*str2*(j + 1)*mb - b1*str3*la == 0);

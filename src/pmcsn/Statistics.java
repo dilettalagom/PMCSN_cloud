@@ -94,8 +94,8 @@ public class Statistics {
         this.estimateThroughput.get(5).add( cloud.getProcessed_task2() / clock.getCurrent() );
 
         this.estimateThroughput.get(6).add( global_node.getTotalTask() / clock.getCurrent() );
-        this.estimateThroughput.get(7).add( cloudlet.getProcessed_task1() + cloud.getProcessed_task1() / clock.getCurrent() );
-        this.estimateThroughput.get(8).add( cloudlet.getProcessed_task2() + cloud.getProcessed_task2() / clock.getCurrent() );
+        this.estimateThroughput.get(7).add( (cloudlet.getProcessed_task1() + cloud.getProcessed_task1()) / clock.getCurrent() );
+        this.estimateThroughput.get(8).add( (cloudlet.getProcessed_task2() + cloud.getProcessed_task2()) / clock.getCurrent() );
 
     }
 }

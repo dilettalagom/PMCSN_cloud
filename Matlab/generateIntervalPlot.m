@@ -1,36 +1,5 @@
 function generateIntervalPlot()
 
-%Algoritmo1
-%pq: 0.47897
-%pq_1: 0.47897
-%pq_2: 0.47897
-%p1 cloud: 0.4898
-%p2 cloud: 0.5102
-%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 2.9781
-%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 2.2222
-%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 3.7037
-%E[T]_CLOUD generato analiticamente dalla catena di Markov: 4.2783
-%E[T1]_CLOUD generato analiticamente dalla catena di Markov: 4
-%E[T2]_CLOUD generato analiticamente dalla catena di Markov: 4.5455
-%E[T]_SISTEMA generato analiticamente dalla catena di Markov: 3.6008
-%E[T1]_SISTEMA generato analiticamente dalla catena di Markov: 3.0737
-%E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 4.10699
-
-%Algoritmo2
-%pq: 0.50308
-%pq_1: 0.027388
-%pq_2: 0.95975
-%p1 cloud: 0.026665
-%p2 cloud: 0.97333
-%E[T]_CLOUDLET generato analiticamente dalla catena di Markov: 2.2901
-%E[T1]_CLOUDLET generato analiticamente dalla catena di Markov: 2.2222
-%E[T2]_CLOUDLET generato analiticamente dalla catena di Markov: 3.7037
-%E[T]_CLOUD generato analiticamente dalla catena di Markov: 4.5309
-%E[T1]_CLOUD generato analiticamente dalla catena di Markov: 4
-%E[T2]_CLOUD generato analiticamente dalla catena di Markov: 4.5455
-%E[T]_SISTEMA generato analiticamente dalla catena di Markov: 3.4174
-%E[T1]_SISTEMA generato analiticamente dalla catena di Markov: 2.2709
-%E[T2]_SISTEMA generato analiticamente dalla catena di Markov: 4.5116
 
 request = input('Quale simulare vuoi elaborare? (1=transiente; 2=batch): ');
 if(request == 1)
@@ -140,243 +109,387 @@ end
 labels
 
 X=1:nva;
-
 %% PLOT CLOUDLET
-figure('Name','Cloudlet');
+stamp = figure('Name','Cloudlet');
 errorbar(X, cloudlet(:,1), cloudlet(:,2), 'blackx');xlim([0,j]);
 if(contains(directory,'Tempi') )
-    if ( strcmp( type,'Alg1') )
-        yline(2.97808012093726, 'Color', 'red', 'LineStyle','-'); %media
-    elseif ( strcmp( type,'Alg2') )
-        yline(2.2829, 'Color', 'red', 'LineStyle','-'); %media
-    end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUDLET";
     ylabel('Tempo medio di risposta');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(2.97808012093726, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp,'figure/Alg1/Cloudlet_time.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(2.28344128305216, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp,'figure/Alg2/Cloudlet_time.png');
+    end
     
 elseif(contains(directory,'Task'))
+  
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUDLET";
     ylabel('Numero medio di task');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(19.0079214380542, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp,'figure/Alg1/Cloudlet_Num.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(13.8997868695146, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp,'figure/Alg2/Cloudlet_Num.png');
+    end
+   
     
 elseif(contains(directory,'Throughput'))
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUDLET";
     ylabel('Throughput medio');
+    if ( strcmp( type,'Alg1') )
+        yline(6.38260915293038, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp,'figure/Alg1/Cloudlet_Throughput.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(6.08721011250853, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp,'figure/Alg2/Cloudlet_Throughput.png');
+    end
 end
 
 %% PLOT CLOUDLET_TASK1
-figure('Name','Cloudlet_task1');
+stamp1 = figure('Name','Cloudlet_task1');
 errorbar(X, cloudlet_task1(:,1), cloudlet_task1(:,2), 'blackx');xlim([0,j]);
 if(contains(directory,'Tempi') )
-    if ( strcmp( type,'Alg1') )
-        yline(2.22222222222222, 'Color', 'red', 'LineStyle','-');
-    elseif ( strcmp( type,'Alg2') )
-        yline(2.22222222222222, 'Color', 'red', 'LineStyle','-');
-    end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUDLET TASK1";
     ylabel('Tempo medio di risposta');
     %xlabel ('numero di batch');
-    
+    if ( strcmp( type,'Alg1') )
+        yline(2.22222222222222, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp1,'figure/Alg1/Cloudlet_time_task1.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(2.22222222222222, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp1,'figure/Alg2/Cloudlet_time_task1.png');
+    end
 elseif(contains(directory,'Task'))
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUDLET TASK1";
     ylabel('Numero medio di task');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(6.94705758142082, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp1,'figure/Alg1/Cloudlet_Num_task1.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(12.9681536541089, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp1,'figure/Alg2/Cloudlet_Num_task1.png');
+    end
     
 elseif(contains(directory,'Throughput'))
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUDLET TASK1";
     ylabel('Throughput medio');
+    if ( strcmp( type,'Alg1') )
+        yline(3.12617591163937, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp1,'figure/Alg1/Cloudlet_Throughput_task1.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(5.83566914434899, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp1,'figure/Alg2/Cloudlet_Throughput_task1.png');
+    end
 end
 
 
 %% PLOT CLOUDLET_TASK2
-figure('Name','Cloudlet_task2');
+stamp2 = figure('Name','Cloudlet_task2');
 errorbar(X, cloudlet_task2(:,1), cloudlet_task2(:,2), 'blackx');xlim([0,j+1]);
 
 if(contains(directory,'Tempi') )
-    if ( strcmp( type,'Alg1') )
-        yline( 3.7037037037037, 'Color', 'red', 'LineStyle','-');
-    elseif ( strcmp( type,'Alg2') )
-        yline( 3.7037037037037, 'Color', 'red', 'LineStyle','-');
-    end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUDLET TASK2";
     ylabel('Tempo medio di risposta');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(3.7037037037037, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp2,'figure/Alg1/Cloudlet_time_task2.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(3.7037037037037, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp2,'figure/Alg2/Cloudlet_time_task2.png');
+    end
     
 elseif(contains(directory,'Task'))
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUDLET TASK2";
     ylabel('Numero medio di task');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(12.0608638566334, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp2,'figure/Alg1/Cloudlet_Num_task2.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(0.931633215405701, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp2,'figure/Alg2/Cloudlet_Num_task2.png');
+    end
     
 elseif(contains(directory,'Throughput'))
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUDLET TASK2";
     ylabel('Throughput medio');
+    if ( strcmp( type,'Alg1') )
+        yline(3.25643324129101, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp2,'figure/Alg1/Cloudlet_Throughput_task2.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(0.251540968159539, 'Color', 'red', 'LineStyle','-');
+        saveas(stamp2,'figure/Alg2/Cloudlet_Throughput_task2.png');
+    end
 end
 
 %% PLOT CLOUD
-figure('Name','Cloud');
+stamp3 = figure('Name','Cloud');
 errorbar(X, cloud(:,1), cloud(:,2), 'blackx');xlim([0,j+1]);
 if(contains(directory,'Tempi') )
-    if ( strcmp( type,'Alg1') )
-        yline(4.27829313543599, 'Color', 'red', 'LineStyle','-'); %media
-    elseif( strcmp( type,'Alg2') )
-        yline(4.53090999439737, 'Color', 'red', 'LineStyle','-'); %media
-    end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUD";
     ylabel('Tempo medio di risposta');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(4.27829313543599, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp3,'figure/Alg1/Cloud_time.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(4.53090999439737, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp3,'figure/Alg2/Cloud_time.png');
+    end
     
 elseif(contains(directory,'Task'))
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUD";
     ylabel('Numero medio di task');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(25.1024179839379, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp3,'figure/Alg1/Cloud_Num.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(27.9230462946061, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp3,'figure/Alg2/Cloud_Num.png');
+    end
     
 elseif(contains(directory,'Throughput'))
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUD";
     ylabel('Throughput medio');
+    if ( strcmp( type,'Alg1') )
+        yline(5.86739084706962, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp3,'figure/Alg1/Cloud_Throughput.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(6.16278988749147, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp3,'figure/Alg2/Cloud_Throughput.png');
+    end
 end
 
 %% PLOT CLOUD_TASK1
 
-figure('Name','Cloud_task1');
+stamp4 =figure('Name','Cloud_task1');
 errorbar(X, cloud_task1(:,1), cloud_task1(:,2), 'blackx');xlim([0,j+1]);
 if(contains(directory,'Tempi') )
-    if ( strcmp( type,'Alg1') )
-        yline(4, 'Color', 'red', 'LineStyle','-'); %media
-    elseif ( strcmp( type,'Alg2') )
-        yline(4, 'Color', 'red', 'LineStyle','-'); %media
-    end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUD TASK1";
     ylabel('Tempo medio di risposta');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(4, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp4,'figure/Alg1/Cloud_time_task1.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(4, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp4,'figure/Alg2/Cloud_time_task1.png');
+    end
     
 elseif(contains(directory,'Task'))
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUD TASK1";
     ylabel('Numero medio di task');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(11.4952963534425, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp4,'figure/Alg1/Cloud_Num_task1.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(0.657323422604056, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp4,'figure/Alg2/Cloud_Num_task1.png');
+    end
     
 elseif(contains(directory,'Throughput'))
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUD TASK1";
     ylabel('Throughput medio');
+    if ( strcmp( type,'Alg1') )
+        yline(2.87382408836063, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp4,'figure/Alg1/Cloud_Throughput_task1.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(0.164330855651014, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp4,'figure/Alg2/Cloud_Throughput_task1.png');
+    end
 end
 
 %% PLOT CLOUD_TASK2
-figure('Name','Cloud_task2');
+stamp5 = figure('Name','Cloud_task2');
 errorbar(X, cloud_task2(:,1), cloud_task2(:,2), 'blackx');xlim([0,j+1]);
 if(contains(directory,'Tempi') )
-    if ( strcmp( type,'Alg1') )
-        yline(4.54545454545455, 'Color', 'red', 'LineStyle','-'); %media
-    elseif ( strcmp( type,'Alg2') )
-        yline(4.54545454545455, 'Color', 'red', 'LineStyle','-'); %media
-    end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUD TASK2";
     ylabel('Tempo medio di risposta');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(4.54545454545455, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp5,'figure/Alg1/Cloud_time_task2.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(4.54545454545455, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp5,'figure/Alg2/Cloud_time_task2.png');
+    end
     
 elseif(contains(directory,'Task'))
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUD TASK2";
     ylabel('Numero medio di task');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(13.6071216304954, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp5,'figure/Alg1/Cloud_Num_task2.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(27.2657228720021, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp5,'figure/Alg2/Cloud_Num_task2.png');
+    end
     
 elseif(contains(directory,'Throughput'))
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUD TASK2";
     ylabel('Throughput medio');
+    if ( strcmp( type,'Alg1') )
+        yline(2.99356675870899, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp5,'figure/Alg1/Cloud_Throughput_task2.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(5.99845903184046, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp5,'figure/Alg2/Cloud_Throughput_task2.png');
+    end
 end
 
 %% PLOT SYSTEM
-figure('Name','System');
+stamp6 = figure('Name','System');
 errorbar(X, system(:,1), system(:,2), 'blackx');xlim([0,j+1]);
 if(contains(directory,'Tempi') )
-    if ( strcmp( type,'Alg1') )
-        yline(3.60084403444834, 'Color', 'red', 'LineStyle','-'); %media
-    elseif ( strcmp( type,'Alg2') )
-        yline(3.41410882972414, 'Color', 'red', 'LineStyle','-'); %media
-    end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "SYSTEM";
     ylabel('Tempo medio di risposta');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(3.60084403444834, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp6,'figure/Alg1/System_time.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(3.41410882972414, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp6,'figure/Alg2/System_time.png');
+    end
     
 elseif(contains(directory,'Task'))
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "SYSTEM";
     ylabel('Numero medio di task');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(44.1103394219921, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp6,'figure/Alg1/System_Num.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(41.8228331641207, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp6,'figure/Alg2/System_Num.png');
+    end
     
 elseif(contains(directory,'Throughput'))
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "SYSTEM";
     ylabel('Throughput medio');
+    if ( strcmp( type,'Alg1') )
+        yline(12.25, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp6,'figure/Alg1/System_Throughput.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(12.25, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp6,'figure/Alg2/System_Throughput.png');
+    end
 end
 
 %% PLOT SYSTEM_TASK1
 
-figure('Name','System_task1');
+stamp7 = figure('Name','System_task1');
 errorbar(X, system_task1(:,1), system_task1(:,2), 'blackx');xlim([0,j+1]);
 if(contains(directory,'Tempi') )
-    if ( strcmp( type,'Alg1') )
-        yline(3.07372565581056, 'Color', 'red', 'LineStyle','-'); %media
-    elseif( strcmp( type,'Alg2') )
-        yline(2.27091284611882, 'Color', 'red', 'LineStyle','-'); %media
-    end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "SYSTEM TASK1";
     ylabel('Tempo medio di risposta');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(3.07372565581056, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp7,'figure/Alg1/System_time_task1.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(2.27091284611882, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp7,'figure/Alg2/System_time_task1.png');
+    end
     
 elseif(contains(directory,'Task'))
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "SYSTEM TASK1";
     ylabel('Numero medio di task');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(18.4423539348633, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp7,'figure/Alg1/System_num_task1.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(13.6254770767129, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp7,'figure/Alg2/System_num_task1.png');
+    end
     
 elseif(contains(directory,'Throughput'))
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "SYSTEM TASK1";
     ylabel('Throughput medio');
+    if ( strcmp( type,'Alg1') )
+        yline(6, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp7,'figure/Alg1/System_Throughput_task1.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(6, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp7,'figure/Alg2/System_Throughput_task1.png');
+    end
 end
 
 %% PLOT SYSTEM_TASK2
-figure('Name','System_task2');
+stamp8 = figure('Name','System_task2');
 errorbar(X, system_task2(:,1), system_task2(:,2), 'blackx');xlim([0,j+1]);
 if(contains(directory,'Tempi') )
-    if ( strcmp( type,'Alg1') )
-        yline(4.1068776779406, 'Color', 'red', 'LineStyle','-'); %media
-    elseif( strcmp( type,'Alg2') )
-        yline(4.51157697398525, 'Color', 'red', 'LineStyle','-'); %media
-    end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "SYSTEM TASK2";
     ylabel('Tempo medio di risposta');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(4.1068776779406, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp8,'figure/Alg1/System_time_task2.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(4.51157697398525, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp8,'figure/Alg2/System_time_task2.png');
+    end
     
 elseif(contains(directory,'Task'))
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "SYSTEM TASK2";
     ylabel('Numero medio di task');
     %xlabel ('numero di batch');
+    if ( strcmp( type,'Alg1') )
+        yline(25.6679854871288, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp8,'figure/Alg1/System_num_task2.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(28.1973560874078, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp8,'figure/Alg2/System_num_task2.png');
+    end
     
 elseif(contains(directory,'Throughput'))
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "SYSTEM TASK2";
     ylabel('Throughput medio');
+    if ( strcmp( type,'Alg1') )
+        yline(6.25, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp8,'figure/Alg1/System_Throughput_task2.png');
+    elseif ( strcmp( type,'Alg2') )
+        yline(6.25, 'Color', 'red', 'LineStyle','-'); %media
+        saveas(stamp8,'figure/Alg2/System_Throughput_task2.png');
+    end
 end
 
 
