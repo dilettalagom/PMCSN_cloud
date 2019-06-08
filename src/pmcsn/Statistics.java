@@ -5,18 +5,17 @@ import StruttureDiSistema.Cloudlet;
 import StruttureDiSistema.GlobalNode;
 import StruttureDiSistema.SystemClock;
 
-import java.time.Clock;
 import java.util.ArrayList;
 
 public class Statistics {
 
     private ArrayList<ArrayList<Double>> estimateTempi;
-    private ArrayList<ArrayList<Double>> estimatePacchetti;
+    private ArrayList<ArrayList<Double>> estimateTask;
     private ArrayList<ArrayList<Double>> estimateThroughput;
 
     public Statistics(){
         this.estimateTempi = initArrayList();
-        this.estimatePacchetti = initArrayList();
+        this.estimateTask = initArrayList();
         this.estimateThroughput = initArrayList();
     }
 
@@ -36,12 +35,12 @@ public class Statistics {
         this.estimateTempi = estimateTempi;
     }
 
-    public ArrayList<ArrayList<Double>> getEstimatePacchetti() {
-        return estimatePacchetti;
+    public ArrayList<ArrayList<Double>> getEstimateTask() {
+        return estimateTask;
     }
 
-    public void setEstimatePacchetti(ArrayList<ArrayList<Double>> estimatePacchetti) {
-        this.estimatePacchetti = estimatePacchetti;
+    public void setEstimateTask(ArrayList<ArrayList<Double>> estimateTask) {
+        this.estimateTask = estimateTask;
     }
 
     public ArrayList<ArrayList<Double>> getEstimateThroughput() {
@@ -68,19 +67,19 @@ public class Statistics {
 
     }
 
-    public void savePacchettiValues(GlobalNode global_node, Cloudlet cloudlet, Cloud cloud, SystemClock clock) {
+    public void saveTaskValues(GlobalNode global_node, Cloudlet cloudlet, Cloud cloud, SystemClock clock) {
 
-        this.estimatePacchetti.get(0).add( global_node.getComplete_time_cloudlet()/clock.getCurrent() );
-        this.estimatePacchetti.get(1).add( cloudlet.getArea_task1()/clock.getCurrent() );
-        this.estimatePacchetti.get(2).add( cloudlet.getArea_task2()/clock.getCurrent() );
+        this.estimateTask.get(0).add( global_node.getComplete_time_cloudlet()/clock.getCurrent() );
+        this.estimateTask.get(1).add( cloudlet.getArea_task1()/clock.getCurrent() );
+        this.estimateTask.get(2).add( cloudlet.getArea_task2()/clock.getCurrent() );
 
-        this.estimatePacchetti.get(3).add( global_node.getComplete_time_cloud()/clock.getCurrent() );
-        this.estimatePacchetti.get(4).add( cloud.getArea_task1()/clock.getCurrent() );
-        this.estimatePacchetti.get(5).add( cloud.getArea_task2()/clock.getCurrent() );
+        this.estimateTask.get(3).add( global_node.getComplete_time_cloud()/clock.getCurrent() );
+        this.estimateTask.get(4).add( cloud.getArea_task1()/clock.getCurrent() );
+        this.estimateTask.get(5).add( cloud.getArea_task2()/clock.getCurrent() );
 
-        this.estimatePacchetti.get(6).add( global_node.getComplete_time_system()/clock.getCurrent() );
-        this.estimatePacchetti.get(7).add( global_node.getComplete_time_task1()/clock.getCurrent() );
-        this.estimatePacchetti.get(8).add( global_node.getComplete_time_task2()/clock.getCurrent() );
+        this.estimateTask.get(6).add( global_node.getComplete_time_system()/clock.getCurrent() );
+        this.estimateTask.get(7).add( global_node.getComplete_time_task1()/clock.getCurrent() );
+        this.estimateTask.get(8).add( global_node.getComplete_time_task2()/clock.getCurrent() );
 
     }
 

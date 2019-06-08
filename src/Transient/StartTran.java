@@ -5,7 +5,6 @@ import pmcsn.Statistics;
 import pmcsn.Util;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import static pmcsn.Configuration.*;
@@ -20,7 +19,6 @@ public class StartTran {
             System.out.println("Errore durante la creazione delle cartelle per lo store dei risulatati");
             System.exit(1);
         };
-
 
         while (true) {
 
@@ -58,10 +56,7 @@ public class StartTran {
                 PrintWriter estimateTaskWriter = null;
                 PrintWriter estimateThoughtputWriter = null;
 
-                /*store per i risultati
-                ArrayList<ArrayList<Double>> estimateTempi = new ArrayList<>();
-                for(int i=0;i<9;i++)
-                    estimateTempi.add(new ArrayList<Double>());*/
+
                 Statistics statistics = new Statistics();
 
                 for (int i = 0; i < tran_replications; i++) {
@@ -102,7 +97,7 @@ public class StartTran {
                 //intervallo di confidenza dei tempi
                 e.calcolateConfidenceByArrays(statistics.getEstimateTempi(), "tempo medio di risposta",  String.valueOf(j) , estimateTempiWriter);
                 //intervallo di confidenza dei task
-                e.calcolateConfidenceByArrays(statistics.getEstimatePacchetti(), "numero medio di task",  String.valueOf(j) , estimateTaskWriter);
+                e.calcolateConfidenceByArrays(statistics.getEstimateTask(), "numero medio di task",  String.valueOf(j) , estimateTaskWriter);
                 //intervallo di confidenza dei thoughtput
                 e.calcolateConfidenceByArrays(statistics.getEstimateThroughput(),"Throughput ",  String.valueOf(j) , estimateThoughtputWriter);
 

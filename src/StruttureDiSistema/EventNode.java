@@ -5,9 +5,7 @@ public class EventNode {
     private double temp;
     private int type;
 
-    public EventNode(){
-
-    }
+    public EventNode(){}
 
     public EventNode(double t, int x){
         this.temp = t;

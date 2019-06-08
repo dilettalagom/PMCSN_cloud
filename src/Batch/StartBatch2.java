@@ -6,10 +6,6 @@ import pmcsn.Statistics;
 import pmcsn.Util;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import static pmcsn.Configuration.*;
@@ -61,12 +57,12 @@ public class StartBatch2 {
 
                         Simulator1_Batch s1Batch = new Simulator1_Batch();
 
-                        Statistics statisticsALG1 = s1Batch.RunBatch(r, STOP_BATCH);
+                        Statistics statisticsALG1 = s1Batch.RunBatch(r);
                         Estimate e = new Estimate();
                         //intervallo di confidenza dei tempi
                         e.calcolateConfidenceByArrays(statisticsALG1.getEstimateTempi(), "tempo medio di risposta", seed, estimateTempiWriter);
                         //intervallo di confidenza dei pacchetti
-                        e.calcolateConfidenceByArrays(statisticsALG1.getEstimatePacchetti(), "numero medio di task", seed, estimateTaskWriter);
+                        e.calcolateConfidenceByArrays(statisticsALG1.getEstimateTask(), "numero medio di task", seed, estimateTaskWriter);
                         //intervallo di confidenza dei thoughtput
                         e.calcolateConfidenceByArrays(statisticsALG1.getEstimateThroughput(),"Throughput ", seed, estimateThoughtputWriter);
 
@@ -82,11 +78,11 @@ public class StartBatch2 {
 
                         Simulator2_Batch s2Batch = new Simulator2_Batch();
 
-                        Statistics statisticsALG2 = s2Batch.RunBatch(r, STOP_BATCH);
+                        Statistics statisticsALG2 = s2Batch.RunBatch(r);
                         Estimate e = new Estimate();
                         e.calcolateConfidenceByArrays(statisticsALG2.getEstimateTempi(), "tempo medio di risposta", seed, estimateTempiWriter);
                         //intervallo di confidenza dei pacchetti
-                        e.calcolateConfidenceByArrays(statisticsALG2.getEstimatePacchetti(), "numero medio di task", seed, estimateTaskWriter);
+                        e.calcolateConfidenceByArrays(statisticsALG2.getEstimateTask(), "numero medio di task", seed, estimateTaskWriter);
                         //intervallo di confidenza dei thoughtput
                         e.calcolateConfidenceByArrays(statisticsALG2.getEstimateThroughput(),"Throughput ", seed, estimateThoughtputWriter);
 

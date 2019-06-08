@@ -5,7 +5,6 @@ import pmcsn.Rngs;
 import pmcsn.Statistics;
 import pmcsn.Util;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 import static pmcsn.Configuration.*;
 import static pmcsn.Util.*;
@@ -18,7 +17,7 @@ public class StartBatch {
         if(!Util.createDirectoriesTree("batch")){
             System.out.println("Errore durante la creazione delle cartelle per lo store dei risulatati");
             System.exit(1);
-        };
+        }
 
         while (true) {
 
@@ -53,13 +52,13 @@ public class StartBatch {
                         estimateThoughtputWriter = Util.createFiles(ROOTBATCH1 , "estimateThroughput/estimateThoughtputFile" + seed + "Alg" + selected + ".csv");
 
                         Simulator1_Batch s1Batch = new Simulator1_Batch();
+                        Statistics statisticsALG1 = s1Batch.RunBatch(r);
 
-                        Statistics statisticsALG1 = s1Batch.RunBatch(r, STOP_BATCH);
                         Estimate e = new Estimate();
                         //intervallo di confidenza dei tempi
                         e.calcolateConfidenceByArrays(statisticsALG1.getEstimateTempi(), "tempo medio di risposta", seed, estimateTempiWriter);
                         //intervallo di confidenza dei task
-                        e.calcolateConfidenceByArrays(statisticsALG1.getEstimatePacchetti(), "numero medio di task", seed, estimateTaskWriter);
+                        e.calcolateConfidenceByArrays(statisticsALG1.getEstimateTask(), "numero medio di task", seed, estimateTaskWriter);
                         //intervallo di confidenza dei thoughtput
                         e.calcolateConfidenceByArrays(statisticsALG1.getEstimateThroughput(),"Throughput ", seed, estimateThoughtputWriter);
 
@@ -74,13 +73,13 @@ public class StartBatch {
                         estimateThoughtputWriter = Util.createFiles(ROOTBATCH2 , "estimateThroughput/estimateThoughtputFile" + seed + "Alg" + selected + ".csv");
 
                         Simulator2_Batch s2Batch = new Simulator2_Batch();
+                        Statistics statisticsALG2 = s2Batch.RunBatch(r);
 
-                        Statistics statisticsALG2 = s2Batch.RunBatch(r, STOP_BATCH);
                         Estimate e = new Estimate();
                         //intervallo di confidenza dei tempi
                         e.calcolateConfidenceByArrays(statisticsALG2.getEstimateTempi(), "tempo medio di risposta", seed, estimateTempiWriter);
                         //intervallo di confidenza dei task
-                        e.calcolateConfidenceByArrays(statisticsALG2.getEstimatePacchetti(), "numero medio di task", seed, estimateTaskWriter);
+                        e.calcolateConfidenceByArrays(statisticsALG2.getEstimateTask(), "numero medio di task", seed, estimateTaskWriter);
                         //intervallo di confidenza dei thoughtput
                         e.calcolateConfidenceByArrays(statisticsALG2.getEstimateThroughput(),"Throughput ", seed, estimateThoughtputWriter);
 
@@ -91,6 +90,7 @@ public class StartBatch {
                     }
                     default:
                         System.out.print("Inserire un valore significativo!\n\n ");
+                        System.exit(1);
                         break;
 
                 }

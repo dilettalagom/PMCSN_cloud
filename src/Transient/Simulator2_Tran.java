@@ -202,7 +202,7 @@ public class Simulator2_Tran extends GeneralSimulator {
 
         //Salvo tutti i numeri per calcolare l'intervallo di confidenza in Estimate()
         statistics.saveTempiValues(global_node, cloudlet, cloud);
-        statistics.savePacchettiValues(global_node, cloudlet, cloud, clock);
+        statistics.saveTaskValues(global_node, cloudlet, cloud, clock);
         statistics.saveThroughput(global_node, cloudlet, cloud, clock);
 
         //stampo i valori sul terminale

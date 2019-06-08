@@ -4,12 +4,7 @@ import pmcsn.Rngs;
 import StruttureDiSistema.GeneralSimulator;
 import StruttureDiSistema.*;
 import pmcsn.Statistics;
-
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Locale;
-
 import static pmcsn.Configuration.*;
 
 public class Simulator1_Batch extends GeneralSimulator {
@@ -36,11 +31,7 @@ public class Simulator1_Batch extends GeneralSimulator {
     }
 
 
-    public Statistics RunBatch(Rngs r, double STOP) {
-
-        DecimalFormat f = new DecimalFormat("###0.000000");
-        f.setGroupingUsed(false);
-        f.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
+    public Statistics RunBatch(Rngs r) {
 
         Statistics statistics = new Statistics();
         int batch = 1;
@@ -54,13 +45,12 @@ public class Simulator1_Batch extends GeneralSimulator {
         // e termina quando tutti i server dentro il cloudlet e il cloud hanno type = 0
         while (system_events.get(0).getType() != 0 ) {
 
-            if(clock.getCurrent()> batch_interval && batch*batch_interval < STOP ){
-
+            if(clock.getCurrent()> batch_interval && batch*batch_interval < STOP_BATCH ){
 
                 global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
                 //salvo le statistiche nella struttura
                 statistics.saveTempiValues(global_node, cloudlet, cloud);
-                statistics.savePacchettiValues(global_node, cloudlet, cloud, clock);
+                statistics.saveTaskValues(global_node, cloudlet, cloud, clock);
                 statistics.saveThroughput(global_node, cloudlet, cloud, clock);
 
                 //riporto la struttura EventNode a clock.Current = 0
@@ -81,7 +71,7 @@ public class Simulator1_Batch extends GeneralSimulator {
                 batch++;
             }
 
-            if (system_events.get(0).getTemp() > STOP ) {
+            if (system_events.get(0).getTemp() > STOP_BATCH ) {
                 if ( check_system_servers(this.system_events) ){
                     break;
                 }
@@ -121,7 +111,7 @@ public class Simulator1_Batch extends GeneralSimulator {
 
                 int type = system_events.get(e).getType();
 
-                if (system_events.get(0).getTemp() <= STOP) {
+                if (system_events.get(0).getTemp() <= STOP_BATCH) {
                     system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
                     system_events.get(0).setType(getTaskType(r));
                 }
@@ -146,7 +136,6 @@ public class Simulator1_Batch extends GeneralSimulator {
 
                         service = getServiceCloudlet(mu2_cloudlet, r);
                     }
-
 
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
@@ -212,7 +201,7 @@ public class Simulator1_Batch extends GeneralSimulator {
         //ultimo Batch che svuota le code, bloccando gli arrivi
         global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
         statistics.saveTempiValues(global_node, cloudlet, cloud);
-        statistics.savePacchettiValues(global_node, cloudlet, cloud, clock);
+        statistics.saveTaskValues(global_node, cloudlet, cloud, clock);
         statistics.saveThroughput(global_node, cloudlet, cloud, clock);
 
         return statistics;
