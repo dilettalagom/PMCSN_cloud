@@ -1,92 +1,89 @@
 function transientCompletePlot()
 
-nva = 5; %numero di file attesi
-
 %apro la cartella seed
 dinfo = dir(fullfile('transient'));
 dinfo([dinfo.isdir]) = [];     %get rid of all directories including . and ..
 nfile = length(dinfo); %numero di file attesi
 
-labels = strings(nva,1);
-
 request = input("Quale algoritmo vuoi plottare? (1/2):  ");
 if(request == 1)
-    type = "Alg1_";
+    type = "Alg1";
 elseif(request == 2)
-    type = "Alg2_";
+    type = "Alg2";
 end
-
 i=1;
-j=1;
-while (j<= nva && i<nfile)
+
+
+while  (i<=nfile)
     %seleziono i files per il calcolo dell'intervallo di confidenza
-    
     if ( contains(dinfo(i).name,type) )
         
         filename = fullfile('transient', dinfo(i).name);
-        
         temp = importTranArea(filename);
-        labels(j) = dinfo(i).name;
         
-        %CLOUDLET
-        figure(1), plot(temp.current, temp.cloudlet, '-')
-        lgd=legend(labels);
-        lgd.Title.String = "CLOUDLET";
-        xlabel ('Pacchetti');
-        ylabel ('Tempo(unitàDiTempo)');
-        
-        
-        %media
-        if (request == 1)
-            n=1.5517;
-        elseif(request == 2)
-            n=0;
+        %% CLOUDLET
+        cloudlet = figure(1);
+        hold on
+        figure(1), plot(temp.current, temp.cloudlet, '-', 'DisplayName', dinfo(i).name );
+        if(i==nfile)
+            %media
+            if (strcmp( type,'Alg1'))
+                yline(2.97808012093726, 'Color', 'black', 'LineStyle','-', 'DisplayName', 'media analitica');
+            elseif(request == 2)
+                yline(2.28344128305216, 'Color', 'black', 'LineStyle','-', 'DisplayName', 'media analitica');
+            end
         end
-            h=yline(n, 'Color', 'red', 'LineStyle','-');
-           % str = sprintf('   n = %.2f',n);
-            %text(h(end),h(end),str);
+        legend show
+        xlabel ('Istante di tempo (s)');
+        ylabel ('Tempo di risposta medio(s)');
+        title('CLOUDLET AREA');
         hold on
         
-        
-        %CLOUD
-        figure(2), plot(temp.current, temp.cloud, '-')
-        lgd=legend(labels);
-        lgd.Title.String = "CLOUD";
-        xlabel ('Pacchetti');
-        ylabel ('Tempo(unitàDiTempo)');
-        
-        %media
-        if (request == 1)
-            yline(0.11256, 'Color', 'red', 'LineStyle','-');
-        elseif(request == 2)
-            yline(0, 'Color', 'red', 'LineStyle','-');
+        %% CLOUD
+        cloud = figure(2);
+        figure(2), plot(temp.current, temp.cloud, '-','DisplayName', dinfo(i).name );
+        if(i==nfile)
+            %media
+            if (strcmp( type,'Alg1'))
+                yline(4.27829313543599, 'Color', 'black', 'LineStyle','-', 'DisplayName', 'media analitica');
+            elseif(request == 2)
+                yline(4.53090999439737, 'Color', 'black', 'LineStyle','-', 'DisplayName', 'media analitica');
+            end
         end
+        legend show
+        xlabel ('Istante di tempo (s)');
+        ylabel ('Tempo di risposta medio(s)');
+        title('CLOUD AREA');
         hold on
         
-        %SYSTEM
-        figure(3), plot(temp.current, temp.system, '-')
-        lgd=legend(labels);
-        lgd.Title.String = "SYSTEM";
-        xlabel ('Pacchetti');
-        ylabel ('Tempo(unitàDiTempo)');
-        
-        %media
-        if (request == 1)
-            yline(1.6642, 'Color', 'red', 'LineStyle','-');
-        elseif(request == 2)
-            yline(0, 'Color', 'red', 'LineStyle','-');
-        end
+        %% SYSTEM
+        system = figure(3);
         hold on
+        figure(3),plot(temp.current, temp.system, '-','DisplayName', dinfo(i).name );
+        if(i==nfile)
+            %media
+            if (strcmp( type,'Alg1'))
+                yline(3.60084403444834, 'Color', 'black', 'LineStyle','-', 'DisplayName', 'media analitica');
+            elseif(request == 2)
+                yline(3.41410882972414, 'Color', 'black', 'LineStyle','-', 'DisplayName', 'media analitica');
+            end
+        end
+        legend show
+        xlabel ('Istante di tempo (s)');
+        ylabel ('Tempo di risposta medio(s)');
+        title('SYSTEM AREA');
         
-        j=j+1;
     end
     i=i+1;
-    
-    
+
 end
 
+
+saveas(cloudlet,'figure/CloudletStazionario.png');
 hold off
+saveas(cloud,'figure/CloudStazionario.png');
 hold off
+saveas(system,'figure/SystemStazionario.png');
 hold off
 end
 

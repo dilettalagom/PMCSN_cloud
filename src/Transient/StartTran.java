@@ -39,16 +39,10 @@ public class StartTran {
                 System.exit(0);
             }
 
-           /* TODO: Per creare i file dello stazionario -> non cancellare
-           PrintWriter writer = null;
-            try {
-                writer = new PrintWriter(new FileWriter("Matlab/transient/" +"IntervalloConfidenza" + "Alg" + selected + ".csv"));
-                Util.print_on_file(writer, Util.titlesTran);
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
+           /* TODO: Per creare i file dell'intervallo di confidenza di tony -> non cancellare
+            PrintWriter writer = Util.createFiles("Matlab/transient/" ,"IntervalloConfidenza" + "Alg" + selected + ".csv" );
             }*/
+
 
             for(int j=0; j<STOP_T.length; j++){
 
@@ -71,7 +65,7 @@ public class StartTran {
 
 
                             Simulator1_Tran s_algorith1 = new Simulator1_Tran();
-                            s_algorith1.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), "Alg1", statistics);
+                            s_algorith1.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), statistics);
 
                             break;
                         }
@@ -82,12 +76,13 @@ public class StartTran {
                             estimateThoughtputWriter = Util.createFiles(ROOTTRA2 , "estimateThroughput/estimateThoughtputFile" + String.valueOf(j) + "Alg" + selected + ".csv");
 
                             Simulator2_Tran s_algorith2 = new Simulator2_Tran();
-                            s_algorith2.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), "Alg2", statistics);
+                            s_algorith2.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), statistics);
 
                             break;
                         }
                         default:
                             System.out.print("Inserire un valore significativo!\n\n ");
+                            System.exit(1);
                             break;
 
                     }

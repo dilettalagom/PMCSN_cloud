@@ -4,12 +4,8 @@ import pmcsn.Rngs;
 import StruttureDiSistema.*;
 import pmcsn.Statistics;
 import pmcsn.Util;
-
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-
 import static pmcsn.Configuration.*;
 
 public class Simulator2_Tran extends GeneralSimulator {
@@ -19,7 +15,6 @@ public class Simulator2_Tran extends GeneralSimulator {
     private GlobalNode global_node;
     private Cloudlet cloudlet;
     private Cloud cloud;
-
 
     //init delle strutture caratteristiche del simulatore
     Simulator2_Tran() {
@@ -36,23 +31,16 @@ public class Simulator2_Tran extends GeneralSimulator {
         for (int i = 0; i < SERVERS + 1; i++) {
             this.cloudlet.getServers().add(new Server());
         }
-
         this.cloud = new Cloud();
-
     }
 
 
-    public Statistics RunSimulation(Rngs r, double STOP, String selected_seed, String algoritmo, Statistics statistics){
+    public void RunSimulation(Rngs r, double STOP, String selected_seed, Statistics statistics){
 
-      //  Statistics statistics = new Statistics();
 
-        PrintWriter instant_writer = null;
-        try {
-            instant_writer=new PrintWriter(new FileWriter("Matlab/transient/" + "Alg2_"+ selected_seed + ".csv"));
-            Util.print_on_file(instant_writer, new String[]{"current", "cloudlet", "cloud", "system"});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        PrintWriter instant_writer = Util.createFiles("Matlab/transient/","Alg2-"+ selected_seed + ".csv");
+        Util.print_on_file(instant_writer, new String[]{"current", "cloudlet", "cloud", "system"});
+
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
         system_events.get(0).setType(getTaskType(r));          // devo decidere se il primo arrivo è di tipo A o B
@@ -96,17 +84,15 @@ public class Simulator2_Tran extends GeneralSimulator {
             global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
 
             Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
-                    String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getWorking_task1() + cloudlet.getWorking_task2()) ),
-                    String.valueOf(global_node.getComplete_time_cloud() /  (cloud.getWorking_task1() + cloud.getWorking_task2()) ),
-                    String.valueOf(global_node.getComplete_time_system() / global_node.getTotalTask()) });
-
-
+                    String.valueOf(global_node.getComplete_time_cloudlet() / ( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() ) ),
+                    String.valueOf(global_node.getComplete_time_cloud()/ ( cloud.getProcessed_task1() + cloud.getProcessed_task2() )  ),
+                    String.valueOf(global_node.getComplete_time_system() / global_node.getTotalTask() ) });
 
             clock.setCurrent(clock.getNext());
 
             if (e == 0) { // processo un arrivo
 
-                int temp_task =cloudlet.getWorking_task1() + cloudlet.getWorking_task2();
+                int temp_task = cloudlet.getWorking_task1() + cloudlet.getWorking_task2();
                 if ( (temp_task < SERVERS) && (( temp_task < LIMIT ) || (system_events.get(e).getType() == 1) )) {
 
                     //trovo il server libero da più tempo inattivo
@@ -153,7 +139,6 @@ public class Simulator2_Tran extends GeneralSimulator {
 
                     system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloud_server_selected).setType(typeCloud);
-
                 }
                 if (system_events.get(0).getTemp() <= STOP) {
                     system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
@@ -182,7 +167,6 @@ public class Simulator2_Tran extends GeneralSimulator {
 
                     system_events.get(e).setType(0);
 
-
                 } else { //processo una partenza del cloud
 
                     if (system_events.get(e).getType() == 1) {
@@ -195,9 +179,7 @@ public class Simulator2_Tran extends GeneralSimulator {
                     }
                     system_events.get(e).setType(0);
                 }
-
             }
-
         }
 
         //Salvo tutti i numeri per calcolare l'intervallo di confidenza in Estimate()
@@ -210,17 +192,5 @@ public class Simulator2_Tran extends GeneralSimulator {
 
         assert (instant_writer!=null);
         instant_writer.close();
-
-        return statistics;
-    }
-
-
-    public static void main(String[] args) {
-        Rngs r = new Rngs();
-        r.plantSeeds(Long.parseLong(seed));
-
-        Simulator2_Tran s_algorith2 = new Simulator2_Tran();
-        //s_algorith2.RunSimulation(r, STOP_BATCH, Long.toString(r.getSeed()), "Alg2");
-
     }
 }

@@ -1,6 +1,5 @@
 function generateIntervalPlot()
 
-
 request = input('Quale simulare vuoi elaborare? (1=transiente; 2=batch): ');
 if(request == 1)
     mainDir = 'transient';
@@ -122,8 +121,8 @@ if(contains(directory,'Tempi') )
     end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUDLET";
-    ylabel('Tempo medio di risposta');
-    %xlabel ('numero di batch');
+    ylabel('Tempo medio di risposta (s)');
+    title('Tempo medio di risposta del CLOUDLET');
     saveas(stamp,path);
     
 elseif(contains(directory,'Task'))
@@ -136,8 +135,8 @@ elseif(contains(directory,'Task'))
     end
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUDLET";
-    ylabel('Numero medio di task');
-    %xlabel ('numero di batch');
+    ylabel('Numero medio di task (pck)');
+    title('Numero medio di task del CLOUDLET');
     saveas(stamp,path);
     
 elseif(contains(directory,'Throughput'))
@@ -150,8 +149,8 @@ elseif(contains(directory,'Throughput'))
     end
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUDLET";
-    ylabel('Throughput medio');
-    
+    ylabel('Throughput medio (pck/s)');
+    title('Throughput medio del CLOUDLET');
     saveas(stamp,path);
 end
 
@@ -168,8 +167,8 @@ if(contains(directory,'Tempi') )
     end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUDLET TASK1";
-    ylabel('Tempo medio di risposta');
-    %xlabel ('numero di batch');
+    ylabel('Tempo medio di risposta (s)');
+    title('Tempo medio di risposta del CLOUDLET TASK1');
     saveas(stamp1,path);
     
 elseif(contains(directory,'Task'))
@@ -182,8 +181,8 @@ elseif(contains(directory,'Task'))
     end
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUDLET TASK1";
-    ylabel('Numero medio di task');
-    %xlabel ('numero di batch');
+    ylabel('Numero medio di task (pck)');
+    title('Numero medio di task del CLOUDLET TASK1');
     saveas(stamp1,path);
     
 elseif(contains(directory,'Throughput'))
@@ -196,7 +195,8 @@ elseif(contains(directory,'Throughput'))
     end
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUDLET TASK1";
-    ylabel('Throughput medio');
+    ylabel('Throughput medio (pck/s)');
+    title('Throughput medio del CLOUDLET TASK1');
     saveas(stamp1,path);
 end
 
@@ -215,8 +215,8 @@ if(contains(directory,'Tempi') )
     end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUDLET TASK2";
-    ylabel('Tempo medio di risposta');
-    %xlabel ('numero di batch');
+    ylabel('Tempo medio di risposta (s)');
+    title('Tempo medio di risposta del CLOUDLET TASK2');
     saveas(stamp2,path);
     
 elseif(contains(directory,'Task'))
@@ -229,8 +229,8 @@ elseif(contains(directory,'Task'))
     end
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUDLET TASK2";
-    ylabel('Numero medio di task');
-    %xlabel ('numero di batch');
+    ylabel('Numero medio di task (pck)');
+    title('Numero medio di task del CLOUDLET TASK2');
     saveas(stamp2,path);
     
 elseif(contains(directory,'Throughput'))
@@ -243,8 +243,8 @@ elseif(contains(directory,'Throughput'))
     end
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUDLET TASK2";
-    ylabel('Throughput medio');
-    
+    ylabel('Throughput medio (pck/s)');
+    title('Throughput medio del CLOUDLET TASK2');
     saveas(stamp2,path);
 end
 
@@ -261,8 +261,8 @@ if(contains(directory,'Tempi') )
     end
      lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUD";
-    ylabel('Tempo medio di risposta');
-    %xlabel ('numero di batch');
+    ylabel('Tempo medio di risposta (s)');
+    title('Tempo medio di risposta del CLOUD');
     saveas(stamp3,path);
     
 elseif(contains(directory,'Task'))
@@ -275,8 +275,8 @@ elseif(contains(directory,'Task'))
     end
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUD";
-    ylabel('Numero medio di task');
-    %xlabel ('numero di batch');
+    ylabel('Numero medio di task (pck)');
+    title('Numero medio di task del CLOUD');
     saveas(stamp3,path);
     
 elseif(contains(directory,'Throughput'))
@@ -289,7 +289,8 @@ elseif(contains(directory,'Throughput'))
     end
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUD";
-    ylabel('Throughput medio');
+    ylabel('Throughput medio (pck/s)');
+    title('Throughput medio del CLOUD');
     saveas(stamp3,path);
     
 end
@@ -308,8 +309,8 @@ if(contains(directory,'Tempi') )
     end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUD TASK1";
-    ylabel('Tempo medio di risposta');
-    %xlabel ('numero di batch');
+    ylabel('Tempo medio di risposta (s)');
+    title('Tempo medio di risposta del CLOUD TASK1');
     saveas(stamp4,path);
     
 elseif(contains(directory,'Task'))
@@ -322,8 +323,8 @@ elseif(contains(directory,'Task'))
     end
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUD TASK1";
-    ylabel('Numero medio di task');
-    %xlabel ('numero di batch');
+    ylabel('Numero medio di task (pck)');
+    title('Numero medio di task del CLOUD TASK1');
     saveas(stamp4,path);
     
 elseif(contains(directory,'Throughput'))
@@ -336,7 +337,8 @@ elseif(contains(directory,'Throughput'))
     end
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUD TASK1";
-    ylabel('Throughput medio');
+    ylabel('Throughput medio (pck/s)');
+    title('Throughput medio del CLOUD TASK1');
     saveas(stamp4,path);
 end
 
@@ -353,8 +355,8 @@ if(contains(directory,'Tempi') )
     end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "CLOUD TASK2";
-    ylabel('Tempo medio di risposta');
-    %xlabel ('numero di batch');
+    ylabel('Tempo medio di risposta (s)');
+    title('Tempo medio di risposta del CLOUD TASK2');
     saveas(stamp5,path);
     
 elseif(contains(directory,'Task'))
@@ -367,8 +369,8 @@ elseif(contains(directory,'Task'))
     end
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "CLOUD TASK2";
-    ylabel('Numero medio di task');
-    %xlabel ('numero di batch');
+    ylabel('Numero medio di task (pck)');
+    title('Numero medio di task del CLOUD TASK2');
     saveas(stamp5,path);
     
 elseif(contains(directory,'Throughput'))
@@ -381,7 +383,8 @@ elseif(contains(directory,'Throughput'))
     end
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "CLOUD TASK2";
-    ylabel('Throughput medio');
+    ylabel('Throughput medio (pck/s)');
+    title('Throughput medio del CLOUD TASK2');
     saveas(stamp5,path);
     
 end
@@ -399,8 +402,8 @@ if(contains(directory,'Tempi') )
     end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "SYSTEM";
-    ylabel('Tempo medio di risposta');
-    %xlabel ('numero di batch');
+    ylabel('Tempo medio di risposta (s)');
+    title('Tempo medio di risposta del SYSTEM');
     saveas(stamp6,path);
     
 elseif(contains(directory,'Task'))
@@ -413,8 +416,8 @@ elseif(contains(directory,'Task'))
     end
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "SYSTEM";
-    ylabel('Numero medio di task');
-    %xlabel ('numero di batch');
+    ylabel('Numero medio di task (pck)');
+    title('Numero medio di task del SYSTEM');
     saveas(stamp6,path);
     
 elseif(contains(directory,'Throughput'))
@@ -427,7 +430,8 @@ elseif(contains(directory,'Throughput'))
     end
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "SYSTEM";
-    ylabel('Throughput medio');
+    ylabel('Throughput medio (pck/s)');
+    title('Throughput medio del SYSTEM');
     saveas(stamp6,path);
 end
 
@@ -445,8 +449,8 @@ if(contains(directory,'Tempi') )
     end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "SYSTEM TASK1";
-    ylabel('Tempo medio di risposta');
-    %xlabel ('numero di batch');
+    ylabel('Tempo medio di risposta (s)');
+    title('Tempo medio di risposta del SYSTEM TASK1');
     saveas(stamp7,path);
     
 elseif(contains(directory,'Task'))
@@ -459,8 +463,8 @@ elseif(contains(directory,'Task'))
     end
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "SYSTEM TASK1";
-    ylabel('Numero medio di task');
-    %xlabel ('numero di batch');
+    ylabel('Numero medio di task (pck)');
+    title('Numero medio di task del SYSTEM TASK1');
     saveas(stamp7,path);
     
 elseif(contains(directory,'Throughput'))
@@ -473,7 +477,8 @@ elseif(contains(directory,'Throughput'))
     end
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "SYSTEM TASK1";
-    ylabel('Throughput medio');
+    ylabel('Throughput medio (pck/s)');
+    title('Throughput medio del SYSTEM TASK1');
     saveas(stamp7,path);
 end
 
@@ -490,8 +495,8 @@ if(contains(directory,'Tempi') )
     end
     lgd=legend('tempi medi simulati', 'tempo medio teorico');
     lgd.Title.String = "SYSTEM TASK2";
-    ylabel('Tempo medio di risposta');
-    %xlabel ('numero di batch');
+    ylabel('Tempo medio di risposta (s)');
+    title('Tempo medio di risposta del SYSTEM TASK2');
     saveas(stamp8,path);
     
 elseif(contains(directory,'Task'))
@@ -504,8 +509,8 @@ elseif(contains(directory,'Task'))
     end
     lgd=legend('numero di task', 'numero medio teorico');
     lgd.Title.String = "SYSTEM TASK2";
-    ylabel('Numero medio di task');
-    %xlabel ('numero di batch');
+    ylabel('Numero medio di task (pck)');
+    title('Numero medio di task del SYSTEM TASK2');
     saveas(stamp8,path);
     
 elseif(contains(directory,'Throughput'))
@@ -518,7 +523,8 @@ elseif(contains(directory,'Throughput'))
     end
     lgd=legend('Throughput medio', 'Throughput teorico');
     lgd.Title.String = "SYSTEM TASK2";
-    ylabel('Throughput medio');
+    ylabel('Throughput medio (pck/s)');
+    title('Throughput medio del SYSTEM TASK2');
     saveas(stamp8,path);
 end
 

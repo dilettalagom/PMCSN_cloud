@@ -209,17 +209,11 @@ public abstract class GeneralSimulator {
         System.out.println("tempo di risposta sistema per task2_2 "+f.format(global_node.getComplete_time_task2()/(cloudlet.getProcessed_task2()+cloud.getProcessed_task2()))+"\n");
 
         System.out.println("server"+"\t"+"utilization"+"\t"+"Task1Processed"+"\t"+"Task2Processed"+"\n");
-        for(
-                int s = 1;
-                s <=SERVERS;s++)
-
-        {
+        for(int s=1; s <=SERVERS;s++){
             System.out.print(s + "\t\t" +
                     f.format(cloudlet.getServers().get(s).getTotal_service() / clock.getCurrent()) + "\t\t" +
                     cloudlet.getServers().get(s).getProcessed_task1() + "\t\t" + cloudlet.getServers().get(s).getProcessed_task2() + "\n");
         }
         System.out.println("\n\n");
     }
-
-
 }

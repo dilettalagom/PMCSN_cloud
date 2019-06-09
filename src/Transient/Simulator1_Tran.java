@@ -4,9 +4,6 @@ import pmcsn.Rngs;
 import StruttureDiSistema.*;
 import pmcsn.Statistics;
 import pmcsn.Util;
-
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import static pmcsn.Configuration.*;
@@ -18,8 +15,6 @@ public class Simulator1_Tran extends GeneralSimulator {
     private GlobalNode global_node;
     private Cloudlet cloudlet;
     private Cloud cloud;
-
-
 
     //init delle strutture caratteristiche del simulatore
     Simulator1_Tran() {
@@ -36,23 +31,14 @@ public class Simulator1_Tran extends GeneralSimulator {
         for (int i = 0; i < SERVERS + 1; i++) {
             this.cloudlet.getServers().add(new Server());
         }
-
         this.cloud = new Cloud();
-
     }
 
 
-    public Statistics RunSimulation (Rngs r, double STOP, String selected_seed, String algoritmo, Statistics statistics) {
+    public void RunSimulation (Rngs r, double STOP, String selected_seed, Statistics statistics) {
 
-       // Statistics statistics = new Statistics();
-
-        PrintWriter instant_writer = null;
-        try {
-            instant_writer=new PrintWriter(new FileWriter("Matlab/transient/" + "Alg1_"+ selected_seed + ".csv"));
-            Util.print_on_file(instant_writer, new String[]{"current", "cloudlet", "cloud", "system"});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        PrintWriter instant_writer = Util.createFiles("Matlab/transient/","Alg1-"+ selected_seed + ".csv");
+        Util.print_on_file(instant_writer, new String[]{"current", "cloudlet", "cloud", "system"});
 
         // primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
@@ -68,7 +54,6 @@ public class Simulator1_Tran extends GeneralSimulator {
                     break;
                 }
             }
-
 
             int e = this.nextEvent(system_events);
             clock.setNext(system_events.get(e).getTemp());
@@ -100,9 +85,9 @@ public class Simulator1_Tran extends GeneralSimulator {
             global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
 
             Util.print_on_file(instant_writer, new String[]{String.valueOf(clock.getCurrent()),
-                    String.valueOf(global_node.getComplete_time_cloudlet() / (cloudlet.getWorking_task1() + cloudlet.getWorking_task2()) ),
-                    String.valueOf(global_node.getComplete_time_cloud() /  (cloud.getWorking_task1() + cloud.getWorking_task2()) ),
-                    String.valueOf(global_node.getComplete_time_system() / global_node.getTotalTask()) });
+                    String.valueOf(global_node.getComplete_time_cloudlet() / ( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() ) ),
+                    String.valueOf(global_node.getComplete_time_cloud()/ ( cloud.getProcessed_task1() + cloud.getProcessed_task2() )  ),
+                    String.valueOf(global_node.getComplete_time_system() / global_node.getTotalTask() ) });
 
             clock.setCurrent(clock.getNext());
 
@@ -125,7 +110,6 @@ public class Simulator1_Tran extends GeneralSimulator {
 
                         service = getServiceCloudlet(mu2_cloudlet, r);
                     }
-
 
                     cloudlet.getServers().get(cloudlet_server_selected).setTotal_service(cloudlet.getServers().get(cloudlet_server_selected).getTotal_service() + service );
 
@@ -157,7 +141,6 @@ public class Simulator1_Tran extends GeneralSimulator {
 
                     system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloud_server_selected).setType(typeCloud);
-
                 }
 
                 // genero un nuovo arrivo dopo aver assegnato il precedente
@@ -167,7 +150,6 @@ public class Simulator1_Tran extends GeneralSimulator {
                 }else {
                     system_events.get(0).setType(getTaskType(r));
                 }
-
             } else {
                 // processo una partenza
                 if (e <= SERVERS) { // processo una partenza cloudlet
@@ -209,18 +191,5 @@ public class Simulator1_Tran extends GeneralSimulator {
 
         assert (instant_writer!=null);
         instant_writer.close();
-
-        return statistics;
     }
-
-    
-    public static void main(String[] args) {
-        Rngs r = new Rngs();
-        r.plantSeeds(Long.parseLong(seed));
-
-        Simulator1_Tran s_algorith1 = new Simulator1_Tran();
-       // s_algorith1.RunSimulation(r, STOP_BATCH, Long.toString(r.getSeed()), "Alg1", estimateTempi);
-
-    }
-
 }

@@ -23,6 +23,15 @@ public class Util {
         try {
             Path path = Paths.get("../PMCSN_cloud/Matlab/"+ dir);
             Files.createDirectories(path);
+
+            Path pathFigure = Paths.get("../PMCSN_cloud/Matlab/figure");
+            Files.createDirectories(pathFigure);
+
+            for (int i=1; i<3; i++){
+                Path subPathFigure = Paths.get("../PMCSN_cloud/Matlab/figure/Alg"+i);
+                Files.createDirectories(subPathFigure);
+            }
+
             for(int i=1; i<3;i++){
                 Path alg = Paths.get("../PMCSN_cloud/Matlab/"+dir+"/"+dir+i);
                 Files.createDirectories(alg);
