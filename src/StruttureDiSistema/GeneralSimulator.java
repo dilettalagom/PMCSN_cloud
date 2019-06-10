@@ -15,6 +15,11 @@ public abstract class GeneralSimulator {
     public double exponential(double m, Rngs r) {
         return (-m * Math.log(1.0 - r.random()));
     }
+    public double getArrival(double lambda, Rngs r) {
+        r.selectStream(0);
+        return exponential(1.0 / lambda, r);
+    }
+
 
     public double hyperExponential(double mu, Rngs r) {
         double p = 0.2;
@@ -42,10 +47,7 @@ public abstract class GeneralSimulator {
             return 2;
     }
 
-    public double getArrival(double lambda, Rngs r) {
-        r.selectStream(0);
-        return exponential(1.0 / lambda, r);
-    }
+
 
     public double getServiceCloudlet(double mu, Rngs r) {
         return (hyperExponential(mu, r));

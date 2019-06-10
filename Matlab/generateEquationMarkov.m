@@ -190,7 +190,7 @@ N2_cloudlet = L2_clet*T2_CLOUDLET;
 N_sistema = N_cloudlet +N_cloud;
 N1_sistema = N1_cloudlet +N1_cloud;
 N2_sistema = N2_cloudlet +N2_cloud;
-
+%%
 cell_time = {};
 cell_num = {};
 cell_throghput = {};
