@@ -53,7 +53,7 @@ public class Simulator2_Batch extends GeneralSimulator {
 
                 //riporto la struttura EventNode a clock.Current = 0
                 for (EventNode event : system_events) {
-                    if (event.getTemp() - clock.getCurrent() < 0 || event.getType() == 0)
+                    if(event.getTemp() - clock.getCurrent() < 0 || event.getType() == 0)
                         event.setTemp(0);
                     else
                         event.setTemp(event.getTemp() - clock.getCurrent());
@@ -70,7 +70,7 @@ public class Simulator2_Batch extends GeneralSimulator {
             }
 
             if (system_events.get(0).getTemp() > STOP_BATCH) {
-                if (check_system_servers(this.system_events)) {
+                if (check_system_servers(system_events)) {
                     break;
                 }
             }
@@ -108,7 +108,7 @@ public class Simulator2_Batch extends GeneralSimulator {
 
             if (e == 0) { // processo un arrivo
 
-                int temp_task =cloudlet.getWorking_task1() + cloudlet.getWorking_task2();
+                int temp_task = cloudlet.getWorking_task1() + cloudlet.getWorking_task2();
                 if ( (temp_task < SERVERS) && (( temp_task < LIMIT ) || (system_events.get(e).getType() == 1) )) {
 
                     //trovo il server libero da più tempo inattivo
@@ -119,7 +119,7 @@ public class Simulator2_Batch extends GeneralSimulator {
                         cloudlet.setWorking_task1(cloudlet.getWorking_task1() + 1);
                         service = getServiceCloudlet(mu1_cloudlet, r);
 
-                    } else {
+                    } else if(system_events.get(e).getType() == 2) {
                         cloudlet.setWorking_task2(cloudlet.getWorking_task2() + 1);
                         service = getServiceCloudlet(mu2_cloudlet, r);
                     }
@@ -129,7 +129,9 @@ public class Simulator2_Batch extends GeneralSimulator {
                     system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
 
                 }
-                else {
+                else {// non ho server liberi -> mando al cloud  ( arrivo cloud)
+
+                    //trovo il server libero ( se non esiste lo creo )
                     int cloud_server_selected = findOneCloud(system_events);
                     int typeCloud = system_events.get(e).getType();
 
@@ -138,12 +140,13 @@ public class Simulator2_Batch extends GeneralSimulator {
                         cloud.setWorking_task1(cloud.getWorking_task1() + 1);
 
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task A
-                        service = this.getServiceCloud(mu1_cloud, r);
+                        service = getServiceCloud(mu1_cloud, r);
+
                     } else {
                         cloud.setWorking_task2(cloud.getWorking_task2() + 1);
 
                         // genero un servizio secondo la distribuzione del tempo di servizio per  task B
-                        service = this.getServiceCloud(mu2_cloud, r);
+                        service = getServiceCloud(mu2_cloud, r);
                     }
 
                     system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
@@ -157,7 +160,8 @@ public class Simulator2_Batch extends GeneralSimulator {
                 else {
                     system_events.get(0).setType(0);
                 }
-            } else { //partenze
+            } else { // processo una partenza
+
                 if (e <= SERVERS) { // processo una partenza cloudlet
 
                     if (system_events.get(e).getType() == 1) {
@@ -170,7 +174,6 @@ public class Simulator2_Batch extends GeneralSimulator {
 
                     }
                     system_events.get(e).setType(0);
-
 
                 } else { //processo una partenza del cloud
 

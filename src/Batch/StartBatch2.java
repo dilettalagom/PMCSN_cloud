@@ -25,7 +25,6 @@ public class StartBatch2 {
         while (true) {
 
             Rngs r = new Rngs();
-            r.plantSeeds(Long.parseLong(seed));
 
             int selected = 0;
             System.out.print("\n\t\t\tBenvenuto nella simulazione Batch.\nQuale dei due simulatori vuoi eseguire? [1 or 2] \t (Inserire 0 per terminare): ");

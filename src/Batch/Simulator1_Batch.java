@@ -27,7 +27,6 @@ public class Simulator1_Batch extends GeneralSimulator {
         this.global_node = new GlobalNode(START, START);
         this.cloudlet = new Cloudlet();
         this.cloud = new Cloud();
-
     }
 
 
@@ -36,7 +35,7 @@ public class Simulator1_Batch extends GeneralSimulator {
         Statistics statistics = new Statistics();
         int batch = 1;
 
-        // primo arrivo
+        //primo arrivo
         system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
         system_events.get(0).setType(getTaskType(r));          // devo decidere se il primo arrivo è di tipo A o B
 
@@ -54,8 +53,8 @@ public class Simulator1_Batch extends GeneralSimulator {
                 statistics.saveThroughput(global_node, cloudlet, cloud, clock);
 
                 //riporto la struttura EventNode a clock.Current = 0
-                for (EventNode event: system_events){
-                    if( event.getTemp() - clock.getCurrent()<0 || event.getType() == 0)
+                for (EventNode event : system_events){
+                    if(event.getTemp() - clock.getCurrent()<0 || event.getType() == 0)
                         event.setTemp(0);
                     else
                         event.setTemp(event.getTemp() - clock.getCurrent());
@@ -77,7 +76,7 @@ public class Simulator1_Batch extends GeneralSimulator {
                 }
             }
 
-            int e = this.nextEvent(system_events);
+            int e = nextEvent(system_events);
 
             clock.setNext(system_events.get(e).getTemp());
             double instant = clock.getNext() - clock.getCurrent();
@@ -146,7 +145,6 @@ public class Simulator1_Batch extends GeneralSimulator {
 
                     //trovo il server libero ( se non esiste lo creo )
                     int cloud_server_selected = findOneCloud(system_events);
-
                     int typeCloud = system_events.get(e).getType();
 
                     double service = 0;

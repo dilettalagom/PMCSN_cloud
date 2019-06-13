@@ -55,7 +55,7 @@ public class Estimate {
 
 			if (n > 1) {
 				u = 1.0 - 0.5 * (1.0 - LOC);                  /* interval parameter  */
-				t = rvms.idfStudent(n - 1, u);            /* critical value of t */
+				t = rvms.idfStudent(n - 1, u);             /* critical value of t */
 				w = t * stdev / Math.sqrt(n - 1);             /* interval half width */
 
 				confidences.add(mean);
@@ -64,7 +64,6 @@ public class Estimate {
 				System.out.print("ERROR - insufficient data\n");
 
 		}
-
 
 		ArrayList<String> temp = new ArrayList<>();
 		for (int i=0; i<9; i++){

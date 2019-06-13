@@ -88,6 +88,9 @@ public class StartTran {
                     }
                     r.plantSeeds(r.getSeed());
                 }
+
+
+
                 Estimate e = new Estimate();
                 //intervallo di confidenza dei tempi
                 e.calcolateConfidenceByArrays(statistics.getEstimateTempi(), "tempo medio di risposta",  String.valueOf(j) , estimateTempiWriter);

@@ -26,7 +26,7 @@ public class Configuration {
     public static double STOP_SEED = 1000000;
     public static double[] STOP_T = {5.00,10.00,50.00,100.00,500.00,1000.00,2000.00, 5000.00};
     //Valore di clock per la generazione dello stazionario
-    //public static double[] STOP_T = {1000.00};
+    //public static double[] STOP_T = {10000.00};
     public static int    SERVERS = 20;
     public static int    LIMIT = 10;
 
