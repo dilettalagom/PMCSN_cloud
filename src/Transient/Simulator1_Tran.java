@@ -34,7 +34,6 @@ public class Simulator1_Tran extends GeneralSimulator {
         this.cloud = new Cloud();
     }
 
-
     public void RunSimulation (Rngs r, double STOP, String selected_seed, Statistics statistics) {
 
         PrintWriter instant_writer = Util.createFiles("Matlab/transient/","Alg1-"+ selected_seed + ".csv");
@@ -55,6 +54,7 @@ public class Simulator1_Tran extends GeneralSimulator {
                 }
             }
 
+            //selezione del prossimo evento in base alla next-event simulation e avanzamento del clock
             int e = this.nextEvent(system_events);
             clock.setNext(system_events.get(e).getTemp());
             double instant = clock.getNext() - clock.getCurrent();
@@ -180,7 +180,6 @@ public class Simulator1_Tran extends GeneralSimulator {
                 }
             }
         }
-
         //Salvo tutti i numeri per calcolare l'intervallo di confidenza in Estimate()
         statistics.saveTempiValues(global_node, cloudlet, cloud);
         statistics.saveTaskValues(global_node, cloudlet, cloud, clock);

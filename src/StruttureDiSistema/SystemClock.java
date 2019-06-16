@@ -5,7 +5,6 @@ public class SystemClock {
     private double current;
     private double next;
 
-
     public SystemClock(double c, double n){
         this.current = c;
         this.next = n;
@@ -31,5 +30,4 @@ public class SystemClock {
         this.current = 0.0;
         this.next = 0.0;
     }
-
 }

@@ -13,11 +13,7 @@ public class Cloud {
     private int processed_task1 = 0;
     private int processed_task2 = 0;
 
-
-
-    public double getArea_task1() {
-        return area_task1;
-    }
+    public double getArea_task1() { return area_task1; }
 
     public void setArea_task1(double area_task1) {
         this.area_task1 = area_task1;
@@ -47,9 +43,7 @@ public class Cloud {
         this.working_task2 = working_task2;
     }
 
-    public int getProcessed_task1() {
-        return processed_task1;
-    }
+    public int getProcessed_task1() { return processed_task1; }
 
     public void setProcessed_task1(int processed_task1) {
         this.processed_task1 = processed_task1;
@@ -69,6 +63,5 @@ public class Cloud {
 
         this.processed_task1 = 0;
         this.processed_task2 = 0;
-
     }
 }

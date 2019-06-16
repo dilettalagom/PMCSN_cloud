@@ -76,7 +76,6 @@ public class Simulator2_Batch extends GeneralSimulator {
             }
 
             int e = nextEvent(system_events);
-
             clock.setNext(system_events.get(e).getTemp());
             double instant = clock.getNext() - clock.getCurrent();
 
@@ -105,7 +104,6 @@ public class Simulator2_Batch extends GeneralSimulator {
 
             clock.setCurrent(clock.getNext());
 
-
             if (e == 0) { // processo un arrivo
 
                 int temp_task = cloudlet.getWorking_task1() + cloudlet.getWorking_task2();
@@ -127,7 +125,6 @@ public class Simulator2_Batch extends GeneralSimulator {
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
-
                 }
                 else {// non ho server liberi -> mando al cloud  ( arrivo cloud)
 
@@ -151,7 +148,6 @@ public class Simulator2_Batch extends GeneralSimulator {
 
                     system_events.get(cloud_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloud_server_selected).setType(typeCloud);
-
                 }
                 if (system_events.get(0).getTemp() <= STOP_BATCH) {
                     system_events.get(0).setTemp(getArrival(lambda, r) + clock.getCurrent());
@@ -176,7 +172,6 @@ public class Simulator2_Batch extends GeneralSimulator {
                     system_events.get(e).setType(0);
 
                 } else { //processo una partenza del cloud
-
                     if (system_events.get(e).getType() == 1) {
                         cloud.setWorking_task1(cloud.getWorking_task1() - 1);
                         cloud.setProcessed_task1(cloud.getProcessed_task1() + 1);
@@ -189,7 +184,6 @@ public class Simulator2_Batch extends GeneralSimulator {
                 }
             }
         }
-
         //ultimo Batch che svuota le code, bloccando gli arrivi
         global_node.setTotalTask( cloudlet.getProcessed_task1() + cloudlet.getProcessed_task2() + cloud.getProcessed_task1() + cloud.getProcessed_task2() );
         statistics.saveTempiValues(global_node, cloudlet, cloud);
@@ -198,5 +192,4 @@ public class Simulator2_Batch extends GeneralSimulator {
 
         return statistics;
     }
-
 }

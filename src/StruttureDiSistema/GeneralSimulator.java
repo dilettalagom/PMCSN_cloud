@@ -20,7 +20,6 @@ public abstract class GeneralSimulator {
         return exponential(1.0 / lambda, r);
     }
 
-
     public double hyperExponential(double mu, Rngs r) {
         double p = 0.2;
         double m1 = 2 * p * mu;
@@ -47,8 +46,6 @@ public abstract class GeneralSimulator {
             return 2;
     }
 
-
-
     public double getServiceCloudlet(double mu, Rngs r) {
         return (hyperExponential(mu, r));
     }
@@ -74,7 +71,6 @@ public abstract class GeneralSimulator {
         return (min_event);
     }
 
-
     public boolean check_system_servers(ArrayList<EventNode> system_events) {
 
         for (EventNode e : system_events) {
@@ -83,7 +79,6 @@ public abstract class GeneralSimulator {
             }
         }
         return true;
-
     }
 
     public int findOneCloud(ArrayList<EventNode> system_events) {
@@ -121,7 +116,6 @@ public abstract class GeneralSimulator {
         }
         return (server);
     }
-
 
     public void printTranResults(GlobalNode global_node, Cloudlet cloudlet, Cloud cloud, SystemClock clock, double STOP){
         DecimalFormat f = new DecimalFormat("###0.000000");

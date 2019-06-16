@@ -46,13 +46,13 @@ public class StartBatch2 {
 
                 PrintWriter estimateTempiWriter = null;
                 PrintWriter estimateTaskWriter =  null;
-                PrintWriter estimateThoughtputWriter = null;
+                PrintWriter estimateThroughputWriter = null;
 
                 switch (selected) {
                     case 1: {
                         estimateTempiWriter = Util.createFiles(ROOTBATCH1 , "estimateTempi/estimateTempiFile" +  String.valueOf(i)  + "Alg" + selected + ".csv");
                         estimateTaskWriter = Util.createFiles(ROOTBATCH1 , "estimateTask/estimateTaskFile" +  String.valueOf(i)  + "Alg" + selected + ".csv");
-                        estimateThoughtputWriter = Util.createFiles(ROOTBATCH1 , "estimateThroughput/estimateThoughtputFile" +  String.valueOf(i)  + "Alg" + selected + ".csv");
+                        estimateThroughputWriter = Util.createFiles(ROOTBATCH1 , "estimateThroughput/estimateThoughtputFile" +  String.valueOf(i)  + "Alg" + selected + ".csv");
 
                         Simulator1_Batch s1Batch = new Simulator1_Batch();
 
@@ -63,17 +63,17 @@ public class StartBatch2 {
                         //intervallo di confidenza dei pacchetti
                         e.calcolateConfidenceByArrays(statisticsALG1.getEstimateTask(), "numero medio di task", seed, estimateTaskWriter);
                         //intervallo di confidenza dei thoughtput
-                        e.calcolateConfidenceByArrays(statisticsALG1.getEstimateThroughput(),"Throughput ", seed, estimateThoughtputWriter);
+                        e.calcolateConfidenceByArrays(statisticsALG1.getEstimateThroughput(),"Throughput ", seed, estimateThroughputWriter);
 
                         estimateTempiWriter.flush();
                         estimateTaskWriter.flush();
-                        estimateThoughtputWriter.flush();
+                        estimateThroughputWriter.flush();
                         break;
                     }
                     case 2: {
                         estimateTempiWriter = Util.createFiles(ROOTBATCH2 , "estimateTempi/estimateTempiFile" + seed + "Alg" + selected + ".csv");
                         estimateTaskWriter = Util.createFiles(ROOTBATCH2 , "estimateTask/estimateTaskFile" + seed + "Alg" + selected + ".csv");
-                        estimateThoughtputWriter = Util.createFiles(ROOTBATCH2 , "estimateThroughput/estimateThoughtputFile" + seed + "Alg" + selected + ".csv");
+                        estimateThroughputWriter = Util.createFiles(ROOTBATCH2 , "estimateThroughput/estimateThoughtputFile" + seed + "Alg" + selected + ".csv");
 
                         Simulator2_Batch s2Batch = new Simulator2_Batch();
 
@@ -83,11 +83,11 @@ public class StartBatch2 {
                         //intervallo di confidenza dei pacchetti
                         e.calcolateConfidenceByArrays(statisticsALG2.getEstimateTask(), "numero medio di task", seed, estimateTaskWriter);
                         //intervallo di confidenza dei thoughtput
-                        e.calcolateConfidenceByArrays(statisticsALG2.getEstimateThroughput(),"Throughput ", seed, estimateThoughtputWriter);
+                        e.calcolateConfidenceByArrays(statisticsALG2.getEstimateThroughput(),"Throughput ", seed, estimateThroughputWriter);
 
                         estimateTempiWriter.flush();
                         estimateTaskWriter.flush();
-                        estimateThoughtputWriter.flush();
+                        estimateThroughputWriter.flush();
                         break;
                     }
                     default:
@@ -97,7 +97,7 @@ public class StartBatch2 {
                 }
                 closeFile(estimateTempiWriter);
                 closeFile(estimateTaskWriter);
-                closeFile(estimateThoughtputWriter);
+                closeFile(estimateThroughputWriter);
             }
         }
     }

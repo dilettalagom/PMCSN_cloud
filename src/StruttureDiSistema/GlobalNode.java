@@ -38,17 +38,13 @@ public class GlobalNode {
         return complete_time_system;
     }
 
-    public void setComplete_time_system(double complete_time_system) {
-        this.complete_time_system = complete_time_system;
-    }
+    public void setComplete_time_system(double complete_time_system) { this.complete_time_system = complete_time_system;  }
 
     public double getComplete_time_cloudlet() {
         return complete_time_cloudlet;
     }
 
-    public void setComplete_time_cloudlet(double complete_time_cloudlet) {
-        this.complete_time_cloudlet = complete_time_cloudlet;
-    }
+    public void setComplete_time_cloudlet(double complete_time_cloudlet) { this.complete_time_cloudlet = complete_time_cloudlet; }
 
     public double getComplete_time_cloud() {
         return complete_time_cloud;
@@ -76,6 +72,5 @@ public class GlobalNode {
         this.complete_time_task2 = 0.0;
 
         this.totalTask = 0;
-
     }
 }

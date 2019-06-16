@@ -18,7 +18,6 @@ public class Util {
     public static final String ROOTTRA1 = "Matlab/transient/transient1/";
     public static final String ROOTTRA2 = "Matlab/transient/transient2/";
 
-
     public static boolean createDirectoriesTree(String dir){
         try {
             Path path = Paths.get("../PMCSN_cloud/Matlab/"+ dir);
@@ -31,7 +30,6 @@ public class Util {
                 Path subPathFigure = Paths.get("../PMCSN_cloud/Matlab/figure/Alg"+i);
                 Files.createDirectories(subPathFigure);
             }
-
             for(int i=1; i<3;i++){
                 Path alg = Paths.get("../PMCSN_cloud/Matlab/"+dir+"/"+dir+i);
                 Files.createDirectories(alg);
@@ -73,7 +71,6 @@ public class Util {
         return newWriter;
     }
 
-
     public static void print_on_file(PrintWriter writer, String[] row) {
 
         for (String s : row) {
@@ -99,18 +96,9 @@ public class Util {
                 String[].class);
     }
 
-    public static String[] convertMatrixList(ArrayList<ArrayList<Double>> arrayList) {
-        String[] temp = new String[arrayList.size()];
-        for (int i=0; i<arrayList.size(); i++)
-            temp[i] = String.valueOf(arrayList.get(i).get(arrayList.get(i).size()-1));
-
-        return temp;
-    }
-
     public static void closeFile(PrintWriter writer){
         assert (writer!= null);
         writer.close();
 
     }
-
 }

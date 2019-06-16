@@ -10,7 +10,6 @@ public class EventNode {
     public EventNode(double t, int x){
         this.temp = t;
         this.type = x;
-
     }
 
     public double getTemp() {

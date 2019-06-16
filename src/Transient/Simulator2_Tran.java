@@ -34,7 +34,6 @@ public class Simulator2_Tran extends GeneralSimulator {
         this.cloud = new Cloud();
     }
 
-
     public void RunSimulation(Rngs r, double STOP, String selected_seed, Statistics statistics){
 
 
@@ -53,8 +52,8 @@ public class Simulator2_Tran extends GeneralSimulator {
                 }
             }
 
+            //selezione del prossimo evento in base alla next-event simulation e avanzamento del clock
             int e = nextEvent(system_events);
-
             clock.setNext(system_events.get(e).getTemp());
             double instant = clock.getNext() - clock.getCurrent();
 
@@ -112,8 +111,6 @@ public class Simulator2_Tran extends GeneralSimulator {
                     double temp = cloudlet.getServers().get(cloudlet_server_selected).getTotal_service() + service;
                     cloudlet.getServers().get(cloudlet_server_selected).setTotal_service(temp);
 
-                    // salvo il tempo di servizio generato per il task in esecuzione sul server
-                    cloudlet.getServers().get(cloudlet_server_selected).setLast_service(clock.getCurrent() + service);
                     // aggiorno il server i-esimo ( indice ) con i nuovi valori di tempo e type
                     system_events.get(cloudlet_server_selected).setTemp(clock.getCurrent() + service);
                     system_events.get(cloudlet_server_selected).setType(system_events.get(e).getType());
@@ -181,7 +178,6 @@ public class Simulator2_Tran extends GeneralSimulator {
                 }
             }
         }
-
         //Salvo tutti i numeri per calcolare l'intervallo di confidenza in Estimate()
         statistics.saveTempiValues(global_node, cloudlet, cloud);
         statistics.saveTaskValues(global_node, cloudlet, cloud, clock);

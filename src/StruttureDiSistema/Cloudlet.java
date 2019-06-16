@@ -18,7 +18,6 @@ public class Cloudlet {
     //lo stato di ogni server del Cloudlet
     private ArrayList<Server> servers;
 
-
     public double getArea_task1() {
         return area_task1;
     }
@@ -75,13 +74,11 @@ public class Cloudlet {
         this.servers = servers;
     }
 
-
     public void resetCloudlet() {
         this.area_task1 = 0.0;
         this.area_task2 = 0.0;
 
         this.processed_task1 = 0;
         this.processed_task2 = 0;
-
     }
 }

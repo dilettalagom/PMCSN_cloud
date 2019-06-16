@@ -39,17 +39,11 @@ public class StartTran {
                 System.exit(0);
             }
 
-           /* TODO: Per creare i file dell'intervallo di confidenza di tony -> non cancellare
-            PrintWriter writer = Util.createFiles("Matlab/transient/" ,"IntervalloConfidenza" + "Alg" + selected + ".csv" );
-            }*/
-
-
             for(int j=0; j<STOP_T.length; j++){
 
                 PrintWriter estimateTempiWriter = null;
                 PrintWriter estimateTaskWriter = null;
-                PrintWriter estimateThoughtputWriter = null;
-
+                PrintWriter estimateThroughputWriter = null;
 
                 Statistics statistics = new Statistics();
 
@@ -61,7 +55,7 @@ public class StartTran {
 
                             estimateTempiWriter = Util.createFiles(ROOTTRA1 , "estimateTempi/estimateTempi" +  String.valueOf(j) + "Alg" + selected + ".csv");
                             estimateTaskWriter = Util.createFiles(ROOTTRA1 , "estimateTask/estimateTaskFile" + String.valueOf(j) + "Alg" + selected + ".csv");
-                            estimateThoughtputWriter = Util.createFiles(ROOTTRA1 , "estimateThroughput/estimateThoughtputFile" + String.valueOf(j) + "Alg" + selected + ".csv");
+                            estimateThroughputWriter = Util.createFiles(ROOTTRA1 , "estimateThroughput/estimateThroughputFile" + String.valueOf(j) + "Alg" + selected + ".csv");
 
 
                             Simulator1_Tran s_algorith1 = new Simulator1_Tran();
@@ -73,7 +67,7 @@ public class StartTran {
 
                             estimateTempiWriter = Util.createFiles(ROOTTRA2 , "estimateTempi/estimateTempiFile" +  String.valueOf(j)  + "Alg" + selected + ".csv");
                             estimateTaskWriter = Util.createFiles(ROOTTRA2 , "estimateTask/estimateTaskFile" + String.valueOf(j) + "Alg" + selected + ".csv");
-                            estimateThoughtputWriter = Util.createFiles(ROOTTRA2 , "estimateThroughput/estimateThoughtputFile" + String.valueOf(j) + "Alg" + selected + ".csv");
+                            estimateThroughputWriter = Util.createFiles(ROOTTRA2 , "estimateThroughput/estimateThroughputFile" + String.valueOf(j) + "Alg" + selected + ".csv");
 
                             Simulator2_Tran s_algorith2 = new Simulator2_Tran();
                             s_algorith2.RunSimulation(r, STOP_T[j], Long.toString(r.getSeed()), statistics);
@@ -89,27 +83,20 @@ public class StartTran {
                     r.plantSeeds(r.getSeed());
                 }
 
-
-
                 Estimate e = new Estimate();
                 //intervallo di confidenza dei tempi
                 e.calcolateConfidenceByArrays(statistics.getEstimateTempi(), "tempo medio di risposta",  String.valueOf(j) , estimateTempiWriter);
                 //intervallo di confidenza dei task
                 e.calcolateConfidenceByArrays(statistics.getEstimateTask(), "numero medio di task",  String.valueOf(j) , estimateTaskWriter);
                 //intervallo di confidenza dei thoughtput
-                e.calcolateConfidenceByArrays(statistics.getEstimateThroughput(),"Throughput ",  String.valueOf(j) , estimateThoughtputWriter);
+                e.calcolateConfidenceByArrays(statistics.getEstimateThroughput(),"Throughput ",  String.valueOf(j) , estimateThroughputWriter);
 
                 System.out.flush();
 
                 closeFile(estimateTempiWriter);
                 closeFile(estimateTaskWriter);
-                closeFile(estimateThoughtputWriter);
+                closeFile(estimateThroughputWriter);
             }
-
-            /*assert (writer != null);
-            writer.close();*/
-
         }
     }
-
 }
